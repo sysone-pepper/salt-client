@@ -1,0 +1,126 @@
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap");
+
+.ft-container {
+  background-color: #ffffff;
+  padding: 40px 20px;
+  font-family: "Nanum Gothic", sans-serif;
+}
+
+.ft-content {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.ft-left,
+.ft-right {
+  flex: 1;
+}
+
+.ft-logo-image {
+  height: 100px;
+  width: auto;
+}
+
+.ft-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.ft-contact-info {
+  display: flex;
+  gap: 40px;
+}
+
+.ft-contact-label {
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.ft-contact-value {
+  font-weight: bold;
+}
+
+.ft-cta-title {
+  font-weight: 800;
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.ft-cta-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.ft-button {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.ft-button-primary {
+  background-color: #a5d3ec;
+  color: white;
+  border: none;
+}
+
+.ft-button-secondary {
+  background-color: white;
+  color: black;
+  border: 1px solid #ddd;
+}
+
+.ft-bottom {
+  max-width: 1200px;
+  margin: 40px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ft-platforms-title {
+  color: #888;
+  margin-left: 30%;
+  margin-bottom: 0;
+}
+
+.ft-platforms-list {
+  margin-right: 30%;
+  display: flex;
+  gap: 20px;
+}
+
+.ft-platform-item {
+  background-color: #f0f0f0;
+  padding: 5px 15px;
+  border-radius: 15px;
+  font-size: 14px;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.3s ease;
+}
+
+.ft-platform-item:hover {
+  background-color: #bcbcbc;
+}
+
+@media (max-width: 768px) {
+  .ft-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ft-platforms-title {
+    margin-bottom: 10px;
+  }
+
+  .ft-platforms-list {
+    margin-top: 10px;
+  }
+}
