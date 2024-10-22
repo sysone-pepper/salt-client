@@ -1,11 +1,14 @@
 import "./App.css";
-import Footer from "./layout/Footer";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import ProjectPage from "./pages/ProjectPage.jsx";
 
 function App() {
   return (
-    <>
-      <Footer />
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/project" element={<ProjectPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

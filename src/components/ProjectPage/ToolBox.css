@@ -1,0 +1,10 @@
+.tool-box-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  border-radius: 10px;
+  border: 2px gray solid;
+  margin-top: 10px;
+  margin-left: 10px;
+}

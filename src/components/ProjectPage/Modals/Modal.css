@@ -1,0 +1,38 @@
+.modal-presentation {
+  z-index: 1200;
+  position: absolute;
+}
+.modal-wrapper {
+  position: fixed;
+  inset: 0px;
+  background-color: rgb(0 0 0 / 71%);
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  justify-content: center;
+}
+.modal-container {
+  position: relative;
+  width: 60%;
+  height: 60%;
+  top: 20%;
+  background: #eee;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-close-button {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  cursor: pointer;
+  z-index: 1000;
+  color: white;
+}
+.modal-content {
+  width: 80%;
+  height: 90%;
+  bottom: 10%;
+  right: 10%;
+}

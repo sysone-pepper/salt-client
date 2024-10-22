@@ -1,0 +1,47 @@
+.add-button-wrapper {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin: 10px;
+}
+
+.add-button-content-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+  background-color: #0066ff;
+  border: 3px solid rgb(133, 133, 133);
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-button-content {
+  width: 70%;
+  height: 70%;
+  object-fit: contain; /* 이미지 비율을 유지하면서 컨테이너에 맞게 */
+}
+
+.add-button-symbol-container {
+  position: absolute; /* 절대 위치로 설정 */
+  width: 15px;
+  height: 15px;
+  border-radius: 100%;
+  background-color: #0066ff;
+  border: 3px solid rgb(133, 133, 133);
+  top: -5px; /* 버튼 위쪽에 위치 */
+  right: -5px; /* 버튼 오른쪽에 위치 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-button-symbol {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}

@@ -1,0 +1,44 @@
+.device-node-container {
+  width: 50px; /* 전체 컨테이너 너비 */
+  height: 50px; /* 전체 컨테이너 높이 */
+  display: flex;
+  flex-direction: column; /* 세로 방향으로 정렬 */
+  align-items: center; /* 중앙 정렬 */
+  position: relative; /* 자식 요소의 절대 위치를 설정하기 위해 사용 */
+}
+
+.outer-device-node {
+  display: flex; /* flexbox로 정렬 */
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  position: relative; /* 자식 요소의 절대 위치를 설정하기 위해 사용 */
+  width: 50px; /* 외부 원형 노드의 크기 */
+  height: 50px; /* 외부 원형 노드의 크기 */
+  border-radius: 50%; /* 원형으로 만들기 */
+  border: 5px solid greenyellow; /* 테두리 색상 */
+  background-color: lightblue; /* 배경색 */
+}
+
+.inner-device-node {
+  width: 40px; /* 내부 원형 노드의 크기 조정 */
+  height: 40px; /* 내부 원형 노드의 크기 조정 */
+  border-radius: 50%; /* 원형으로 만들기 */
+  overflow: hidden; /* 초과하는 이미지 숨기기 */
+  display: flex; /* flexbox로 정렬 */
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  position: absolute; /* 절대 위치 설정 */
+}
+
+.device-node-icon {
+  height: 100%; /* 이미지 크기를 내부 노드에 맞춤 */
+  width: 100%; /* 이미지 크기를 내부 노드에 맞춤 */
+  object-fit: cover; /* 비율 유지하며 크기 조정 */
+}
+
+.device-node-info {
+  font-size: 10px; /* 글자 크기 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  position: absolute; /* 절대 위치 설정 */
+  bottom: -30px; /* 하단 위치 조정 (원형 아래에 배치) */
+}
