@@ -1,28 +1,28 @@
 import React, { createContext, useState, useEffect, useRef } from "react";
-import ReactDOM from "react-dom/client"; // react-dom/client에서 가져옵니다.
-import { CustomDeviceNode } from "../components/ProjectPage/CustomDeviceNode";
 
 export const NetworkContext = createContext();
 
 export function NetworkProvider({ children }) {
+  const cyRef = useRef(null);
   const [nodes, setNodes] = useState([
     {
       group: "nodes",
       data: { id: "background", src: null },
       position: { x: 400, y: 300 }, // 캔버스의 중앙 위치 (적절히 조정 가능)
-      style: {
-        "z-index": 0, // 최하단에 위치하도록 설정
-      },
+      locked: true,
     },
     {
+      group: "nodes",
       data: { id: "other", deviceType: "UPS" },
       classes: "object device",
     },
     {
+      group: "nodes",
       data: { id: "parent", label: "parent" },
       classes: "group",
     },
     {
+      group: "nodes",
       data: {
         id: "child1",
         parent: "parent",
@@ -33,6 +33,7 @@ export function NetworkProvider({ children }) {
       classes: "object device fixedAspectRatioResizeMode", // 가로세로비율 1대1로 리사이징하기 위한 클래스 적용
     }, // 자식 노드 1
     {
+      group: "nodes",
       data: {
         id: "child2",
         parent: "parent",
@@ -44,17 +45,31 @@ export function NetworkProvider({ children }) {
       grabbable: true,
     },
   ]);
-  const [links, setLinks] = useState([]);
+  const [edges, setEdges] = useState([
+    {
+      group: "edges",
+      data: {
+        id: "edge1",
+        source: "child1",
+        target: "child2",
+      },
+      classes: "edge",
+    },
+  ]);
+  const [isLinking, setIsLinking] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [curModalType, setCurModalType] = useState("");
 
   return (
     <NetworkContext.Provider
       value={{
+        cyRef,
         nodes,
         setNodes,
-        links,
-        setLinks,
+        edges,
+        setEdges,
+        isLinking,
+        setIsLinking,
         isModalOpen,
         setIsModalOpen,
         curModalType,
