@@ -44,4 +44,13 @@
   width: 80%;
   height: 80%;
   object-fit: contain;
+  transition: transform 0.3s ease; /* 애니메이션을 부드럽게 */
+}
+
+.cancel {
+  background-color: #fc746c;
+}
+
+.rotate {
+  transform: rotate(45deg); /* 45도 회전 */
 }
