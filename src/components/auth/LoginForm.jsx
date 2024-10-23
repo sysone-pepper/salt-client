@@ -1,30 +1,13 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "./LoginForm.css";
 
-const LoginForm = ({ setCurrentUser }) => {
+const LoginForm = ({ onSubmit }) => {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const response = await axios.post("http://localhost:8080/login", {
-        id,
-        password,
-      });
-
-      const userData = response.data;
-
-      setCurrentUser(userData);
-
-      navigate(`/projects/${id}`);
-    } catch (error) {
-      alert("아이디 또는 비밀번호가 올바르지 않습니다.");
-    }
+    e.preventDefault(); // 페이지 새로고침 방지
+    onSubmit({ id, password }); // 입력된 정보를 상위 컴포넌트로 전달
   };
 
   return (

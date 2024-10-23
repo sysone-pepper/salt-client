@@ -3,10 +3,11 @@
   top: 0;
   left: 0;
   width: 100%;
-  background: transparent;
-  overflow: hidden;
+  background-image: url("../assets/images/space.jpg");
   background-size: cover;
   background-position: center center;
+  background-attachment: fixed;
+  overflow: hidden;
   z-index: 1;
 }
 
