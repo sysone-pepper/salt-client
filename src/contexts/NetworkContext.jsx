@@ -28,7 +28,9 @@ export function NetworkProvider({ children }) {
         parent: "parent",
         deviceType: "Server",
       },
-      classes: "object device",
+      width: 100,
+      height: 100,
+      classes: "object device fixedAspectRatioResizeMode", // 가로세로비율 1대1로 리사이징하기 위한 클래스 적용
     }, // 자식 노드 1
     {
       data: {
@@ -36,7 +38,9 @@ export function NetworkProvider({ children }) {
         parent: "parent",
         deviceType: "Network",
       },
-      classes: "object device",
+      width: 100,
+      height: 100,
+      classes: "object device fixedAspectRatioResizeMode", // 가로세로비율 1대1로 리사이징하기 위한 클래스 적용
       grabbable: true,
     },
   ]);

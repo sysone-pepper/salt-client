@@ -13,7 +13,10 @@
     "cytoscape": "^3.30.2",
     "cytoscape-context-menus": "^4.2.1",
     "cytoscape-dagre": "^2.5.0",
+    "cytoscape-node-editing": "^4.1.1",
     "cytoscape-node-html-label": "^1.2.2",
+    "jquery": "^3.7.1",
+    "konva": "^7.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0"
