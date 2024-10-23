@@ -5,7 +5,6 @@ import PrivateRoute from "./components/common/PrivateRoute";
 import AnimatedBackground from "./layout/AnimatedBackground";
 
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
-// const ProjectPage = lazy(() => import("./pages/projects/ProjectPage"));
 
 function App() {
   return (
