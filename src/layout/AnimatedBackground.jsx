@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { Outlet } from "react-router-dom";
 import "./AnimatedBackground.css";
 
 const AnimatedBackground = () => {
@@ -209,6 +210,7 @@ const AnimatedBackground = () => {
   return (
     <div id="large-header" className="large-header" ref={headerRef}>
       <canvas id="demo-canvas" ref={canvasRef}></canvas>
+      <Outlet />
     </div>
   );
 };
