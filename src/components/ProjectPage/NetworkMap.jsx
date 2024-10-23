@@ -1,22 +1,12 @@
-<<<<<<< HEAD
 import ReactDOMServer from 'react-dom/server';
 import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
+import edgehandles from 'cytoscape-edgehandles';
+import EHoptions from '../../constants/EdgeHandleOptions';
 import nodeEditing from 'cytoscape-node-editing';
 import jQuery from 'jquery';
 import konva from 'konva';
-=======
-import ReactDOMServer from "react-dom/server";
-import cytoscape from "cytoscape";
-import dagre from "cytoscape-dagre";
-import nodeHtmlLabel from "cytoscape-node-html-label";
-import edgehandles from "cytoscape-edgehandles";
-import EHoptions from "../../constants/EdgeHandleOptions";
-import nodeEditing from "cytoscape-node-editing";
-import jQuery from "jquery";
-import konva from "konva";
->>>>>>> 5cb7d0d056fa4076f0fbb6b68c064af4432b2b96
 
 import { useContext, useEffect, useRef } from 'react';
 import { NetworkContext } from '../../contexts/NetworkContext';
@@ -32,7 +22,7 @@ nodeHtmlLabel(cytoscape);
 nodeEditing(cytoscape, jQuery, konva);
 
 export const NetworkMap = () => {
-  const { cyRef, nodes,setNodes, edges, isLinking, isModalOpen } =
+  const { cyRef, nodes, setNodes, edges, isLinking, isModalOpen } =
     useContext(NetworkContext);
   useEffect(() => {
     const cy = cytoscape({
@@ -130,6 +120,10 @@ export const NetworkMap = () => {
       boundingRectangleLineDash: [2, 4],
       boundingRectangleLineColor: '#666666',
 
+      isNoResizeMode: function (node) {
+        return node.is('.noResizeMode');
+      }, // no active grapples
+
       isFixedAspectRatioResizeMode: function (node) {
         return node.is('.fixedAspectRatioResizeMode');
       },
@@ -176,19 +170,19 @@ export const NetworkMap = () => {
     if (isLinking) {
       eh.enableDrawMode();
 
-      cy.on("ehstart", (event, sourceNode) => {
-        if (sourceNode.id() === "background") {
+      cy.on('ehstart', (event, sourceNode) => {
+        if (sourceNode.id() === 'background') {
           eh.stop();
         }
       });
     } else {
       eh.disableDrawMode();
-      cy.off("ehstart");
+      cy.off('ehstart');
     }
 
     return () => {
       eh.disableDrawMode();
-      cy.off("ehstart");
+      cy.off('ehstart');
     };
   }, [isLinking]);
 
@@ -213,8 +207,8 @@ export const NetworkMap = () => {
     });
 
     // 콘솔에 정보 출력
-    console.log("노드 정보:", nodesInfo);
-    console.log("엣지 정보:", edgesInfo);
+    console.log('노드 정보:', nodesInfo);
+    console.log('엣지 정보:', edgesInfo);
   };
 
   return (

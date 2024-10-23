@@ -83,9 +83,12 @@ export const CreateObjectForm = () => {
     const newNodes = [
       ...nodes,
       {
-        group: "nodes",
+        group: 'nodes',
         data: { ...newNodeData },
-        classes: `object ${category}`,
+        // classes: `object ${category}`,
+        classes: `object ${
+          category === 'icon' ? category + ' noResizeMode' : category
+        }`,
         grabbable: true,
       },
     ];
