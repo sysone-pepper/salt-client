@@ -69,6 +69,7 @@ export const CreateObjectForm = () => {
     const newNodes = [
       ...nodes,
       {
+        group: "nodes",
         data: { ...newNodeData },
         classes: "object device",
         grabbable: true,
