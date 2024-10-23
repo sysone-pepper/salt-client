@@ -4,7 +4,11 @@ import dagre from "cytoscape-dagre";
 import nodeHtmlLabel from "cytoscape-node-html-label";
 import edgehandles from "cytoscape-edgehandles";
 import EHoptions from "../../constants/EdgeHandleOptions";
-import { useContext, useEffect } from "react";
+import nodeEditing from "cytoscape-node-editing";
+import jQuery from "jquery";
+import konva from "konva";
+
+import { useContext, useEffect, useRef } from "react";
 import { NetworkContext } from "../../contexts/NetworkContext";
 import { CustomDeviceNode } from "./CustomDeviceNode";
 import { ToolBox } from "./ToolBox";
@@ -14,14 +18,35 @@ import { BackgroundNode } from "./BackgroundNode";
 cytoscape.use(dagre);
 cytoscape.use(edgehandles);
 nodeHtmlLabel(cytoscape);
+nodeEditing(cytoscape, jQuery, konva);
 
 export const NetworkMap = () => {
-  const { cyRef, nodes, edges, isLinking, isModalOpen } =
+  const { cyRef, nodes,setNodes, edges, isLinking, isModalOpen } =
     useContext(NetworkContext);
-
   useEffect(() => {
     const cy = cytoscape({
       container: document.getElementById("cy"),
+      // 노드 스타일 : elements의 크기를 반영하는데 필요
+      style: [
+        {
+          selector: ".device[width][height]",
+          style: {
+            label: "data(id)",
+            "background-opacity": 0,
+            width: "data(width)",
+            height: "data(height)",
+          },
+        },
+        {
+          selector: ".device[width][height]:selected",
+          style: {
+            label: "data(id)",
+            "background-opacity": 0,
+            width: "data(width)",
+            height: "data(height)",
+          },
+        },
+      ],
       layout: {
         name: "dagre",
         padding: 24,
@@ -61,8 +86,38 @@ export const NetworkMap = () => {
         },
       },
     ]);
+    // 노드 확대축소 라이브러리
+    cy.nodeEditing({
+      padding: 5,
+      undoable: true,
+      grappleSize: 6,
+      grappleColor: "#fff",
+      grappleStrokeColor: "#666666",
+      grappleStrokeWidth: 1,
+      inactiveGrappleStroke: "inside 1px",
+      boundingRectangleLineDash: [2, 4],
+      boundingRectangleLineColor: "#666666",
 
-    // eh.enableDrawMode();
+      isFixedAspectRatioResizeMode: function (node) {
+        return node.is(".fixedAspectRatioResizeMode");
+      },
+    });
+
+    // 노드 리사이징을 하고 나면 state에 width와 height를 반영
+    cy.on("nodeediting.resizeend", function (event, type, node) {
+      const width = node.width();
+      const height = node.height();
+
+      node.data("width", width);
+      node.data("height", height);
+
+      cy.elements().forEach((ele) => {
+        console.log(ele.data());
+      });
+
+      setNodes(cy.elements().map((ele) => ele.json()));
+    });
+
     cyRef.current = cy;
 
     return () => {
