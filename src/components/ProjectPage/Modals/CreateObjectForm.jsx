@@ -1,22 +1,23 @@
-import React, { useContext, useState } from "react";
-import "./CreateObjectForm.css";
-import ServerIcon from "../../../assets/images/Server-icon2.png";
-import NetworkIcon from "../../../assets/images/Network-icon2.png";
-import L3SwitchIcon from "../../../assets/images/L3Switch-icon.png";
-import L4SwitchIcon from "../../../assets/images/L4Switch-icon.png";
-import L7SwitchIcon from "../../../assets/images/L7Switch-icon.png";
-import FirewallIcon from "../../../assets/images/Firewall-icon2.png";
-import UPSIcon from "../../../assets/images/UPS-icon2.png";
-import { NetworkContext } from "../../../contexts/NetworkContext";
+import React, { useContext, useState } from 'react';
+import './CreateObjectForm.css';
+import ServerIcon from '../../../assets/images/Server-icon2.png';
+import NetworkIcon from '../../../assets/images/Network-icon2.png';
+import L3SwitchIcon from '../../../assets/images/L3Switch-icon.png';
+import L4SwitchIcon from '../../../assets/images/L4Switch-icon.png';
+import L7SwitchIcon from '../../../assets/images/L7Switch-icon.png';
+import FirewallIcon from '../../../assets/images/Firewall-icon2.png';
+import UPSIcon from '../../../assets/images/UPS-icon2.png';
+import { NetworkContext } from '../../../contexts/NetworkContext';
 
+import { IconInput } from './IconInput.jsx';
 const deviceCategories = [
-  "Server",
-  "Network",
-  "L3Switch",
-  "L4Switch",
-  "L7Switch",
-  "Firewall",
-  "UPS",
+  'Server',
+  'Network',
+  'L3Switch',
+  'L4Switch',
+  'L7Switch',
+  'Firewall',
+  'UPS',
 ];
 
 const deviceIcons = {
@@ -30,21 +31,21 @@ const deviceIcons = {
 };
 
 const deviceManagementTypes = [
-  "SNMP",
-  "NetFlow",
-  "ICMP",
-  "Syslog",
-  "SSH",
-  "Telnet",
-  "TFTP",
-  "WMI",
+  'SNMP',
+  'NetFlow',
+  'ICMP',
+  'Syslog',
+  'SSH',
+  'Telnet',
+  'TFTP',
+  'WMI',
 ];
 
 export const CreateObjectForm = () => {
   const { nodes, setNodes, setIsModalOpen, setCurModalType } =
     useContext(NetworkContext);
 
-  const [category, setCategory] = useState("device");
+  const [category, setCategory] = useState('device');
   const [deviceName, setDeviceName] = useState();
   const [deviceManagementType, setDeviceManagementType] = useState();
   const [deviceIP, setDeviceIP] = useState();
@@ -52,36 +53,49 @@ export const CreateObjectForm = () => {
   const [deviceOS, setDeviceOS] = useState();
   const [manufacturedAt, setManufacturedAt] = useState();
 
+  const [iconType, setIconType] = useState('red');
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newNodeData = {
-      id: deviceIP,
-      objectType: category,
-      deviceName: deviceName,
-      deviceManangementType: deviceManagementType,
-      publicIp: deviceIP,
-      osType: deviceOS,
-      vendor: manufacturedAt,
-      deviceType: deviceType,
-      source: deviceType,
-    };
+    let newNodeData;
+    switch (category) {
+      case 'device':
+        newNodeData = {
+          id: deviceIP,
+          objectType: category,
+          deviceName: deviceName,
+          deviceManangementType: deviceManagementType,
+          publicIp: deviceIP,
+          osType: deviceOS,
+          vendor: manufacturedAt,
+          deviceType: deviceType,
+          source: deviceType,
+        };
+        break;
+      case 'icon':
+        newNodeData = {
+          id: `icon-${Date.now()}`,
+          objectType: category,
+          iconType: iconType,
+        };
+    }
 
     const newNodes = [
       ...nodes,
       {
         data: { ...newNodeData },
-        classes: "object device",
+        classes: `object ${category}`,
         grabbable: true,
       },
     ];
     setNodes(newNodes);
     setIsModalOpen(false);
-    setCurModalType("");
+    setCurModalType('');
   };
 
   const formByCategory = () => {
     switch (category) {
-      case "device":
+      case 'device':
         return (
           <>
             <div className="form-group">
@@ -178,9 +192,13 @@ export const CreateObjectForm = () => {
             </div>
           </>
         );
-      case "icon":
-        return <>icon</>;
-      case "text":
+      case 'icon':
+        return (
+          <>
+            <IconInput setIconType={setIconType} onSubmit={handleSubmit} />
+          </>
+        );
+      case 'text':
         return <>text</>;
       default:
         return <>default</>;
