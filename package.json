@@ -14,9 +14,13 @@
     "cytoscape": "^3.30.2",
     "cytoscape-context-menus": "^4.2.1",
     "cytoscape-dagre": "^2.5.0",
+    "cytoscape-edgehandles": "^4.0.1",
+    "cytoscape-node-editing": "^4.1.1",
     "cytoscape-node-html-label": "^1.2.2",
     "gsap": "^3.12.5",
     "jwt-decode": "^4.0.0",
+    "jquery": "^3.7.1",
+    "konva": "^7.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0"

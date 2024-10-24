@@ -20,7 +20,10 @@ const deviceIcons = {
 
 export const CustomDeviceNode = ({ node, data }) => {
   return (
-    <div className="outer-device-node">
+    <div
+      className="outer-device-node"
+      style={{ width: node?.width(), height: node?.height() }} // 바깥노드도 data의 크기를 반영하도록 변경
+    >
       <div
         className="inner-device-node"
         style={{ width: node?.width(), height: node?.height() }}
