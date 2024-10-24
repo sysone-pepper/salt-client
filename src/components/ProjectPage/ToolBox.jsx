@@ -1,14 +1,14 @@
-import React, { useContext, useRef } from "react";
-import { AddButton } from "./Buttons/AddButton";
-import "./ToolBox.css";
-import { NetworkContext } from "../../contexts/NetworkContext";
+import React, { useContext, useRef } from 'react';
+import { AddButton } from './Buttons/AddButton';
+import './ToolBox.css';
+import { NetworkContext } from '../../contexts/NetworkContext';
 
 export const ToolBox = () => {
   const { isLinking, setIsLinking, setIsModalOpen, setCurModalType } =
     useContext(NetworkContext);
   const toggleAddNode = () => {
     setIsModalOpen(true);
-    setCurModalType("create");
+    setCurModalType('create');
   };
   const activeAddLink = () => {
     setIsLinking(true);
@@ -18,15 +18,24 @@ export const ToolBox = () => {
   };
   return (
     <div className="tool-box-container">
-      <AddButton fileName={"object-icon.png"} onClickEvent={toggleAddNode} />
+      <AddButton
+        fileName={'object-icon.png'}
+        onClickEvent={toggleAddNode}
+        disabled={isLinking}
+      />
       {isLinking ? (
         <AddButton
-          fileName={"link-icon.png"}
+          fileName={'link-icon.png'}
           onClickEvent={inactiveAddLink}
           needCancel={true}
+          disabled={false}
         />
       ) : (
-        <AddButton fileName={"link-icon.png"} onClickEvent={activeAddLink} />
+        <AddButton
+          fileName={'link-icon.png'}
+          onClickEvent={activeAddLink}
+          disabled={false}
+        />
       )}
     </div>
   );
