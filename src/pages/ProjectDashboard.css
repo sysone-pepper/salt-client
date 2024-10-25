@@ -1,0 +1,91 @@
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap");
+
+.projects-page {
+  position: relative;
+  z-index: 2;
+  padding: 20px;
+}
+
+.my-users {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  margin-right: 10px;
+}
+
+.projects-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title-and-add {
+  display: flex;
+  align-items: center;
+}
+
+.my-project {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  margin-right: 10px;
+}
+
+.add-button {
+  background-color: #a5d3ec;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  padding: 3px 10px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.add-button:hover {
+  background-color: #93c2db;
+}
+
+.search-container {
+  position: relative;
+  display: inline-block;
+}
+
+.project-details {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 700;
+  width: 300px;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  outline: none;
+}
+
+.my-pjt-hr {
+  border-color: #fff;
+}
+
+.projects-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.projects-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+@media (max-width: 600px) {
+  .projects-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .projects-header input {
+    width: 100%;
+    margin-top: 10px;
+  }
+}

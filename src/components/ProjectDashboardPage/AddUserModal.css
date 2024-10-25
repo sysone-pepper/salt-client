@@ -1,0 +1,157 @@
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap");
+
+.au-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.au-modal-content {
+  background-color: #424242;
+  padding: 20px;
+  border-radius: 5px;
+  position: relative;
+}
+
+.au-wrapper *,
+.au-wrapper :before,
+.au-wrapper :after {
+  box-sizing: border-box;
+}
+
+.au-form {
+  width: 320px;
+  margin: 45px auto;
+}
+
+.au-title {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 800;
+  font-size: 2em;
+  text-align: center;
+  color: #a5d3ec;
+}
+
+.au-sep {
+  background: #a5d3ec;
+  box-shadow: none;
+  border: none;
+  height: 2px;
+  width: 25%;
+  margin: 0px auto 45px auto;
+}
+
+.au-group {
+  font-family: "Nanum Gothic", sans-serif;
+  position: relative;
+  margin: 45px 0;
+}
+
+.au-input {
+  background: none;
+  color: #c6c6c6;
+  font-size: 18px;
+  padding: 10px 10px 10px 5px;
+  display: block;
+  width: 320px;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid #c6c6c6;
+}
+
+.au-input:focus {
+  outline: none;
+}
+
+.au-input:focus ~ .au-label,
+.au-input:valid ~ .au-label {
+  top: -14px;
+  font-size: 12px;
+  color: #a5d3ec;
+}
+
+.au-input:focus ~ .au-bar:before {
+  width: 320px;
+}
+
+.au-label {
+  color: #c6c6c6;
+  font-size: 16px;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 5px;
+  top: 10px;
+  transition: 300ms ease all;
+}
+
+.au-bar {
+  position: relative;
+  display: block;
+  width: 320px;
+}
+
+.au-bar:before {
+  content: "";
+  height: 2px;
+  width: 0;
+  bottom: 0px;
+  position: absolute;
+  background: #a5d3ec;
+  transition: 300ms ease all;
+  left: 0%;
+}
+
+.au-btn {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 700;
+  background: #fff;
+  color: #959595;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 3px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  outline: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.au-btn:hover {
+  color: #8b8b8b;
+  box-shadow: 0 7px 14px rgba(0, 0, 0, 0.18), 0 5px 5px rgba(0, 0, 0, 0.12);
+}
+
+.au-btn-submit {
+  background: #a5d3ec;
+  color: #bce0fb;
+}
+
+.au-btn-submit:hover {
+  background: #93c2db;
+  color: #deeffd;
+}
+
+.au-btn-cancel {
+  background: #eee;
+}
+
+.au-btn-cancel:hover {
+  background: #e1e1e1;
+  color: #8b8b8b;
+}
+
+.au-btn-box {
+  text-align: center;
+  margin: 50px 0;
+}

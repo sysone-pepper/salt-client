@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import LoginForm from "../../components/auth/LoginForm";
+import { useAuth } from "../contexts/AuthContext";
+import LoginForm from "../components/auth/LoginForm";
 
 const LoginPage = () => {
   const { login } = useAuth(); // AuthContext에서 login 함수를 가져옴
