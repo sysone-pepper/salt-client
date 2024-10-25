@@ -33,6 +33,13 @@
   font-weight: 200;
 }
 
+#demo-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
 @media only screen and (max-width: 768px) {
   .demo-1 .main-title {
     font-size: 3em;
