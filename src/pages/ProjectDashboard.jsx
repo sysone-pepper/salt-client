@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import "./ProjectDashboard.css";
 import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import ProjectContent from "../components/ProjectDashboardPage/ProjectContent";
 import AddProjectModal from "../components/ProjectDashboardPage/AddProjectModal";
 import ProjectSummaryModal from "../components/ProjectDashboardPage/ProjectSummaryModal";
 import UserContent from "../components/ProjectDashboardPage/UserContent";
 import AddUserModal from "../components/ProjectDashboardPage/AddUserModal";
 import ViewAllUsersModal from "../components/ProjectDashboardPage/ViewAllUsersModal";
+import { getProjects } from "../api/Diagram";
 
-const ProjectDashboard = ({ currentUser }) => {
+const ProjectDashboard = () => {
+  const { currentUser, isAuthenticated } = useAuth();
   const { username } = useParams();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
@@ -57,62 +60,105 @@ const ProjectDashboard = ({ currentUser }) => {
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [showViewAllModal, setShowViewAllModal] = useState(false);
 
+  // useEffect(() => {
+  //   if (!currentUser || currentUser.username !== username) {
+  //     alert("올바르지 않은 접근입니다. 다시 로그인해주세요.");
+  //     navigate("/");
+  //     return;
+  //   }
   useEffect(() => {
-    if (!currentUser || currentUser.username !== username) {
+    if (!isAuthenticated || !currentUser || currentUser.username !== username) {
       alert("올바르지 않은 접근입니다. 다시 로그인해주세요.");
       navigate("/");
       return;
     }
 
-    // 사용자별 프로젝트 데이터를 로드.
-    // 실제로는 API 호출 등을 통해 데이터를 가져와야 함
     const fetchProjects = async () => {
-      const userProjects = [
-        {
-          id: 2,
-          imageSrc: "/images/space.jpg",
-          projectName: "프로젝트 이름",
-          author: "작성자",
-          description: "프로젝트 설명을 간단하게 넣을지 말지 고민 중",
-          lastEditor: "홍길동",
-          creationDate: "2023-10-01",
-          lastModifiedDate: "2023-10-10",
-        },
-        {
-          id: 3,
-          imageSrc: "/images/building.jpg",
-          projectName: "안동 데이터 센터 구조도",
-          author: "최성연",
-          description: "프로젝트 설명을 여기에 넣을지 말지 고민 중",
-        },
-        {
-          id: 4,
-          imageSrc: "/images/target.jpg",
-          projectName: "판교 DB센터 4층",
-          author: "이기석",
-          description: "상세 내용을 여기 넣을지?",
-        },
-        {
-          id: 5,
-          imageSrc: "/images/default_Image.webp",
-          projectName: "판교 DB센터 4층",
-          author: "이기석",
-          description: "상세 내용을 여기 넣을지?",
-        },
-        {
-          id: 6,
-          imageSrc: "/images/default_Image.webp",
-          projectName: "판교 DB센터 4층",
-          author: "이기석",
-          description: "상세 내용을 여기 넣을지?",
-        },
-      ];
+      try {
+        const data = await getProjects();
+        // const response = await getProjects();
+        // const userProjects = response.data;
 
-      setProjectsData(userProjects);
+        if (data.success) {
+          const formattedProjects = data.data.map((project) => ({
+            id: project.id,
+            imageSrc: project.tnImgUrl || "/images/default_Image.webp",
+            projectName: project.title,
+            author: project.username,
+            description: project.summary,
+
+            // 필요한 데이터 형태로 매핑
+            // const formattedProjects = userProjects.map((project) => ({
+            //   id: project.id,
+            //   imageSrc: project.thumbnailUrl || "/images/default_Image.webp",
+            //   projectName: project.name,
+            //   author: project.authorName,
+            //   description: project.description,
+            //   lastEditor: project.lastEditorName,
+            //   creationDate: project.creationDate,
+            //   lastModifiedDate: project.lastModifiedDate,
+          }));
+
+          setProjectsData(formattedProjects);
+        } else {
+          throw new Error("프로젝트 데이터를 가져오는데 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("Failed to fetch projects:", error);
+        alert("프로젝트 데이터를 가져오는데 실패했습니다.");
+      }
     };
 
     fetchProjects();
-  }, [currentUser, username, navigate]);
+  }, [currentUser, username, navigate, isAuthenticated]);
+
+  //     const fetchProjects = async () => {
+  //       const userProjects = [
+  //         {
+  //           id: 2,
+  //           imageSrc: "/images/space.jpg",
+  //           projectName: "프로젝트 이름",
+  //           author: "작성자",
+  //           description: "프로젝트 설명을 간단하게 넣을지 말지 고민 중",
+  //           lastEditor: "홍길동",
+  //           creationDate: "2023-10-01",
+  //           lastModifiedDate: "2023-10-10",
+  //         },
+  //         {
+  //           id: 3,
+  //           imageSrc: "/images/building.jpg",
+  //           projectName: "안동 데이터 센터 구조도",
+  //           author: "최성연",
+  //           description: "프로젝트 설명을 여기에 넣을지 말지 고민 중",
+  //         },
+  //         {
+  //           id: 4,
+  //           imageSrc: "/images/target.jpg",
+  //           projectName: "판교 DB센터 4층",
+  //           author: "이기석",
+  //           description: "상세 내용을 여기 넣을지?",
+  //         },
+  //         {
+  //           id: 5,
+  //           imageSrc: "/images/default_Image.webp",
+  //           projectName: "판교 DB센터 4층",
+  //           author: "이기석",
+  //           description: "상세 내용을 여기 넣을지?",
+  //         },
+  //         {
+  //           id: 6,
+  //           imageSrc: "/images/default_Image.webp",
+  //           projectName: "판교 DB센터 4층",
+  //           author: "이기석",
+  //           description: "상세 내용을 여기 넣을지?",
+  //         },
+  //       ];
+
+  //       setProjectsData(userProjects);
+  //     };
+
+  //     fetchProjects();
+  //   }, [currentUser, username, navigate]);
 
   const handleAddUser = () => {
     setShowAddUserModal(true);
@@ -139,22 +185,52 @@ const ProjectDashboard = ({ currentUser }) => {
   });
 
   const handleDeleteProject = (id) => {
-    // 나중에API 호출을 통해 삭제 요청하는거 만들기
     setProjectsData(projectsData.filter((project) => project.id !== id));
   };
+  //   const handleDeleteProject = async (id) => {
+  //     try {
+  //       await deleteProjectAPI(id);
+  //       setProjectsData(projectsData.filter((project) => project.id !== id));
+  //     } catch (error) {
+  //       console.error("Failed to delete project:", error);
+  //       alert("프로젝트 삭제에 실패했습니다.");
+  //     }
+  //   };
 
   const handleAddProject = () => {
     setShowAddProjectModal(true);
   };
 
+  //   const addProject = async (projectName, projectDescription) => {
+  //     try {
+  //       const response = await createProject({
+  //         name: projectName,
+  //         description: projectDescription,
+  //       });
+
+  //       const newProject = {
+  //         id: response.data.id,
+  //         imageSrc: response.data.thumbnailUrl || "/images/default_Image.webp",
+  //         projectName: response.data.name,
+  //         author: response.data.authorName,
+  //         description: response.data.description,
+  //         lastEditor: response.data.lastEditorName,
+  //         creationDate: response.data.creationDate,
+  //         lastModifiedDate: response.data.lastModifiedDate,
+  //       };
+
+  //       setProjectsData([...projectsData, newProject]);
+  //       setShowAddProjectModal(false);
+  //     } catch (error) {
+  //       console.error("Failed to add project:", error);
+  //       alert("프로젝트 생성에 실패했습니다.");
+  //     }
+  //   };
+
   const handleShowSummary = (project) => {
     setSelectedProject(project);
     setShowProjectSummaryModal(true);
   };
-
-  // 삭제 예정
-  console.log("currentUser:", currentUser);
-  console.log("URL username:", username);
 
   return (
     <div className="projects-page">

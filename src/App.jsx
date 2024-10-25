@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import { AuthProvider } from "./contexts/AuthContext";
 import AnimatedBackground from "./layout/AnimatedBackground";
 
@@ -11,12 +11,17 @@ function App() {
     <Router>
       <AuthProvider>
         <div className="App">
-          <Routes>
-            <Route path="/" element={<AnimatedBackground />}>
-              <Route path="/" element={<LoginPage />} />
-              <Route path="/projects" element={<ProjectDashboardPage />} />
-            </Route>
-          </Routes>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+              <Route path="/" element={<AnimatedBackground />}>
+                <Route index element={<LoginPage />} />
+                <Route
+                  path="projects/:username"
+                  element={<ProjectDashboardPage />}
+                />
+              </Route>
+            </Routes>
+          </Suspense>
         </div>
       </AuthProvider>
     </Router>
