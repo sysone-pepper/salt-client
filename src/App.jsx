@@ -1,14 +1,25 @@
-import "./App.css";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import ProjectPage from "./pages/ProjectPage.jsx";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { lazy } from "react";
+import { AuthProvider } from "./contexts/AuthContext";
+import AnimatedBackground from "./layout/AnimatedBackground";
+
+const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
+const ProjectPage = lazy(() => import("./pages/projects/Projects"));
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/project" element={<ProjectPage />} />
-      </Routes>
-    </BrowserRouter>
+    <Router>
+      <AuthProvider>
+        <div className="App">
+          <Routes>
+            <Route path="/" element={<AnimatedBackground />}>
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/projects" element={<ProjectPage />} />
+            </Route>
+          </Routes>
+        </div>
+      </AuthProvider>
+    </Router>
   );
 }
 
