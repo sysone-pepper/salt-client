@@ -5,7 +5,7 @@ export const getProjects = async () => {
   return response.data;
 };
 
-export const createProject = async (projectData) => {
+export const createProjectAPI = async (projectData) => {
   const response = await api.post("/api/v1/projects", projectData);
   return response.data;
 };
