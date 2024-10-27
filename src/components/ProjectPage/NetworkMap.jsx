@@ -8,7 +8,7 @@ import nodeEditing from 'cytoscape-node-editing';
 import jQuery from 'jquery';
 import konva from 'konva';
 
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { NetworkContext } from '../../contexts/NetworkContext';
 import { CustomDeviceNode } from './CustomDeviceNode';
 import { CustomIconNode } from './CustomIconNode';
@@ -24,6 +24,8 @@ nodeEditing(cytoscape, jQuery, konva);
 export const NetworkMap = () => {
   const { cyRef, nodes, setNodes, edges, isLinking, isModalOpen } =
     useContext(NetworkContext);
+
+  const [isUngroupNeeded, setIsUngroupNeeded] = useState(false);
   useEffect(() => {
     const cy = cytoscape({
       container: document.getElementById('cy'),
@@ -65,6 +67,7 @@ export const NetworkMap = () => {
       zoomingEnabled: true,
       userZoomingEnabled: true,
       autoungrabify: false,
+      boxSelectionEnabled: true, // 박스 선택 활성화
     });
 
     cy.nodeHtmlLabel([
@@ -90,7 +93,27 @@ export const NetworkMap = () => {
         cssClass: '',
         tpl(data) {
           return `${ReactDOMServer.renderToString(
-            <CustomDeviceNode node={cy.getElementById(data.id)} data={data} />,
+            <CustomDeviceNode
+              node={cy.getElementById(data.id)}
+              data={data}
+              isSelected={false}
+            />,
+          )}`;
+        },
+      },
+      {
+        query: '.device:selected',
+        halign: 'center',
+        valign: 'center',
+        halignBox: 'center',
+        valignBox: 'center',
+        tpl(data) {
+          return `${ReactDOMServer.renderToString(
+            <CustomDeviceNode
+              node={cy.getElementById(data.id)}
+              data={data}
+              isSelected={true}
+            />,
           )}`;
         },
       },
@@ -211,8 +234,71 @@ export const NetworkMap = () => {
     console.log('엣지 정보:', edgesInfo);
   };
 
+  function getChildNodes(parentId) {
+    const cy = cyRef.current;
+
+    const childNodes = cy.nodes().filter((node) => {
+      return node.data('parent') === parentId;
+    });
+
+    return childNodes;
+  }
+
+  const group = () => {
+    setIsUngroupNeeded(false);
+    const cy = cyRef.current;
+
+    const selectedNodes = cy.nodes('node:selected');
+    console.log(selectedNodes);
+    if (selectedNodes.length > 1) {
+      const hasParent = selectedNodes.some((node) => node.data('parent'));
+
+      // 선택된 노드 중 하나가 그룹에 속해있으면 IsUngroupNeeded를 true로 돌려서 그룹화 해제요구 메세지 띄우기
+      if (hasParent) {
+        setIsUngroupNeeded(true);
+        return;
+      }
+
+      // 모든 노드가 그룹에 속해있지 않다면 그룹화
+      const groupId = `group-${Date.now()}`;
+      cy.add({ group: 'nodes', data: { id: groupId }, classes: 'group' });
+
+      selectedNodes.forEach((node) => {
+        `group${Date.now()}`;
+        node.move({ parent: groupId });
+      });
+
+      console.log(nodes);
+
+      setNodes(cy.elements().map((ele) => ele.json()));
+    }
+  };
+
+  const ungroup = () => {
+    const cy = cyRef.current;
+
+    const selectedGroups = cy.nodes('.group:selected');
+
+    if (selectedGroups.length > 0) {
+      selectedGroups.forEach((selectedGroup) => {
+        const children = getChildNodes(selectedGroup.id()); // 노드의 ID를 사용하여 자식 검색
+        children.forEach((child) => child.move({ parent: null }));
+        selectedGroup.remove();
+      });
+    } else return;
+    setNodes(cy.elements().map((ele) => ele.json()));
+  };
+
   return (
     <>
+      <button id="group" onClick={group}>
+        그룹화
+      </button>
+      <button id="ungroup" onClick={ungroup}>
+        그룹해제
+      </button>
+      {isUngroupNeeded && <p>그룹화를 해제해주세요</p>}
+
       <button onClick={infoButtonOnClick}>정보 출력</button>
       {isModalOpen && <Modal />}
       <ToolBox />
