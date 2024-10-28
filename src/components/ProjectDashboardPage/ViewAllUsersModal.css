@@ -77,3 +77,15 @@
 .vau-delete-button:hover {
   color: #ff6b6b;
 }
+
+.vau-copy-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+  color: #fff;
+}
+
+.vau-copy-button:hover {
+  color: #93c2db;
+}
