@@ -7,7 +7,6 @@ const AddProjectModal = ({ closeModal, onCreate }) => {
 
   const handleCreate = () => {
     onCreate(projectName, projectDescription);
-    // closeModal();
   };
 
   return (

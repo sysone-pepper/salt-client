@@ -3,11 +3,12 @@
   top: 0;
   left: 0;
   width: 100%;
+  min-height: 100vh;
   background-image: url("../assets/images/space.jpg");
   background-size: cover;
   background-position: center center;
   background-attachment: fixed;
-  overflow: hidden;
+  overflow: auto;
   z-index: 1;
 }
 
@@ -34,7 +35,7 @@
 }
 
 #demo-canvas {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 1;
