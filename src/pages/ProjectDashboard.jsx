@@ -156,7 +156,7 @@ const ProjectDashboard = () => {
         setShowAddProjectModal(false);
 
         // 프로젝트 상세 구현 페이지로 이동
-        navigate("/add-project-detail", {
+        navigate("/project-detail", {
           //실제 구성도 페이지 url은 무엇?
           state: { projectName, projectDescription },
         });
