@@ -1,0 +1,49 @@
+import React from "react";
+import "./ProjectContent.css";
+
+const ProjectContent = ({
+  id,
+  imageSrc,
+  projectName,
+  author,
+  description,
+  deleteProject,
+  onShowSummary,
+}) => {
+  return (
+    <figure className="project-content">
+      <button
+        className="delete-button"
+        onClick={() => deleteProject(id)}
+        title="프로젝트 삭제"
+      >
+        🗑
+      </button>
+      <div className="image-container">
+        <img src={imageSrc} alt={projectName} />
+      </div>
+      <figcaption>
+        <h2>
+          {projectName}
+          <span>@{author}</span>
+        </h2>
+        {/* <p>{description}</p> */}
+        <a href="#" className="follow">
+          구성도 구성
+        </a>
+        <a
+          href="#"
+          className="info"
+          onClick={(e) => {
+            e.preventDefault();
+            onShowSummary();
+          }}
+        >
+          구성도 요약
+        </a>
+      </figcaption>
+    </figure>
+  );
+};
+
+export default ProjectContent;

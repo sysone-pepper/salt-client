@@ -11,8 +11,9 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem("token") // 토큰 있으면 로그인된 상태
+    !!localStorage.getItem("token")
   );
+  const [currentUser, setCurrentUser] = useState(null);
 
   const login = async (credentials) => {
     const data = await loginUser(credentials); // API 호출
@@ -20,7 +21,11 @@ export const AuthProvider = ({ children }) => {
       const token = data.data.accessToken;
       localStorage.setItem("token", token); // 토큰 저장
       setIsAuthenticated(true);
-      return true;
+
+      // 로그인 시 입력한 id를 currentUser로 설정
+      const user = { username: credentials.id };
+      setCurrentUser(user);
+      return user; // 사용자 정보 반환
     } else {
       throw new Error("로그인 실패");
     }
@@ -28,11 +33,14 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setIsAuthenticated(false);
-    localStorage.removeItem("token"); // 토큰 저장
+    localStorage.removeItem("token"); // 토큰 삭제
+    setCurrentUser(null); // 사용자 정보 초기화
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, currentUser, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
