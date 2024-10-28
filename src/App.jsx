@@ -1,10 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { lazy, Suspense } from "react";
-import { AuthProvider } from "./contexts/AuthContext";
-import AnimatedBackground from "./layout/AnimatedBackground";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import { AuthProvider } from './contexts/AuthContext';
+import AnimatedBackground from './layout/AnimatedBackground';
+import ProjectPage from './pages/ProjectPage';
 
-const LoginPage = lazy(() => import("./pages/LoginPage"));
-const ProjectDashboardPage = lazy(() => import("./pages/ProjectDashboard"));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const ProjectDashboardPage = lazy(() => import('./pages/ProjectDashboard'));
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
                   path="projects/:username"
                   element={<ProjectDashboardPage />}
                 />
+                <Route path="project/" element={<ProjectPage />} />
               </Route>
             </Routes>
           </Suspense>

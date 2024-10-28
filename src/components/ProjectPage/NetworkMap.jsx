@@ -33,7 +33,6 @@ export const NetworkMap = () => {
     setIsUngroupNeeded,
   } = useContext(NetworkContext);
 
-  // const [isUngroupNeeded, setIsUngroupNeeded] = useState(false);
   useEffect(() => {
     const cy = cytoscape({
       container: document.getElementById('cy'),
