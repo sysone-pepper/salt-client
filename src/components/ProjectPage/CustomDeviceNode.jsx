@@ -18,10 +18,10 @@ const deviceIcons = {
   UPS: UPSIcon,
 };
 
-export const CustomDeviceNode = ({ node, data }) => {
+export const CustomDeviceNode = ({ node, data, isSelected }) => {
   return (
     <div
-      className="outer-device-node"
+      className={`outer-device-node ${isSelected ? 'selected' : undefined}`}
       style={{ width: node?.width(), height: node?.height() }} // 바깥노드도 data의 크기를 반영하도록 변경
     >
       <div
