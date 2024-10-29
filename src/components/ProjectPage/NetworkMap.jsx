@@ -8,7 +8,7 @@ import nodeEditing from 'cytoscape-node-editing';
 import jQuery from 'jquery';
 import konva from 'konva';
 
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { NetworkContext } from '../../contexts/NetworkContext';
 import { CustomDeviceNode } from './CustomDeviceNode';
 import { CustomIconNode } from './CustomIconNode';
@@ -22,8 +22,17 @@ nodeHtmlLabel(cytoscape);
 nodeEditing(cytoscape, jQuery, konva);
 
 export const NetworkMap = () => {
-  const { cyRef, nodes, setNodes, edges, isLinking, isModalOpen } =
-    useContext(NetworkContext);
+  const {
+    cyRef,
+    nodes,
+    setNodes,
+    edges,
+    isLinking,
+    isModalOpen,
+    isUngroupNeeded,
+    setIsUngroupNeeded,
+  } = useContext(NetworkContext);
+
   useEffect(() => {
     const cy = cytoscape({
       container: document.getElementById('cy'),
@@ -65,6 +74,7 @@ export const NetworkMap = () => {
       zoomingEnabled: true,
       userZoomingEnabled: true,
       autoungrabify: false,
+      boxSelectionEnabled: true, // 박스 선택 활성화
     });
 
     cy.nodeHtmlLabel([
@@ -90,7 +100,27 @@ export const NetworkMap = () => {
         cssClass: '',
         tpl(data) {
           return `${ReactDOMServer.renderToString(
-            <CustomDeviceNode node={cy.getElementById(data.id)} data={data} />,
+            <CustomDeviceNode
+              node={cy.getElementById(data.id)}
+              data={data}
+              isSelected={false}
+            />,
+          )}`;
+        },
+      },
+      {
+        query: '.device:selected',
+        halign: 'center',
+        valign: 'center',
+        halignBox: 'center',
+        valignBox: 'center',
+        tpl(data) {
+          return `${ReactDOMServer.renderToString(
+            <CustomDeviceNode
+              node={cy.getElementById(data.id)}
+              data={data}
+              isSelected={true}
+            />,
           )}`;
         },
       },
@@ -213,6 +243,8 @@ export const NetworkMap = () => {
 
   return (
     <>
+      {isUngroupNeeded && <p>그룹화를 해제해주세요</p>}
+
       <button onClick={infoButtonOnClick}>정보 출력</button>
       {isModalOpen && <Modal />}
       <ToolBox />
