@@ -8,11 +8,8 @@ import nodeEditing from 'cytoscape-node-editing';
 import jQuery from 'jquery';
 import konva from 'konva';
 
-<<<<<<< HEAD
 import sizes from '../../constants/SizesOption';
 
-=======
->>>>>>> 24f338f89c5d8317db67c0d06474b7807953b5b3
 import { useContext, useEffect, useState } from 'react';
 import { NetworkContext } from '../../contexts/NetworkContext';
 import { CustomDeviceNode } from './CustomDeviceNode';
@@ -35,18 +32,11 @@ export const NetworkMap = () => {
     edges,
     isLinking,
     isModalOpen,
-<<<<<<< HEAD
     selectedSize,
     setSelectedSize,
-  } = useContext(NetworkContext);
-
-  console.log(selectedSize);
-=======
     isUngroupNeeded,
-    setIsUngroupNeeded,
   } = useContext(NetworkContext);
 
->>>>>>> 24f338f89c5d8317db67c0d06474b7807953b5b3
   useEffect(() => {
     const cy = cytoscape({
       container: document.getElementById('cy'),
