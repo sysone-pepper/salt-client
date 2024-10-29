@@ -1,12 +1,12 @@
-import React from "react";
-import "./CustomDeviceNode.css";
-import ServerIcon from "../../assets/images/Server-icon2.png";
-import NetworkIcon from "../../assets/images/Network-icon2.png";
-import L3SwitchIcon from "../../assets/images/L3Switch-icon.png";
-import L4SwitchIcon from "../../assets/images/L4Switch-icon.png";
-import L7SwitchIcon from "../../assets/images/L7Switch-icon.png";
-import FirewallIcon from "../../assets/images/Firewall-icon2.png";
-import UPSIcon from "../../assets/images/UPS-icon2.png";
+import React from 'react';
+import './CustomDeviceNode.css';
+import ServerIcon from '../../assets/images/Server-icon2.png';
+import NetworkIcon from '../../assets/images/Network-icon2.png';
+import L3SwitchIcon from '../../assets/images/L3Switch-icon.png';
+import L4SwitchIcon from '../../assets/images/L4Switch-icon.png';
+import L7SwitchIcon from '../../assets/images/L7Switch-icon.png';
+import FirewallIcon from '../../assets/images/Firewall-icon2.png';
+import UPSIcon from '../../assets/images/UPS-icon2.png';
 
 const deviceIcons = {
   Server: ServerIcon,

@@ -8,13 +8,16 @@ import nodeEditing from 'cytoscape-node-editing';
 import jQuery from 'jquery';
 import konva from 'konva';
 
-import { useContext, useEffect, useRef } from 'react';
+import sizes from '../../constants/SizesOption';
+
+import { useContext, useEffect, useState } from 'react';
 import { NetworkContext } from '../../contexts/NetworkContext';
 import { CustomDeviceNode } from './CustomDeviceNode';
 import { CustomIconNode } from './CustomIconNode';
 import { ToolBox } from './ToolBox';
 import { Modal } from './Modals/Modal';
 import { BackgroundNode } from './BackgroundNode';
+import Combobox from '../common/Combobox';
 
 cytoscape.use(dagre);
 cytoscape.use(edgehandles);
@@ -22,29 +25,39 @@ nodeHtmlLabel(cytoscape);
 nodeEditing(cytoscape, jQuery, konva);
 
 export const NetworkMap = () => {
-  const { cyRef, nodes, setNodes, edges, isLinking, isModalOpen } =
-    useContext(NetworkContext);
+  const {
+    cyRef,
+    nodes,
+    setNodes,
+    edges,
+    isLinking,
+    isModalOpen,
+    selectedSize,
+    setSelectedSize,
+  } = useContext(NetworkContext);
+
+  console.log(selectedSize);
   useEffect(() => {
     const cy = cytoscape({
       container: document.getElementById('cy'),
       // 노드 스타일 : elements의 크기를 반영하는데 필요
       style: [
         {
-          selector: '.device[width][height]',
+          selector: '.device',
           style: {
             label: 'data(id)',
             'background-opacity': 0,
-            width: 'data(width)',
-            height: 'data(height)',
+            width: `${selectedSize}px`,
+            height: `${selectedSize}px`,
           },
         },
         {
-          selector: '.device[width][height]:selected',
+          selector: '.device:selected',
           style: {
             label: 'data(id)',
             'background-opacity': 0,
-            width: 'data(width)',
-            height: 'data(height)',
+            width: `${selectedSize}px`,
+            height: `${selectedSize}px`,
           },
         },
         {
@@ -122,11 +135,15 @@ export const NetworkMap = () => {
 
       isNoResizeMode: function (node) {
         return node.is('.noResizeMode');
-      }, // no active grapples
-
+      },
       isFixedAspectRatioResizeMode: function (node) {
         return node.is('.fixedAspectRatioResizeMode');
       },
+    });
+
+    cy.on('select', 'node', function (event) {
+      const node = event.target;
+      console.log(node.width());
     });
 
     // 노드 리사이징을 하고 나면 state에 width와 height를 반영
@@ -163,6 +180,19 @@ export const NetworkMap = () => {
       }).run();
     }
   }, [nodes]);
+
+  useEffect(() => {
+    if (cyRef.current) {
+      const cy = cyRef.current;
+      cy.nodes().forEach((node) => {
+        node.style({
+          width: `${selectedSize}px`,
+          height: `${selectedSize}px`,
+        });
+      });
+    }
+  }, [selectedSize]);
+
   useEffect(() => {
     const cy = cyRef.current;
     const eh = cy.edgehandles(EHoptions);
@@ -214,6 +244,12 @@ export const NetworkMap = () => {
   return (
     <>
       <button onClick={infoButtonOnClick}>정보 출력</button>
+      <Combobox
+        label="노드 크기"
+        placeholder="20"
+        items={sizes}
+        onSelect={setSelectedSize}
+      />
       {isModalOpen && <Modal />}
       <ToolBox />
       <div
