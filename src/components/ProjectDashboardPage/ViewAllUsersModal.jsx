@@ -28,6 +28,7 @@ const ViewAllUsersModal = ({ users, closeModal, deleteUser }) => {
               <th>사용자 계정</th>
               <th>사용자 이름</th>
               <th>비밀번호 복사</th>
+              <th>권한</th>
               <th>관리</th>
             </tr>
           </thead>
@@ -44,6 +45,7 @@ const ViewAllUsersModal = ({ users, closeModal, deleteUser }) => {
                     •••••••• 📋
                   </button>
                 </td>
+                <td>{user.authority === 'ALL' ? '전체 권한' : '읽기 전용'}</td>
                 <td>
                   <button
                     className="vau-delete-button"

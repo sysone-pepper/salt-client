@@ -13,6 +13,7 @@ import {
   createProjectAPI,
   deleteProjectAPI,
 } from '../api/Diagram';
+import { createUserAPI } from '../api/User';
 import defaultImage from '../assets/images/default_Image.webp';
 
 const ProjectDashboard = () => {
@@ -30,35 +31,6 @@ const ProjectDashboard = () => {
       id: 'view-all',
       name: '전체보기',
       isViewAll: true,
-      imageSrc: '/images/all_users_icon.png',
-    },
-    {
-      id: '1',
-      username: 'sohottoday',
-      name: '최성연',
-      password: '1q2w3e4r',
-      imageSrc: '/images/user_icon.png',
-    },
-    {
-      id: '2',
-      username: 'kisuckzzang',
-      name: '이기석',
-      password: '1234qwer',
-      imageSrc: '/images/user_icon.png',
-    },
-    {
-      id: '3',
-      username: 'zizonys',
-      name: '김예슬',
-      password: '9o8i7u6y',
-      imageSrc: '/images/user_icon.png',
-    },
-    {
-      id: '4',
-      username: 'showmethemoney',
-      name: '진광환',
-      password: 'zxcvbnm',
-      imageSrc: '/images/user_icon.png',
     },
   ]);
 
@@ -68,6 +40,36 @@ const ProjectDashboard = () => {
   const getValidImageUrl = (tnImgUrl) => {
     return tnImgUrl && tnImgUrl.trim() !== '' ? tnImgUrl : defaultImage;
   };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await getUsers();
+        if (response.success) {
+          const formattedUsers = response.data.map((user) => ({
+            id: user.id,
+            username: user.id,
+            name: user.name,
+            authority: user.authority,
+          }));
+          // 전체보기 옵션과 함께 유저 데이터 설정
+          setUsersData([
+            {
+              id: 'view-all',
+              name: '전체보기',
+              isViewAll: true,
+            },
+            ...formattedUsers,
+          ]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch users:', error);
+        alert('사용자 목록을 가져오는데 실패했습니다.');
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     if (!isAuthenticated || !currentUser || currentUser.username !== username) {
