@@ -4,13 +4,9 @@ import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 import edgehandles from 'cytoscape-edgehandles';
 import EHoptions from '../../constants/EdgeHandleOptions';
-import nodeEditing from 'cytoscape-node-editing';
-import jQuery from 'jquery';
-import konva from 'konva';
-
 import sizes from '../../constants/SizesOption';
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { NetworkContext } from '../../contexts/NetworkContext';
 import { CustomDeviceNode } from './CustomDeviceNode';
 import { CustomIconNode } from './CustomIconNode';
@@ -22,7 +18,6 @@ import Combobox from '../common/Combobox';
 cytoscape.use(dagre);
 cytoscape.use(edgehandles);
 nodeHtmlLabel(cytoscape);
-nodeEditing(cytoscape, jQuery, konva);
 
 export const NetworkMap = () => {
   const {
@@ -142,44 +137,11 @@ export const NetworkMap = () => {
         },
       },
     ]);
-    // 노드 확대축소 라이브러리
-    cy.nodeEditing({
-      padding: 5,
-      undoable: true,
-      grappleSize: 6,
-      grappleColor: '#fff',
-      grappleStrokeColor: '#666666',
-      grappleStrokeWidth: 1,
-      inactiveGrappleStroke: 'inside 1px',
-      boundingRectangleLineDash: [2, 4],
-      boundingRectangleLineColor: '#666666',
 
-      isNoResizeMode: function (node) {
-        return node.is('.noResizeMode');
-      },
-      isFixedAspectRatioResizeMode: function (node) {
-        return node.is('.fixedAspectRatioResizeMode');
-      },
-    });
-
+    // 온클릭에 노드 정보 띄우기(차후 삭제 예정)
     cy.on('select', 'node', function (event) {
       const node = event.target;
       console.log(node.width());
-    });
-
-    // 노드 리사이징을 하고 나면 state에 width와 height를 반영
-    cy.on('nodeediting.resizeend', function (event, type, node) {
-      const width = node.width();
-      const height = node.height();
-
-      node.data('width', width);
-      node.data('height', height);
-
-      cy.elements().forEach((ele) => {
-        console.log(ele.data());
-      });
-
-      setNodes(cy.elements().map((ele) => ele.json()));
     });
 
     cyRef.current = cy;
