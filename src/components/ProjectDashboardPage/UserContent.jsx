@@ -5,7 +5,7 @@ const UserContent = ({ id, name, isViewAll, onViewAll }) => {
   return (
     <div
       className={`user-content ${isViewAll ? 'view-all' : ''}`}
-      onClick={isViewAll ? onViewAll : undefined}
+      onClick={isViewAll ? () => onViewAll(true) : undefined}
     >
       <div className="user-icon">{isViewAll ? 'ALL' : name.charAt(0)}</div>
       <h2>{name}</h2>

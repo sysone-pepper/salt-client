@@ -13,7 +13,7 @@ import {
   createProjectAPI,
   deleteProjectAPI,
 } from '../api/Diagram';
-import { addUserAPI, getUsers } from '../api/User';
+import { addUserAPI, getUsers, deleteUserAPI } from '../api/User';
 import defaultImage from '../assets/images/default_Image.webp';
 
 const ProjectDashboard = () => {
@@ -64,7 +64,6 @@ const ProjectDashboard = () => {
           ]);
         }
       } catch (error) {
-        console.error('Failed to fetch users:', error.response);
         alert('사용자 목록을 가져오는데 실패했습니다.');
       }
     };
@@ -97,7 +96,6 @@ const ProjectDashboard = () => {
           throw new Error('프로젝트 데이터를 가져오는데 실패했습니다.');
         }
       } catch (error) {
-        console.error('Failed to fetch projects:', error);
         alert('프로젝트 데이터를 가져오는데 실패했습니다.');
       }
     };
@@ -121,17 +119,19 @@ const ProjectDashboard = () => {
         alert('사용자 생성에 실패했습니다.');
       }
     } catch (error) {
-      console.error('Error in addUser:', error);
       alert('사용자 생성에 실패했습니다.');
     }
   };
 
-  const handleViewAllUsers = () => {
-    setShowViewAllModal(true);
-  };
-
-  const deleteUser = (username) => {
-    setUsersData(usersData.filter((user) => user.username !== username));
+  const deleteUser = async (username) => {
+    try {
+      await deleteUserAPI(username);
+      setUsersData((prevUsers) =>
+        prevUsers.filter((user) => user.username !== username),
+      );
+    } catch (error) {
+      alert('사용자 삭제에 실패했습니다.');
+    }
   };
 
   const filteredProjects = projectsData.filter((project) => {
@@ -147,7 +147,6 @@ const ProjectDashboard = () => {
       await deleteProjectAPI(id);
       setProjectsData(projectsData.filter((project) => project.id !== id));
     } catch (error) {
-      console.error('Failed to delete project:', error);
       alert('프로젝트 삭제에 실패했습니다.');
     }
   };
@@ -180,7 +179,6 @@ const ProjectDashboard = () => {
         throw new Error('프로젝트 생성에 실패했습니다.');
       }
     } catch (error) {
-      console.error('Failed to add project:', error);
       alert('프로젝트 생성에 실패했습니다.');
     }
   };
@@ -211,7 +209,7 @@ const ProjectDashboard = () => {
               <UserContent
                 key={user.id}
                 {...user}
-                onViewAll={handleViewAllUsers}
+                onViewAll={() => setShowViewAllModal(true)}
               />
             ))}
           </div>
