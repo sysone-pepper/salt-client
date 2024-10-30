@@ -4,14 +4,14 @@
 마치 호텔의 투숙객 관리 시스템같은 역할
 */
 
-import { createContext, useContext, useState } from "react";
-import { loginUser } from "../api/Auth.js";
+import { createContext, useContext, useState } from 'react';
+import { loginUser } from '../api/Auth.js';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem("token")
+    !!localStorage.getItem('token'),
   );
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -19,21 +19,23 @@ export const AuthProvider = ({ children }) => {
     const data = await loginUser(credentials); // API 호출
     if (data.success) {
       const token = data.data.accessToken;
-      localStorage.setItem("token", token); // 토큰 저장
+      localStorage.setItem('token', token); // 토큰 저장
       setIsAuthenticated(true);
 
       // 로그인 시 입력한 id를 currentUser로 설정
-      const user = { username: credentials.id };
+      const user = { username: credentials.id, role: data.data.role };
+      console.log(user); //
+
       setCurrentUser(user);
       return user; // 사용자 정보 반환
     } else {
-      throw new Error("로그인 실패");
+      throw new Error('로그인 실패');
     }
   };
 
   const logout = () => {
     setIsAuthenticated(false);
-    localStorage.removeItem("token"); // 토큰 삭제
+    localStorage.removeItem('token'); // 토큰 삭제
     setCurrentUser(null); // 사용자 정보 초기화
   };
 

@@ -14,7 +14,7 @@ const ViewAllUsersModal = ({ users, closeModal, deleteUser, currentUser }) => {
   };
 
   const isAdmin = currentUser?.role === 'ROOT';
-
+  console.log(currentUser.role);
   return (
     <div className="vau-modal-overlay">
       <div className="vau-modal-content">
