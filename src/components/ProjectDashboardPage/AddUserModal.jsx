@@ -8,15 +8,6 @@ const AddUserModal = ({ closeModal, onCreate }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [authority, setAuthority] = useState('READ_ONLY');
 
-  // const handleCreate = () => {
-  //   if (password !== confirmPassword) {
-  //     alert('비밀번호가 일치하지 않습니다.');
-  //     return;
-  //   }
-  //   onCreate({ username, name, password });
-  //   closeModal();
-  // };
-
   const handleCreate = () => {
     if (password !== confirmPassword) {
       alert('비밀번호가 일치하지 않습니다.');
@@ -117,21 +108,6 @@ const AddUserModal = ({ closeModal, onCreate }) => {
                 </label>
               </div>
             </div>
-
-            {/* <div className="au-group">
-              <select
-                className="au-input"
-                value={authority}
-                onChange={(e) => setAuthority(e.target.value)}
-                required
-              >
-                <option value="ALL">관리자 권한</option>
-                <option value="READ_ONLY">읽기 전용</option>
-              </select>
-              <span className="au-highlight"></span>
-              <span className="au-bar"></span>
-              <label className="au-label">권한</label>
-            </div> */}
 
             <div className="au-btn-box">
               <button className="au-btn au-btn-submit" type="submit">

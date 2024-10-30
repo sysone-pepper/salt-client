@@ -13,7 +13,7 @@ import {
   createProjectAPI,
   deleteProjectAPI,
 } from '../api/Diagram';
-import { createUserAPI } from '../api/User';
+import { addUserAPI, getUsers } from '../api/User';
 import defaultImage from '../assets/images/default_Image.webp';
 
 const ProjectDashboard = () => {
@@ -52,7 +52,7 @@ const ProjectDashboard = () => {
             name: user.name,
             authority: user.authority,
           }));
-          // 전체보기 옵션과 함께 유저 데이터 설정
+
           setUsersData([
             {
               id: 'view-all',
@@ -63,7 +63,7 @@ const ProjectDashboard = () => {
           ]);
         }
       } catch (error) {
-        console.error('Failed to fetch users:', error);
+        console.error('Failed to fetch users:', error.response);
         alert('사용자 목록을 가져오는데 실패했습니다.');
       }
     };
@@ -104,12 +104,22 @@ const ProjectDashboard = () => {
     fetchProjects();
   }, [currentUser, username, navigate, isAuthenticated]);
 
-  const handleAddUser = () => {
-    setShowAddUserModal(true);
-  };
-
-  const addUser = (user) => {
-    setUsersData([...usersData, user]);
+  const addUser = async (userData) => {
+    try {
+      const response = await addUserAPI(userData);
+      if (response.success) {
+        const newUser = {
+          id: response.data.id,
+          username: response.data.id,
+          name: response.data.name,
+          authority: response.data.authority,
+        };
+        setUsersData((prev) => [...prev, newUser]);
+        setShowAddUserModal(false);
+      }
+    } catch (error) {
+      alert('사용자 생성에 실패했습니다.');
+    }
   };
 
   const handleViewAllUsers = () => {
@@ -182,7 +192,10 @@ const ProjectDashboard = () => {
         <div className="users-header">
           <div className="title-and-add">
             <h1 className="my-users">사용자 관리</h1>
-            <button className="add-button" onClick={handleAddUser}>
+            <button
+              className="add-button"
+              onClick={() => setShowAddUserModal(true)}
+            >
               추가
             </button>
           </div>
