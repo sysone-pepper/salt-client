@@ -1,7 +1,7 @@
 import React from 'react';
 import './ViewAllUsersModal.css';
 
-const ViewAllUsersModal = ({ users, closeModal, deleteUser }) => {
+const ViewAllUsersModal = ({ users, closeModal, deleteUser, currentUser }) => {
   const copyToClipboard = (password) => {
     navigator.clipboard.writeText(password).then(
       () => {
@@ -12,6 +12,8 @@ const ViewAllUsersModal = ({ users, closeModal, deleteUser }) => {
       },
     );
   };
+
+  const isAdmin = currentUser?.role === 'ROOT';
 
   return (
     <div className="vau-modal-overlay">
@@ -29,7 +31,7 @@ const ViewAllUsersModal = ({ users, closeModal, deleteUser }) => {
               <th>사용자 이름</th>
               <th>비밀번호 복사</th>
               <th>권한</th>
-              <th>관리</th>
+              {isAdmin && <th>관리</th>}
             </tr>
           </thead>
           <tbody>
@@ -46,14 +48,18 @@ const ViewAllUsersModal = ({ users, closeModal, deleteUser }) => {
                   </button>
                 </td>
                 <td>{user.authority === 'ALL' ? '전체 권한' : '읽기 전용'}</td>
-                <td>
-                  <button
-                    className="vau-delete-button"
-                    onClick={() => deleteUser(user.username)}
-                  >
-                    {user.role === 'NORMAL' ? '🗑️' : ''}
-                  </button>
-                </td>
+                {isAdmin && (
+                  <td>
+                    {user.role === 'NORMAL' && (
+                      <button
+                        className="vau-delete-button"
+                        onClick={() => deleteUser(user.username)}
+                      >
+                        🗑️
+                      </button>
+                    )}
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

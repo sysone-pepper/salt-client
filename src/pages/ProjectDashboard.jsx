@@ -225,6 +225,7 @@ const ProjectDashboard = () => {
             users={usersData.filter((user) => !user.isViewAll)}
             closeModal={() => setShowViewAllModal(false)}
             deleteUser={deleteUser}
+            currentUser={currentUser}
           />
         )}
       </div>
