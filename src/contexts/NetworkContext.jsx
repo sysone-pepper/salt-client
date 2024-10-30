@@ -61,7 +61,7 @@ export function NetworkProvider({ children }) {
   const [curModalType, setCurModalType] = useState('');
   const [isUngroupNeeded, setIsUngroupNeeded] = useState(false);
   const [selectedSize, setSelectedSize] = useState('20');
-  const [isNavigatorToggled, setIsNavigatorToggled] = useState(false);
+  const [isNavigatorToggled, setIsNavigatorToggled] = useState(true);
 
   return (
     <NetworkContext.Provider

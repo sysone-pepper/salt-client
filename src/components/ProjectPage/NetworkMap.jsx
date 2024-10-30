@@ -34,7 +34,6 @@ export const NetworkMap = () => {
     isLinking,
     isModalOpen,
     isUngroupNeeded,
-    setIsUngroupNeeded,
     isNavigatorToggled,
     setIsNavigatorToggled,
   } = useContext(NetworkContext);
@@ -63,8 +62,15 @@ export const NetworkMap = () => {
         {
           selector: '.icon',
           style: {
-            width: '50px',
-            height: '70px',
+            width: '40px',
+            height: '40px',
+          },
+        },
+        {
+          selector: ':parent',
+          style: {
+            backgroundColor: 'white',
+            opacity: 1,
           },
         },
       ],
@@ -261,25 +267,12 @@ export const NetworkMap = () => {
     console.log('엣지 정보:', edgesInfo);
   };
 
-  const toggeleButtonClick = () => {
-    const navigator = document.getElementsByClassName('cytoscape-navigator')[0];
-    navigator.classList.remove('hidden');
-  };
-
-  const untoggeleButtonClick = () => {
-    const navigator = document.getElementsByClassName('cytoscape-navigator')[0];
-    navigator.classList.add('hidden');
-  };
-
   return (
     <div>
       <div className="toolbar">
         <button onClick={infoButtonOnClick}>정보 출력</button>
-        <button onClick={toggeleButtonClick}>네비게이터 호출</button>
-        <button onClick={untoggeleButtonClick}>네비게이터 숨기기</button>
       </div>
       {isUngroupNeeded && <p>그룹화를 해제해주세요</p>}
-
       {isModalOpen && <Modal />}
       <ToolBox />
       <div

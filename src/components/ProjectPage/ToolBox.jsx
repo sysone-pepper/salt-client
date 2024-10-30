@@ -3,6 +3,8 @@ import { AddButton } from './Buttons/AddButton';
 import './ToolBox.css';
 import { NetworkContext } from '../../contexts/NetworkContext';
 
+const HIDDEN_CLASSNAME = 'hidden';
+
 export const ToolBox = () => {
   const {
     isLinking,
@@ -11,6 +13,8 @@ export const ToolBox = () => {
     setCurModalType,
     setIsUngroupNeeded,
     cyRef,
+    isNavigatorToggled,
+    setIsNavigatorToggled,
   } = useContext(NetworkContext);
   const toggleAddNode = () => {
     setIsModalOpen(true);
@@ -74,22 +78,50 @@ export const ToolBox = () => {
     setNodes(cy.elements().map((ele) => ele.json()));
   };
 
+  const toggeleNavigator = () => {
+    const navigator = document.getElementsByClassName('cytoscape-navigator')[0];
+    setIsNavigatorToggled((prevState) => {
+      if (prevState) {
+        navigator.classList.add(HIDDEN_CLASSNAME);
+      } else {
+        navigator.classList.remove(HIDDEN_CLASSNAME);
+      }
+      return !prevState;
+    });
+  };
+
   return (
     <div className="tool-box-container">
-      <AddButton fileName={'object-icon.png'} onClickEvent={toggleAddNode} />
+      <AddButton fileName={'object-icon.png'} onClickEvent={toggleAddNode}>
+        요소 추가
+      </AddButton>
+      <AddButton
+        onClickEvent={toggeleNavigator}
+        needCancel={!isNavigatorToggled}
+      >
+        네비게이터 {isNavigatorToggled ? '숨기기' : '호출'}
+      </AddButton>
 
       {isLinking ? (
         <AddButton
           fileName={'link-icon.png'}
           onClickEvent={inactiveAddLink}
           needCancel={true}
-        />
+        >
+          링크추가모드 끄기
+        </AddButton>
       ) : (
-        <AddButton fileName={'link-icon.png'} onClickEvent={activeAddLink} />
+        <AddButton fileName={'link-icon.png'} onClickEvent={activeAddLink}>
+          링크추가모드 켜기
+        </AddButton>
       )}
 
-      <AddButton fileName={'group.png'} onClickEvent={group} />
-      <AddButton fileName={'ungroup.png'} onClickEvent={ungroup} />
+      <AddButton fileName={'group.png'} onClickEvent={group}>
+        그룹화
+      </AddButton>
+      <AddButton fileName={'ungroup.png'} onClickEvent={ungroup}>
+        그룹 해제
+      </AddButton>
     </div>
   );
 };
