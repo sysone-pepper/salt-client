@@ -77,7 +77,12 @@ export const NetworkMap = () => {
       zoomingEnabled: true,
       userZoomingEnabled: true,
       autoungrabify: false,
-      boxSelectionEnabled: true, // 박스 선택 활성화
+      boxSelectionEnabled: true,
+      minZoom: 0.5,
+      maxZoom: 3,
+      zoomingEnabled: true,
+      userZoomingEnabled: true,
+      wheelSensitivity: 0.2,
     });
 
     cy.nodeHtmlLabel([
@@ -272,17 +277,9 @@ export const NetworkMap = () => {
         <button onClick={infoButtonOnClick}>정보 출력</button>
         <button onClick={toggeleButtonClick}>네비게이터 호출</button>
         <button onClick={untoggeleButtonClick}>네비게이터 숨기기</button>
-        <Combobox
-          label="노드 크기"
-          placeholder="20"
-          items={sizes}
-          onSelect={setSelectedSize}
-        />
       </div>
-    <>
       {isUngroupNeeded && <p>그룹화를 해제해주세요</p>}
 
-      <button onClick={infoButtonOnClick}>정보 출력</button>
       {isModalOpen && <Modal />}
       <ToolBox />
       <div

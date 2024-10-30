@@ -27,3 +27,6 @@
 .hidden {
   display: none;
 }
+.toolbar {
+  display: flex;
+}
