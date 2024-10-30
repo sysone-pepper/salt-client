@@ -15,10 +15,14 @@ import { CustomIconNode } from './CustomIconNode';
 import { ToolBox } from './ToolBox';
 import { Modal } from './Modals/Modal';
 import { BackgroundNode } from './BackgroundNode';
+import navigator from 'cytoscape-navigator';
+import 'cytoscape-navigator/cytoscape.js-navigator.css';
+import './NetworkMap.css';
 
 cytoscape.use(dagre);
 cytoscape.use(edgehandles);
 nodeHtmlLabel(cytoscape);
+navigator(cytoscape);
 nodeEditing(cytoscape, jQuery, konva);
 
 export const NetworkMap = () => {
@@ -31,6 +35,8 @@ export const NetworkMap = () => {
     isModalOpen,
     isUngroupNeeded,
     setIsUngroupNeeded,
+    isNavigatorToggled,
+    setIsNavigatorToggled,
   } = useContext(NetworkContext);
 
   useEffect(() => {
@@ -42,7 +48,6 @@ export const NetworkMap = () => {
           selector: '.device[width][height]',
           style: {
             label: 'data(id)',
-            'background-opacity': 0,
             width: 'data(width)',
             height: 'data(height)',
           },
@@ -51,7 +56,6 @@ export const NetworkMap = () => {
           selector: '.device[width][height]:selected',
           style: {
             label: 'data(id)',
-            'background-opacity': 0,
             width: 'data(width)',
             height: 'data(height)',
           },
@@ -59,7 +63,6 @@ export const NetworkMap = () => {
         {
           selector: '.icon',
           style: {
-            'background-opacity': 0,
             width: '50px',
             height: '70px',
           },
@@ -174,6 +177,18 @@ export const NetworkMap = () => {
       setNodes(cy.elements().map((ele) => ele.json()));
     });
 
+    const navConfig = {
+      container: document.getElementById('navigator-container'),
+      viewLiveFramerate: 0,
+      thumbnailEventFramerate: 30,
+      thumbnailLiveFramerate: false,
+      dblClickDelay: 200,
+      removeCustomContainer: true,
+      rerenderDelay: 100,
+    };
+
+    cy.navigator(navConfig);
+
     cyRef.current = cy;
 
     return () => {
@@ -241,7 +256,29 @@ export const NetworkMap = () => {
     console.log('엣지 정보:', edgesInfo);
   };
 
+  const toggeleButtonClick = () => {
+    const navigator = document.getElementsByClassName('cytoscape-navigator')[0];
+    navigator.classList.remove('hidden');
+  };
+
+  const untoggeleButtonClick = () => {
+    const navigator = document.getElementsByClassName('cytoscape-navigator')[0];
+    navigator.classList.add('hidden');
+  };
+
   return (
+    <div>
+      <div className="toolbar">
+        <button onClick={infoButtonOnClick}>정보 출력</button>
+        <button onClick={toggeleButtonClick}>네비게이터 호출</button>
+        <button onClick={untoggeleButtonClick}>네비게이터 숨기기</button>
+        <Combobox
+          label="노드 크기"
+          placeholder="20"
+          items={sizes}
+          onSelect={setSelectedSize}
+        />
+      </div>
     <>
       {isUngroupNeeded && <p>그룹화를 해제해주세요</p>}
 
@@ -256,6 +293,6 @@ export const NetworkMap = () => {
           border: '1px solid lightgray',
         }}
       />
-    </>
+    </div>
   );
 };
