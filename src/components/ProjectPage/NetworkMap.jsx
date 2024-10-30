@@ -23,7 +23,6 @@ export const NetworkMap = () => {
   const {
     cyRef,
     nodes,
-    setNodes,
     edges,
     isLinking,
     isModalOpen,
@@ -40,7 +39,6 @@ export const NetworkMap = () => {
         {
           selector: '.device',
           style: {
-            label: 'data(id)',
             'background-opacity': 0,
             width: `${selectedSize}px`,
             height: `${selectedSize}px`,
@@ -49,7 +47,6 @@ export const NetworkMap = () => {
         {
           selector: '.device:selected',
           style: {
-            label: 'data(id)',
             'background-opacity': 0,
             width: `${selectedSize}px`,
             height: `${selectedSize}px`,
@@ -167,7 +164,7 @@ export const NetworkMap = () => {
   useEffect(() => {
     if (cyRef.current) {
       const cy = cyRef.current;
-      cy.nodes().forEach((node) => {
+      cy.nodes('.device').forEach((node) => {
         node.style({
           width: `${selectedSize}px`,
           height: `${selectedSize}px`,
