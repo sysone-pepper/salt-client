@@ -28,7 +28,6 @@ export const NetworkMap = () => {
     isModalOpen,
     selectedSize,
     setSelectedSize,
-    isUngroupNeeded,
   } = useContext(NetworkContext);
 
   useEffect(() => {
@@ -223,8 +222,6 @@ export const NetworkMap = () => {
 
   return (
     <>
-      {isUngroupNeeded && <p>그룹화를 해제해주세요</p>}
-
       <button onClick={infoButtonOnClick}>정보 출력</button>
       <Combobox
         label="노드 크기"
@@ -238,7 +235,7 @@ export const NetworkMap = () => {
         id="cy"
         style={{
           width: '800px',
-          height: '600px',
+          height: '1600px',
           border: '1px solid lightgray',
         }}
       />
