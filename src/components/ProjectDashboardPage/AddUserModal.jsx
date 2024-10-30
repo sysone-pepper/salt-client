@@ -29,6 +29,10 @@ const AddUserModal = ({ closeModal, onCreate }) => {
             className="au-form"
             onSubmit={(e) => {
               e.preventDefault();
+              if (!username || !name || !password || !confirmPassword) {
+                alert('모든 필드를 입력해주세요.');
+                return;
+              }
               handleCreate();
             }}
           >

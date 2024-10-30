@@ -51,7 +51,7 @@ const ViewAllUsersModal = ({ users, closeModal, deleteUser }) => {
                     className="vau-delete-button"
                     onClick={() => deleteUser(user.username)}
                   >
-                    🗑️
+                    {user.role === 'NORMAL' ? '🗑️' : ''}
                   </button>
                 </td>
               </tr>

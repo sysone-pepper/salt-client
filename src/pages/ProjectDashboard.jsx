@@ -51,6 +51,7 @@ const ProjectDashboard = () => {
             username: user.id,
             name: user.name,
             authority: user.authority,
+            role: user.role,
           }));
 
           setUsersData([
@@ -109,15 +110,18 @@ const ProjectDashboard = () => {
       const response = await addUserAPI(userData);
       if (response.success) {
         const newUser = {
-          id: response.data.id,
-          username: response.data.id,
-          name: response.data.name,
-          authority: response.data.authority,
+          id: userData.id,
+          username: userData.id,
+          name: userData.name,
+          authority: userData.authority,
         };
         setUsersData((prev) => [...prev, newUser]);
         setShowAddUserModal(false);
+      } else {
+        alert('사용자 생성에 실패했습니다.');
       }
     } catch (error) {
+      console.error('Error in addUser:', error);
       alert('사용자 생성에 실패했습니다.');
     }
   };
