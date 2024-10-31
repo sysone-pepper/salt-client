@@ -1,0 +1,20 @@
+.form-group .icon-types {
+  display: flex;
+}
+
+
+
+.form-group .icon-types .icon-type-label .icon-radio {
+  display: flex;
+  flex-direction: row;
+}
+
+.form-group .icon-types .icon-type-label .icon-radio input {
+  /* TODO
+  인풋 태그를 좌즉 상단에 배치하기 */
+  }
+
+.form-group .icon-types .icon-type-label .icon-radio i {
+  font-size: 100px; 
+}
+

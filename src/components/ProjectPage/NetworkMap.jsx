@@ -8,9 +8,10 @@ import nodeEditing from 'cytoscape-node-editing';
 import jQuery from 'jquery';
 import konva from 'konva';
 
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { NetworkContext } from '../../contexts/NetworkContext';
 import { CustomDeviceNode } from './CustomDeviceNode';
+import { CustomIconNode } from './CustomIconNode';
 import { ToolBox } from './ToolBox';
 import { Modal } from './Modals/Modal';
 import { BackgroundNode } from './BackgroundNode';
@@ -30,7 +31,8 @@ export const NetworkMap = () => {
     setIsLinking,
     isModalOpen,
     isResizable,
-
+    isUngroupNeeded,
+    setIsUngroupNeeded,
     setisResizable,
   } = useContext(NetworkContext);
   useEffect(() => {
@@ -56,6 +58,14 @@ export const NetworkMap = () => {
             height: 'data(height)',
           },
         },
+        {
+          selector: '.icon',
+          style: {
+            'background-opacity': 0,
+            width: '50px',
+            height: '70px',
+          },
+        },
       ],
       layout: {
         name: 'dagre',
@@ -66,6 +76,7 @@ export const NetworkMap = () => {
       zoomingEnabled: true,
       userZoomingEnabled: true,
       autoungrabify: false,
+      boxSelectionEnabled: true, // 박스 선택 활성화
     });
 
     cy.nodeHtmlLabel([
@@ -91,7 +102,40 @@ export const NetworkMap = () => {
         cssClass: '',
         tpl(data) {
           return `${ReactDOMServer.renderToString(
-            <CustomDeviceNode node={cy.getElementById(data.id)} data={data} />,
+            <CustomDeviceNode
+              node={cy.getElementById(data.id)}
+              data={data}
+              isSelected={false}
+            />,
+          )}`;
+        },
+      },
+      {
+        query: '.device:selected',
+        halign: 'center',
+        valign: 'center',
+        halignBox: 'center',
+        valignBox: 'center',
+        tpl(data) {
+          return `${ReactDOMServer.renderToString(
+            <CustomDeviceNode
+              node={cy.getElementById(data.id)}
+              data={data}
+              isSelected={true}
+            />,
+          )}`;
+        },
+      },
+      {
+        query: '.icon',
+        halign: 'center',
+        valign: 'center',
+        halignBox: 'center',
+        valignBox: 'center',
+        cssClass: '',
+        tpl(data) {
+          return `${ReactDOMServer.renderToString(
+            <CustomIconNode node={cy.getElementById(data.id)} data={data} />,
           )}`;
         },
       },
@@ -156,6 +200,7 @@ export const NetworkMap = () => {
       // 링크 편집을 활성화할 경우 디바이스 노드에 noResizeMode추가
       // 아이콘 노드의 경우는 리사이징을 불가능하게 설계해서 device 노드에만 noResizeMode를 핸들링함
       // 차후 text노드에 대해서도 구현 예정
+
       cy.on('ehstart', (event, sourceNode) => {
         if (sourceNode.id() === 'background') {
           eh.stop();
@@ -207,7 +252,6 @@ export const NetworkMap = () => {
     // 콘솔에 정보 출력
     console.log('노드 정보:', nodesInfo);
     console.log('엣지 정보:', edgesInfo);
-    console.log;
   };
 
   const converIsLinkingState = () => {
@@ -216,6 +260,8 @@ export const NetworkMap = () => {
 
   return (
     <>
+      {isUngroupNeeded && <p>그룹화를 해제해주세요</p>}
+
       <button onClick={infoButtonOnClick}>정보 출력</button>
       <button onClick={converIsLinkingState}>
         {isLinking ? '링크 편집 모드 비활성화' : '링크 편집 모드 활성화'}

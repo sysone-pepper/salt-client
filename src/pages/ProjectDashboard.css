@@ -1,0 +1,108 @@
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap");
+
+.projects-page {
+  position: relative;
+  z-index: 2;
+  padding: 20px;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+.my-users {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  margin-right: 10px;
+}
+
+.projects-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title-and-add {
+  display: flex;
+  align-items: center;
+}
+
+.my-project {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  margin-right: 10px;
+}
+
+.add-button {
+  background-color: #a5d3ec;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  padding: 3px 10px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.add-button:hover {
+  background-color: #93c2db;
+}
+
+.search-container {
+  position: relative;
+  display: inline-block;
+}
+
+.project-details {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 700;
+  width: 300px;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  outline: none;
+}
+
+.my-pjt-hr {
+  border-color: #fff;
+}
+
+.projects-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.projects-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(315px, 1fr));
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  justify-items: center;
+}
+
+@media (min-width: 1400px) {
+  .projects-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 1399px) and (min-width: 1050px) {
+  .projects-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1049px) and (min-width: 700px) {
+  .projects-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 699px) {
+  .projects-container {
+    grid-template-columns: 1fr;
+  }
+}

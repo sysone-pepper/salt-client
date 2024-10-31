@@ -60,6 +60,7 @@ export function NetworkProvider({ children }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [curModalType, setCurModalType] = useState('');
   const [isResizable, setisResizable] = useState(true);
+  const [isUngroupNeeded, setIsUngroupNeeded] = useState(false);
 
   return (
     <NetworkContext.Provider
@@ -77,6 +78,8 @@ export function NetworkProvider({ children }) {
         setCurModalType,
         isResizable,
         setisResizable,
+        isUngroupNeeded,
+        setIsUngroupNeeded,
       }}
     >
       {children}
