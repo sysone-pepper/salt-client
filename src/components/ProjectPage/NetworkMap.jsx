@@ -161,10 +161,6 @@ export const NetworkMap = () => {
       node.data('width', width);
       node.data('height', height);
 
-      cy.elements().forEach((ele) => {
-        console.log(ele.data());
-      });
-
       setNodes(cy.elements().map((ele) => ele.json()));
     });
 
@@ -198,8 +194,6 @@ export const NetworkMap = () => {
       eh.enableDrawMode();
       setisResizable(false);
       // 링크 편집을 활성화할 경우 디바이스 노드에 noResizeMode추가
-      // 아이콘 노드의 경우는 리사이징을 불가능하게 설계해서 device 노드에만 noResizeMode를 핸들링함
-      // 차후 text노드에 대해서도 구현 예정
 
       cy.on('ehstart', (event, sourceNode) => {
         if (sourceNode.id() === 'background') {
@@ -254,18 +248,10 @@ export const NetworkMap = () => {
     console.log('엣지 정보:', edgesInfo);
   };
 
-  const converIsLinkingState = () => {
-    setIsLinking((prevState) => !prevState); // 링크 편집 모드활성화 여부를 조작하는 버튼에 연결된 함수
-  };
-
   return (
     <>
       {isUngroupNeeded && <p>그룹화를 해제해주세요</p>}
-
       <button onClick={infoButtonOnClick}>정보 출력</button>
-      <button onClick={converIsLinkingState}>
-        {isLinking ? '링크 편집 모드 비활성화' : '링크 편집 모드 활성화'}
-      </button>
       {isModalOpen && <Modal />}
       <ToolBox />
       <div
