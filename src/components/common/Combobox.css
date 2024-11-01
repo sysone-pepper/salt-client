@@ -1,0 +1,61 @@
+div, 
+ul, li,
+label {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+  box-sizing: border-box;
+}
+
+
+ul {
+	list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+
+
+.dd-menu {
+  width: 12rem;
+  max-height: 10rem;
+  position: absolute;
+  overflow-y: auto;  
+  overflow-x: hidden;
+  background-color: white; 
+  border: 1px solid #ccc; 
+  z-index: 9999999999; 
+}
+
+.dd-div {
+  display: flex;
+  height: 2.5rem;
+  width: 19rem;
+  box-shadow: 1px 1px 5px #ccc;
+}
+
+.dd-div .dd-input {
+  flex-grow: 1; 
+  padding: 0.5rem; 
+  border: none;
+}
+
+.dd-div .dd-toggle-button {
+  width: auto;
+  height: inherit;
+  padding: 0.5rem;
+  border: none;
+  background-color: #fff;
+} 
+
+.dd-list-element {
+  padding: 0.5rem; 
+
+}
+
+.dd-label {
+  margin-bottom: 0.5rem; 
+}
