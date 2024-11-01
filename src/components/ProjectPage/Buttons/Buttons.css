@@ -63,18 +63,15 @@
 }
 
 .hidden-text {
-  opacity: 0; /* Initially hidden */
-  white-space: nowrap; /* Prevent text wrap */
-  margin-left: -10px; /* Adjust spacing as needed */
-  transition: opacity 0.3s ease; /* Smooth transition for opacity */
-  position: absolute; /* Position absolutely to avoid affecting layout */
+  opacity: 0; 
+  white-space: nowrap; 
+  margin-left: -10px; 
+  /* transition: opacity 0.3s ease;  */
+  position: absolute; 
   left: 70px;
 }
 
-.add-button:hover .add-button-wrapper {
-    width: auto; /* Allow expansion */
+.add-button:hover {
+    width: auto;
 }
 
-.add-button:hover .hidden-text {
-    opacity: 1; /* Reveal text on hover */
-}

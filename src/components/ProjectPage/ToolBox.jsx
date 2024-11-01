@@ -96,6 +96,7 @@ export const ToolBox = () => {
         요소 추가
       </AddButton>
       <AddButton
+        fileName={'navigator-icon.png'}
         onClickEvent={toggeleNavigator}
         needCancel={!isNavigatorToggled}
       >

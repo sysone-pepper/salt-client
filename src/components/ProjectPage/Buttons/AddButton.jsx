@@ -5,6 +5,7 @@ import ObjectIcon from '../../../assets/images/object-icon2.png';
 import LinkIcon from '../../../assets/images/link-icon2.png';
 import group from '../../../assets/images/group.png';
 import ungroup from '../../../assets/images/ungroup.png';
+import navigatorIcon from '../../../assets/images/navigator-icon.png';
 
 const images = {
   'add-icon.png': AddIcon,
@@ -12,6 +13,7 @@ const images = {
   'link-icon.png': LinkIcon,
   'group.png': group,
   'ungroup.png': ungroup,
+  'navigator-icon.png': navigatorIcon,
 };
 
 export const AddButton = ({ children, fileName, onClickEvent, needCancel }) => {

@@ -15,3 +15,7 @@
 .tool-box-container:hover {
   width: 200px; 
 }
+.tool-box-container:hover .hidden-text {
+  opacity: 1;
+  transition-delay: .3s;
+}
