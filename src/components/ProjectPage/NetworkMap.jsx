@@ -33,14 +33,9 @@ export const NetworkMap = () => {
     nodes,
     edges,
     isLinking,
-    setIsLinking,
     isModalOpen,
-    isNavigatorToggled,
-    setIsNavigatorToggled,
     setNodes,
     isResizable,
-    isUngroupNeeded,
-    setIsUngroupNeeded,
     setisResizable,
     selectedSize,
     setSelectedSize,
@@ -53,23 +48,19 @@ export const NetworkMap = () => {
         {
           selector: '.device',
           style: {
-            label: 'data(id)',
             width: 'data(width)',
             height: 'data(height)',
-            'background-opacity': 0,
-            width: `${selectedSize}px`,
-            height: `${selectedSize}px`,
+            // width: `${selectedSize}px`,
+            // height: `${selectedSize}px`,
           },
         },
         {
           selector: '.device:selected',
           style: {
-            label: 'data(id)',
             width: 'data(width)',
             height: 'data(height)',
-            'background-opacity': 0,
-            width: `${selectedSize}px`,
-            height: `${selectedSize}px`,
+            // width: `${selectedSize}px`,
+            // height: `${selectedSize}px`,
           },
         },
         {
@@ -93,8 +84,6 @@ export const NetworkMap = () => {
         spacingFactor: 1.5,
       },
       elements: [...nodes, ...edges],
-      zoomingEnabled: true,
-      userZoomingEnabled: true,
       autoungrabify: false,
       boxSelectionEnabled: true,
       minZoom: 0.5,
@@ -307,7 +296,6 @@ export const NetworkMap = () => {
     <div>
       <div className="toolbar">
         <button onClick={infoButtonOnClick}>정보 출력</button>
-        {isUngroupNeeded && <p>그룹화를 해제해주세요</p>}
         <Combobox
           label="노드 크기"
           placeholder="20"

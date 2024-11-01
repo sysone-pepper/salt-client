@@ -11,7 +11,6 @@ export const ToolBox = () => {
     setIsLinking,
     setIsModalOpen,
     setCurModalType,
-    setIsUngroupNeeded,
     cyRef,
     isNavigatorToggled,
     setIsNavigatorToggled,
