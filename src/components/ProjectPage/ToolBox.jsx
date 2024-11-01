@@ -37,16 +37,15 @@ export const ToolBox = () => {
   }
 
   const group = () => {
-    setIsUngroupNeeded(false);
     const cy = cyRef.current;
 
     const selectedNodes = cy.nodes('node:selected');
     if (selectedNodes.length > 1) {
       const hasParent = selectedNodes.some((node) => node.data('parent'));
 
-      // 선택된 노드 중 하나가 그룹에 속해있으면 IsUngroupNeeded를 true로 돌려서 그룹화 해제요구 메세지 띄우기
+      // 선택된 노드 중 하나가 그룹에 속해있으면  그룹화 해제요구 메세지 띄우기
       if (hasParent) {
-        setIsUngroupNeeded(true);
+        alert('그룹을 먼저 해제해주세요');
         return;
       }
 
