@@ -137,18 +137,6 @@ export const NetworkMap = () => {
         },
       },
     ]);
-    // 노드 확대축소 라이브러리
-    cy.nodeEditing({
-      padding: 5,
-      undoable: true,
-      grappleSize: 6,
-      grappleColor: '#fff',
-      grappleStrokeColor: '#666666',
-      grappleStrokeWidth: 1,
-      inactiveGrappleStroke: 'inside 1px',
-      boundingRectangleLineDash: [2, 4],
-      boundingRectangleLineColor: '#666666',
-    });
 
     // 노드 리사이징을 하고 나면 state에 width와 height를 반영
     cy.on('nodeediting.resizeend', function (event, type, node) {
