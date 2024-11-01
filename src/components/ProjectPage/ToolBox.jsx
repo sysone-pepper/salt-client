@@ -69,16 +69,24 @@ export const ToolBox = () => {
 
   return (
     <div className="tool-box-container">
-      <AddButton fileName={'object-icon.png'} onClickEvent={toggleAddNode} />
-
+      <AddButton
+        fileName={'object-icon.png'}
+        onClickEvent={toggleAddNode}
+        disabled={isLinking}
+      />
       {isLinking ? (
         <AddButton
           fileName={'link-icon.png'}
           onClickEvent={inactiveAddLink}
           needCancel={true}
+          disabled={false}
         />
       ) : (
-        <AddButton fileName={'link-icon.png'} onClickEvent={activeAddLink} />
+        <AddButton
+          fileName={'link-icon.png'}
+          onClickEvent={activeAddLink}
+          disabled={false}
+        />
       )}
 
       <AddButton fileName={'group.png'} onClickEvent={group} />
