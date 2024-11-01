@@ -1,19 +1,24 @@
-import React, { useState } from "react";
-import "./AddUserModal.css";
+import React, { useState } from 'react';
+import './AddUserModal.css';
 
 const AddUserModal = ({ closeModal, onCreate }) => {
-  const [username, setUsername] = useState("");
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [authority, setAuthority] = useState('READ_ONLY');
 
   const handleCreate = () => {
     if (password !== confirmPassword) {
-      alert("비밀번호가 일치하지 않습니다.");
+      alert('비밀번호가 일치하지 않습니다.');
       return;
     }
-    onCreate({ username, name, password });
-    closeModal();
+    onCreate({
+      id: username,
+      name,
+      password,
+      authority,
+    });
   };
 
   return (
@@ -24,6 +29,10 @@ const AddUserModal = ({ closeModal, onCreate }) => {
             className="au-form"
             onSubmit={(e) => {
               e.preventDefault();
+              if (!username || !name || !password || !confirmPassword) {
+                alert('모든 필드를 입력해주세요.');
+                return;
+              }
               handleCreate();
             }}
           >
@@ -77,6 +86,33 @@ const AddUserModal = ({ closeModal, onCreate }) => {
               <span className="au-bar"></span>
               <label className="au-label">사용자 비밀번호 확인</label>
             </div>
+
+            <div className="au-group">
+              <div className="au-authority-title">권한</div>
+              <div className="au-radio-group">
+                <label className="au-radio-label">
+                  <input
+                    type="radio"
+                    value="ALL"
+                    checked={authority === 'ALL'}
+                    onChange={(e) => setAuthority(e.target.value)}
+                    className="au-radio-input"
+                  />
+                  <span className="au-radio-text">관리자 권한</span>
+                </label>
+                <label className="au-radio-label">
+                  <input
+                    type="radio"
+                    value="READ_ONLY"
+                    checked={authority === 'READ_ONLY'}
+                    onChange={(e) => setAuthority(e.target.value)}
+                    className="au-radio-input"
+                  />
+                  <span className="au-radio-text">읽기 전용</span>
+                </label>
+              </div>
+            </div>
+
             <div className="au-btn-box">
               <button className="au-btn au-btn-submit" type="submit">
                 생성

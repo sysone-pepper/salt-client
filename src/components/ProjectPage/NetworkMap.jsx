@@ -33,15 +33,18 @@ export const NetworkMap = () => {
     nodes,
     edges,
     isLinking,
+    setIsLinking,
     isModalOpen,
-    isUngroupNeeded,
     isNavigatorToggled,
     setIsNavigatorToggled,
     setNodes,
+    isResizable,
+    isUngroupNeeded,
+    setIsUngroupNeeded,
+    setisResizable,
     selectedSize,
     setSelectedSize,
   } = useContext(NetworkContext);
-
   useEffect(() => {
     const cy = cytoscape({
       container: document.getElementById('cy'),
@@ -240,8 +243,12 @@ export const NetworkMap = () => {
     const cy = cyRef.current;
     const eh = cy.edgehandles(EHoptions);
 
+    cy.elements().unselect(); // 링크 편집상태를 바꾸면 모든 노드 선택 초기화
+
     if (isLinking) {
       eh.enableDrawMode();
+      setisResizable(false);
+      // 링크 편집을 활성화할 경우 디바이스 노드에 noResizeMode추가
 
       cy.on('ehstart', (event, sourceNode) => {
         if (sourceNode.id() === 'background') {
@@ -250,6 +257,8 @@ export const NetworkMap = () => {
       });
     } else {
       eh.disableDrawMode();
+      setisResizable(true);
+
       cy.off('ehstart');
     }
 
@@ -258,6 +267,16 @@ export const NetworkMap = () => {
       cy.off('ehstart');
     };
   }, [isLinking]);
+
+  useEffect(() => {
+    const cy = cyRef.current;
+
+    if (isResizable) {
+      cy.nodes('.device').removeClass('noResizeMode');
+    } else {
+      cy.nodes('.device').addClass('noResizeMode');
+    }
+  }, [isResizable]);
 
   const infoButtonOnClick = () => {
     // 노드 정보 가져오기

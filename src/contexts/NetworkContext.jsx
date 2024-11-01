@@ -59,6 +59,7 @@ export function NetworkProvider({ children }) {
   const [isLinking, setIsLinking] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [curModalType, setCurModalType] = useState('');
+  const [isResizable, setisResizable] = useState(true);
   const [isUngroupNeeded, setIsUngroupNeeded] = useState(false);
   const [selectedSize, setSelectedSize] = useState('20');
   const [isNavigatorToggled, setIsNavigatorToggled] = useState(true);
@@ -77,6 +78,8 @@ export function NetworkProvider({ children }) {
         setIsModalOpen,
         curModalType,
         setCurModalType,
+        isResizable,
+        setisResizable,
         isUngroupNeeded,
         setIsUngroupNeeded,
         selectedSize,

@@ -91,7 +91,11 @@ export const ToolBox = () => {
 
   return (
     <div className="tool-box-container">
-      <AddButton fileName={'object-icon.png'} onClickEvent={toggleAddNode}>
+      <AddButton
+        fileName={'object-icon.png'}
+        onClickEvent={toggleAddNode}
+        disabled={isLinking}
+      >
         요소 추가
       </AddButton>
       <AddButton
@@ -111,7 +115,11 @@ export const ToolBox = () => {
           링크추가모드 끄기
         </AddButton>
       ) : (
-        <AddButton fileName={'link-icon.png'} onClickEvent={activeAddLink}>
+        <AddButton
+          fileName={'link-icon.png'}
+          onClickEvent={activeAddLink}
+          disabled={false}
+        >
           링크추가모드 켜기
         </AddButton>
       )}

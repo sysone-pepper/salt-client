@@ -16,10 +16,25 @@ const images = {
   'navigator-icon.png': navigatorIcon,
 };
 
-export const AddButton = ({ children, fileName, onClickEvent, needCancel }) => {
+export const AddButton = ({
+  children,
+  fileName,
+  onClickEvent,
+  needCancel,
+  disabled,
+}) => {
+  const handleClick = (e) => {
+    if (!disabled) {
+      onClickEvent(e);
+    }
+  };
+
   return (
     <div className="add-button">
-      <div className="add-button-wrapper" onClick={onClickEvent}>
+      <div
+        className={`add-button-wrapper ${disabled ? 'disabled' : ''}`}
+        onClick={handleClick}
+      >
         <div
           className={`add-button-content-container ${
             needCancel ? 'cancel' : ''

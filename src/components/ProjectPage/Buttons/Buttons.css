@@ -15,6 +15,11 @@
   transition: width 0.3s ease, height 0.3s ease;
 }
 
+.add-button-wrapper.disabled {
+  opacity: 0.5; 
+  pointer-events: none;
+}
+
 .add-button-content-container {
   width: 40px;
   height: 40px;
