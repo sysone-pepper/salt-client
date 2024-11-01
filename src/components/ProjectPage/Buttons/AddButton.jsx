@@ -3,7 +3,6 @@ import './Buttons.css';
 import AddIcon from '../../../assets/images/add-icon.png';
 import ObjectIcon from '../../../assets/images/object-icon2.png';
 import LinkIcon from '../../../assets/images/link-icon2.png';
-import './AddButton.css';
 import group from '../../../assets/images/group.png';
 import ungroup from '../../../assets/images/ungroup.png';
 
