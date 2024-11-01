@@ -30,7 +30,7 @@ export function NetworkProvider({ children }) {
       },
       width: 100,
       height: 100,
-      classes: 'object device fixedAspectRatioResizeMode', // 가로세로비율 1대1로 리사이징하기 위한 클래스 적용
+      classes: 'object device', // 가로세로비율 1대1로 리사이징하기 위한 클래스 적용
     }, // 자식 노드 1
     {
       group: 'nodes',
@@ -41,7 +41,7 @@ export function NetworkProvider({ children }) {
       },
       width: 100,
       height: 100,
-      classes: 'object device fixedAspectRatioResizeMode', // 가로세로비율 1대1로 리사이징하기 위한 클래스 적용
+      classes: 'object device', // 가로세로비율 1대1로 리사이징하기 위한 클래스 적용
       grabbable: true,
     },
   ]);
@@ -61,6 +61,7 @@ export function NetworkProvider({ children }) {
   const [curModalType, setCurModalType] = useState('');
   const [isResizable, setisResizable] = useState(true);
   const [isUngroupNeeded, setIsUngroupNeeded] = useState(false);
+  const [selectedSize, setSelectedSize] = useState('20');
 
   return (
     <NetworkContext.Provider
@@ -80,6 +81,8 @@ export function NetworkProvider({ children }) {
         setisResizable,
         isUngroupNeeded,
         setIsUngroupNeeded,
+        selectedSize,
+        setSelectedSize,
       }}
     >
       {children}
