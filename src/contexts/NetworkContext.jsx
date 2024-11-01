@@ -59,13 +59,9 @@ export function NetworkProvider({ children }) {
   const [isLinking, setIsLinking] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [curModalType, setCurModalType] = useState('');
-<<<<<<< HEAD
   const [isUngroupNeeded, setIsUngroupNeeded] = useState(false);
   const [selectedSize, setSelectedSize] = useState('20');
   const [isNavigatorToggled, setIsNavigatorToggled] = useState(true);
-=======
-  const [selectedSize, setSelectedSize] = useState('20');
->>>>>>> a0b39d90a03d05c232a804cb85eb195951a027d0
 
   return (
     <NetworkContext.Provider
