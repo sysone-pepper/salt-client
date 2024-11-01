@@ -3,6 +3,9 @@ import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 import edgehandles from 'cytoscape-edgehandles';
+import nodeEditing from 'cytoscape-node-editing';
+import jQuery from 'jquery';
+import konva from 'konva';
 import EHoptions from '../../constants/EdgeHandleOptions';
 import sizes from '../../constants/SizesOption';
 
@@ -34,6 +37,7 @@ export const NetworkMap = () => {
     isUngroupNeeded,
     isNavigatorToggled,
     setIsNavigatorToggled,
+    setNodes,
     selectedSize,
     setSelectedSize,
   } = useContext(NetworkContext);
@@ -159,6 +163,29 @@ export const NetworkMap = () => {
       },
     ]);
 
+    cy.nodeEditing({
+      padding: 5,
+      undoable: true,
+      grappleSize: 6,
+      grappleColor: '#fff',
+      grappleStrokeColor: '#666666',
+      grappleStrokeWidth: 1,
+      inactiveGrappleStroke: 'inside 1px',
+      boundingRectangleLineDash: [2, 4],
+      boundingRectangleLineColor: '#666666',
+    });
+
+    // 노드 리사이징을 하고 나면 state에 width와 height를 반영
+    cy.on('nodeediting.resizeend', function (event, type, node) {
+      const width = node.width();
+      const height = node.height();
+
+      node.data('width', width);
+      node.data('height', height);
+
+      setNodes(cy.elements().map((ele) => ele.json()));
+    });
+
     // 온클릭에 노드 정보 띄우기(차후 삭제 예정)
     cy.on('select', 'node', function (event) {
       const node = event.target;
@@ -267,7 +294,7 @@ export const NetworkMap = () => {
           placeholder="20"
           items={sizes}
           onSelect={setSelectedSize}
-          />
+        />
       </div>
       {isModalOpen && <Modal />}
       <ToolBox />
