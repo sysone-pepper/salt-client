@@ -23,8 +23,7 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(true);
 
       // 로그인 시 입력한 id를 currentUser로 설정
-      const user = { username: credentials.id, role: data.data.role };
-      console.log(user); //
+      const user = { username: credentials.id };
 
       setCurrentUser(user);
       return user; // 사용자 정보 반환

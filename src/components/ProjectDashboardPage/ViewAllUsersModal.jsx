@@ -1,7 +1,7 @@
 import React from 'react';
 import './ViewAllUsersModal.css';
 
-const ViewAllUsersModal = ({ users, closeModal, deleteUser, currentUser }) => {
+const ViewAllUsersModal = ({ users, closeModal, deleteUser, currentRole }) => {
   const copyToClipboard = (password) => {
     navigator.clipboard.writeText(password).then(
       () => {
@@ -13,8 +13,8 @@ const ViewAllUsersModal = ({ users, closeModal, deleteUser, currentUser }) => {
     );
   };
 
-  const isAdmin = currentUser?.role === 'ROOT';
-  console.log(currentUser.role);
+  const isAdmin = currentRole === 'ROOT';
+
   return (
     <div className="vau-modal-overlay">
       <div className="vau-modal-content">

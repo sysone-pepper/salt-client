@@ -7,7 +7,7 @@ export const addUserAPI = async (userData) => {
 
 export const getUsers = async () => {
   const response = await api.get('/api/v1/users');
-  return response.data;
+  return response;
 };
 
 export const deleteUserAPI = async (username) => {

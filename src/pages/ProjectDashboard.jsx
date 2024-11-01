@@ -25,6 +25,7 @@ const ProjectDashboard = () => {
   const [showAddProjectModal, setShowAddProjectModal] = useState(false);
   const [showProjectSummaryModal, setShowProjectSummaryModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [currentRole, setCurrentRole] = useState('');
 
   const [usersData, setUsersData] = useState([
     {
@@ -45,15 +46,17 @@ const ProjectDashboard = () => {
     const fetchUsers = async () => {
       try {
         const response = await getUsers();
-        if (response.success) {
-          const formattedUsers = response.data.map((user) => ({
+        if (response.data.success) {
+          const { users, currentRole } = response.data.data;
+          console.log(response);
+          const formattedUsers = users.map((user) => ({
             id: user.id,
             username: user.id,
             name: user.name,
             authority: user.authority,
             role: user.role,
           }));
-
+          console.log(formattedUsers);
           setUsersData([
             {
               id: 'view-all',
@@ -62,6 +65,8 @@ const ProjectDashboard = () => {
             },
             ...formattedUsers,
           ]);
+
+          setCurrentRole(currentRole);
         }
       } catch (error) {
         alert('사용자 목록을 가져오는데 실패했습니다.');
@@ -225,7 +230,7 @@ const ProjectDashboard = () => {
             users={usersData.filter((user) => !user.isViewAll)}
             closeModal={() => setShowViewAllModal(false)}
             deleteUser={deleteUser}
-            currentUser={currentUser}
+            currentRole={currentRole}
           />
         )}
       </div>
