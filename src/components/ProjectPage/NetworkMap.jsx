@@ -21,12 +21,18 @@ cytoscape.use(edgehandles);
 nodeHtmlLabel(cytoscape);
 nodeEditing(cytoscape, jQuery, konva);
 
-export const NetworkMap = () => {
+export const NetworkMap = ({ projectId }) => {
   const {
+    curProjectId,
+    setCurProjectId,
+    fetchMapData,
+    updateNode,
+    createLink,
     cyRef,
     nodes,
     setNodes,
     edges,
+    setEdges,
     isLinking,
     isModalOpen,
     isUngroupNeeded,
@@ -34,6 +40,13 @@ export const NetworkMap = () => {
   } = useContext(NetworkContext);
 
   useEffect(() => {
+    setCurProjectId(projectId);
+  }, []);
+
+  useEffect(() => {
+    if (!!curProjectId) {
+      fetchMapData();
+    }
     const cy = cytoscape({
       container: document.getElementById('cy'),
       // 노드 스타일 : elements의 크기를 반영하는데 필요
@@ -92,7 +105,7 @@ export const NetworkMap = () => {
         },
       },
       {
-        query: '.device',
+        query: '.NEW_DEVICE',
         halign: 'center',
         valign: 'center',
         halignBox: 'center',
@@ -125,7 +138,7 @@ export const NetworkMap = () => {
         },
       },
       {
-        query: '.icon',
+        query: '.ICON',
         halign: 'center',
         valign: 'center',
         halignBox: 'center',
@@ -160,18 +173,23 @@ export const NetworkMap = () => {
     });
 
     // 노드 리사이징을 하고 나면 state에 width와 height를 반영
-    cy.on('nodeediting.resizeend', function (event, type, node) {
-      const width = node.width();
-      const height = node.height();
+    cy.on('nodeediting.resizeend', async function (event, type, target) {
+      const width = target.width();
+      target.data('width', width);
+      target.data('height', width);
 
-      node.data('width', width);
-      node.data('height', height);
+      const node = target.json();
+      node.data.nodeSize = target.width();
 
-      cy.elements().forEach((ele) => {
-        console.log(ele.data());
-      });
+      await updateNode(node);
+    });
 
-      setNodes(cy.elements().map((ele) => ele.json()));
+    cy.on('dragfree', 'node', async (event) => {
+      const target = event.target;
+      const node = target.json();
+      node.data.nodeSize = target.width();
+
+      await updateNode(node);
     });
 
     cyRef.current = cy;
@@ -179,20 +197,21 @@ export const NetworkMap = () => {
     return () => {
       cy.destroy();
     };
-  }, []);
+  }, [curProjectId]);
 
   useEffect(() => {
     if (cyRef.current) {
       const cy = cyRef.current;
       cy.elements().remove();
       cy.add([...nodes, ...edges]);
-      cy.layout({
-        name: 'dagre',
-        padding: 24,
-        spacingFactor: 1.5,
-      }).run();
+      if (!cy.layoutInitialized) {
+        cy.layout({
+          name: 'preset',
+        });
+      }
     }
-  }, [nodes]);
+  }, [nodes, edges]);
+
   useEffect(() => {
     const cy = cyRef.current;
     const eh = cy.edgehandles(EHoptions);
@@ -204,6 +223,18 @@ export const NetworkMap = () => {
         if (sourceNode.id() === 'background') {
           eh.stop();
         }
+      });
+
+      cy.on('ehcomplete', async (event, sourceNode, targetNode, addedEdge) => {
+        const edgeId = await createLink(sourceNode.json(), targetNode.json());
+        const edge = {
+          data: {
+            id: 'edge-' + edgeId,
+            source: sourceNode.id(),
+            target: targetNode.id(),
+          },
+        };
+        setEdges((prevEdges) => [...prevEdges, edge]);
       });
     } else {
       eh.disableDrawMode();
@@ -232,13 +263,12 @@ export const NetworkMap = () => {
         id: edge.id(),
         source: edge.source().id(),
         target: edge.target().id(),
-        position: edge.position(), // 엣지는 위치가 없으므로 이 부분은 필요에 따라 수정
       };
     });
 
     // 콘솔에 정보 출력
-    console.log('노드 정보:', nodesInfo);
-    console.log('엣지 정보:', edgesInfo);
+    console.log('노드 상세 정보:', nodes);
+    console.log('엣지 상세 정보:', edges);
   };
 
   return (
