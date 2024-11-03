@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }) => {
 
       // 로그인 시 입력한 id를 currentUser로 설정
       const user = { username: credentials.id };
+
       setCurrentUser(user);
       return user; // 사용자 정보 반환
     } else {

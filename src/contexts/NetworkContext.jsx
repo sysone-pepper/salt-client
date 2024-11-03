@@ -8,10 +8,13 @@ export function NetworkProvider({ children }) {
   const [curProjectId, setCurProjectId] = useState();
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
+
   const [isLinking, setIsLinking] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [curModalType, setCurModalType] = useState('');
+  const [isResizable, setisResizable] = useState(true);
   const [isUngroupNeeded, setIsUngroupNeeded] = useState(false);
+  const [selectedSize, setSelectedSize] = useState('20');
 
   const fetchMapData = async () => {
     const { nodes, edges } = await api.fetchDiagramData(curProjectId);
@@ -116,8 +119,12 @@ export function NetworkProvider({ children }) {
         setIsModalOpen,
         curModalType,
         setCurModalType,
+        isResizable,
+        setisResizable,
         isUngroupNeeded,
         setIsUngroupNeeded,
+        selectedSize,
+        setSelectedSize,
       }}
     >
       {children}

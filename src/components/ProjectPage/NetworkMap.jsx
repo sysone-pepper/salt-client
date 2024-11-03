@@ -4,22 +4,20 @@ import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 import edgehandles from 'cytoscape-edgehandles';
 import EHoptions from '../../constants/EdgeHandleOptions';
-import nodeEditing from 'cytoscape-node-editing';
-import jQuery from 'jquery';
-import konva from 'konva';
+import sizes from '../../constants/SizesOption';
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { NetworkContext } from '../../contexts/NetworkContext';
 import { CustomDeviceNode } from './CustomDeviceNode';
 import { CustomIconNode } from './CustomIconNode';
 import { ToolBox } from './ToolBox';
 import { Modal } from './Modals/Modal';
 import { BackgroundNode } from './BackgroundNode';
+import Combobox from '../common/Combobox';
 
 cytoscape.use(dagre);
 cytoscape.use(edgehandles);
 nodeHtmlLabel(cytoscape);
-nodeEditing(cytoscape, jQuery, konva);
 
 export const NetworkMap = ({ projectId }) => {
   const {
@@ -30,15 +28,18 @@ export const NetworkMap = ({ projectId }) => {
     createLink,
     cyRef,
     nodes,
-    setNodes,
     edges,
     setEdges,
     isLinking,
+    setIsLinking,
     isModalOpen,
+    isResizable,
     isUngroupNeeded,
     setIsUngroupNeeded,
+    setisResizable,
+    selectedSize,
+    setSelectedSize,
   } = useContext(NetworkContext);
-
   useEffect(() => {
     setCurProjectId(projectId);
   }, []);
@@ -52,21 +53,19 @@ export const NetworkMap = ({ projectId }) => {
       // 노드 스타일 : elements의 크기를 반영하는데 필요
       style: [
         {
-          selector: '.device[width][height]',
+          selector: '.device',
           style: {
-            label: 'data(id)',
             'background-opacity': 0,
-            width: 'data(width)',
-            height: 'data(height)',
+            width: `${selectedSize}px`,
+            height: `${selectedSize}px`,
           },
         },
         {
-          selector: '.device[width][height]:selected',
+          selector: '.device:selected',
           style: {
-            label: 'data(id)',
             'background-opacity': 0,
-            width: 'data(width)',
-            height: 'data(height)',
+            width: `${selectedSize}px`,
+            height: `${selectedSize}px`,
           },
         },
         {
@@ -151,26 +150,6 @@ export const NetworkMap = ({ projectId }) => {
         },
       },
     ]);
-    // 노드 확대축소 라이브러리
-    cy.nodeEditing({
-      padding: 5,
-      undoable: true,
-      grappleSize: 6,
-      grappleColor: '#fff',
-      grappleStrokeColor: '#666666',
-      grappleStrokeWidth: 1,
-      inactiveGrappleStroke: 'inside 1px',
-      boundingRectangleLineDash: [2, 4],
-      boundingRectangleLineColor: '#666666',
-
-      isNoResizeMode: function (node) {
-        return node.is('.noResizeMode');
-      }, // no active grapples
-
-      isFixedAspectRatioResizeMode: function (node) {
-        return node.is('.fixedAspectRatioResizeMode');
-      },
-    });
 
     // 노드 리사이징을 하고 나면 state에 width와 height를 반영
     cy.on('nodeediting.resizeend', async function (event, type, target) {
@@ -190,6 +169,12 @@ export const NetworkMap = ({ projectId }) => {
       node.data.nodeSize = target.width();
 
       await updateNode(node);
+    });
+
+    // 온클릭에 노드 정보 띄우기(차후 삭제 예정)
+    cy.on('select', 'node', function (event) {
+      const node = event.target;
+      console.log(node.width());
     });
 
     cyRef.current = cy;
@@ -213,11 +198,27 @@ export const NetworkMap = ({ projectId }) => {
   }, [nodes, edges]);
 
   useEffect(() => {
+    if (cyRef.current) {
+      const cy = cyRef.current;
+      cy.nodes('.device').forEach((node) => {
+        node.style({
+          width: `${selectedSize}px`,
+          height: `${selectedSize}px`,
+        });
+      });
+    }
+  }, [selectedSize]);
+
+  useEffect(() => {
     const cy = cyRef.current;
     const eh = cy.edgehandles(EHoptions);
 
+    cy.elements().unselect(); // 링크 편집상태를 바꾸면 모든 노드 선택 초기화
+
     if (isLinking) {
       eh.enableDrawMode();
+      setisResizable(false);
+      // 링크 편집을 활성화할 경우 디바이스 노드에 noResizeMode추가
 
       cy.on('ehstart', (event, sourceNode) => {
         if (sourceNode.id() === 'background') {
@@ -238,6 +239,8 @@ export const NetworkMap = ({ projectId }) => {
       });
     } else {
       eh.disableDrawMode();
+      setisResizable(true);
+
       cy.off('ehstart');
     }
 
@@ -246,6 +249,16 @@ export const NetworkMap = ({ projectId }) => {
       cy.off('ehstart');
     };
   }, [isLinking]);
+
+  useEffect(() => {
+    const cy = cyRef.current;
+
+    if (isResizable) {
+      cy.nodes('.device').removeClass('noResizeMode');
+    } else {
+      cy.nodes('.device').addClass('noResizeMode');
+    }
+  }, [isResizable]);
 
   const infoButtonOnClick = () => {
     // 노드 정보 가져오기
@@ -273,16 +286,20 @@ export const NetworkMap = ({ projectId }) => {
 
   return (
     <>
-      {isUngroupNeeded && <p>그룹화를 해제해주세요</p>}
-
       <button onClick={infoButtonOnClick}>정보 출력</button>
+      <Combobox
+        label="노드 크기"
+        placeholder="20"
+        items={sizes}
+        onSelect={setSelectedSize}
+      />
       {isModalOpen && <Modal />}
       <ToolBox />
       <div
         id="cy"
         style={{
           width: '800px',
-          height: '600px',
+          height: '1600px',
           border: '1px solid lightgray',
         }}
       />
