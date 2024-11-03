@@ -20,8 +20,8 @@ function App() {
                   path="projects/:username"
                   element={<ProjectDashboardPage />}
                 />
-                <Route path="project/" element={<ProjectPage />} />
               </Route>
+              <Route path="diagrams/:projectId" element={<ProjectPage />} />
             </Routes>
           </Suspense>
         </div>
