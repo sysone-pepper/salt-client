@@ -7,10 +7,9 @@ import L4SwitchIcon from '../../../assets/images/L4Switch-icon.png';
 import L7SwitchIcon from '../../../assets/images/L7Switch-icon.png';
 import FirewallIcon from '../../../assets/images/Firewall-icon2.png';
 import UPSIcon from '../../../assets/images/UPS-icon2.png';
-import { NetworkContext } from '../../../contexts/NetworkContext';
-
+import { NetworkContext } from '../../../contexts/NetworkContext.jsx';
 import { IconInput } from './IconInput.jsx';
-import { type } from 'jquery';
+
 const deviceCategories = [
   'Server',
   'Network',
