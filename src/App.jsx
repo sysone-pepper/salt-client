@@ -21,7 +21,7 @@ function App() {
                   element={<ProjectDashboardPage />}
                 />
               </Route>
-              <Route path="project/" element={<ProjectPage />} />
+              <Route path="diagrams/:projectId" element={<ProjectPage />} />
             </Routes>
           </Suspense>
         </div>

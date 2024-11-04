@@ -30,7 +30,7 @@ export const CustomDeviceNode = ({ node, data, isSelected }) => {
       >
         <img
           className="device-node-icon"
-          src={deviceIcons[data?.deviceType]}
+          src={deviceIcons[data?.newDeviceType]}
           alt={data?.deviceType}
         />
       </div>
