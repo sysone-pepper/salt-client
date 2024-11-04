@@ -3,11 +3,7 @@ import './ProjectDashboard.css';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import ProjectContent from '../components/ProjectDashboardPage/ProjectContent';
-import AddProjectModal from '../components/ProjectDashboardPage/AddProjectModal';
-import ProjectSummaryModal from '../components/ProjectDashboardPage/ProjectSummaryModal';
 import UserContent from '../components/ProjectDashboardPage/UserContent';
-import AddUserModal from '../components/ProjectDashboardPage/AddUserModal';
-import ViewAllUsersModal from '../components/ProjectDashboardPage/ViewAllUsersModal';
 import {
   getProjects,
   createProjectAPI,
@@ -15,6 +11,11 @@ import {
 } from '../api/Diagram';
 import { addUserAPI, getUsers, deleteUserAPI } from '../api/User';
 import defaultImage from '../assets/images/default_Image.webp';
+import { Modal } from '../components/common/Modal';
+import AddUserModalContent from '../components/ProjectDashboardPage/ModalContents/AddUserModalContent';
+import ViewAllUsersModalContent from '../components/ProjectDashboardPage/ModalContents/ViewAllUsersModalContent';
+import AddProjectModalContent from '../components/ProjectDashboardPage/ModalContents/AddProjectModalContent';
+import ProjectSummaryModalContent from '../components/ProjectDashboardPage/ModalContents/ProjectSummaryModalContent';
 
 const ProjectDashboard = () => {
   const { currentUser, isAuthenticated } = useAuth();
@@ -220,17 +221,27 @@ const ProjectDashboard = () => {
           </div>
         </div>
         {showAddUserModal && (
-          <AddUserModal
+          <Modal
+            child={
+              <AddUserModalContent
+                closeModal={() => setShowAddUserModal(false)}
+                onCreate={addUser}
+              />
+            }
             closeModal={() => setShowAddUserModal(false)}
-            onCreate={addUser}
           />
         )}
         {showViewAllModal && (
-          <ViewAllUsersModal
-            users={usersData.filter((user) => !user.isViewAll)}
+          <Modal
+            child={
+              <ViewAllUsersModalContent
+                users={usersData.filter((user) => !user.isViewAll)}
+                closeModal={() => setShowViewAllModal(false)}
+                deleteUser={deleteUser}
+                currentRole={currentRole}
+              />
+            }
             closeModal={() => setShowViewAllModal(false)}
-            deleteUser={deleteUser}
-            currentRole={currentRole}
           />
         )}
       </div>
@@ -267,14 +278,19 @@ const ProjectDashboard = () => {
         </div>
       </div>
       {showAddProjectModal && (
-        <AddProjectModal
+        <Modal
+          child={
+            <AddProjectModalContent
+              closeModal={() => setShowAddProjectModal(false)}
+              onCreate={createProject}
+            />
+          }
           closeModal={() => setShowAddProjectModal(false)}
-          onCreate={createProject}
         />
       )}
       {showProjectSummaryModal && selectedProject && (
-        <ProjectSummaryModal
-          project={selectedProject}
+        <Modal
+          child={<ProjectSummaryModalContent project={selectedProject} />}
           closeModal={() => setShowProjectSummaryModal(false)}
         />
       )}
