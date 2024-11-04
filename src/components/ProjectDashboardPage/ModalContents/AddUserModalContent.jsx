@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import './AddUserModal.css';
+import './AddUserModalContent.css';
 
-const AddUserModal = ({ closeModal, onCreate }) => {
+const AddUserModalContent = ({ closeModal, onCreate }) => {
   const [username, setUsername] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -132,4 +132,4 @@ const AddUserModal = ({ closeModal, onCreate }) => {
   );
 };
 
-export default AddUserModal;
+export default AddUserModalContent;
