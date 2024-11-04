@@ -5,6 +5,7 @@
   width: 25vw !important;
   margin-bottom: 24px;
   margin-right: 24px;
+  z-index: 500;
 }
 
 /*Add border to View container:*/
