@@ -1,8 +1,6 @@
 import React from 'react';
 import './CustomIconNode.css';
 
-const iconTypes = { red: '#dd2c31', green: '#3f7ec8', blue: '#7cbc35' };
-
 export const CustomIconNode = ({ node, data }) => {
   return (
     <>
@@ -16,7 +14,8 @@ export const CustomIconNode = ({ node, data }) => {
         <i
           className="bi bi-geo-alt-fill"
           style={{
-            color: iconTypes[data?.iconType],
+            color: data?.iconType,
+            fontSize: `50px`,
           }}
         ></i>
       </div>

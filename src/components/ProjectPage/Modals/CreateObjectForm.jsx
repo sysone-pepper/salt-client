@@ -10,6 +10,7 @@ import UPSIcon from '../../../assets/images/UPS-icon2.png';
 import { NetworkContext } from '../../../contexts/NetworkContext';
 
 import { IconInput } from './IconInput.jsx';
+import { type } from 'jquery';
 const deviceCategories = [
   'Server',
   'Network',
@@ -42,8 +43,14 @@ const deviceManagementTypes = [
 ];
 
 export const CreateObjectForm = () => {
-  const { nodes, setNodes, setIsModalOpen, setCurModalType } =
-    useContext(NetworkContext);
+  const {
+    curProjectId,
+    createNodeId,
+    nodes,
+    setNodes,
+    setIsModalOpen,
+    setCurModalType,
+  } = useContext(NetworkContext);
 
   const [category, setCategory] = useState('device');
   const [deviceName, setDeviceName] = useState();
@@ -52,47 +59,71 @@ export const CreateObjectForm = () => {
   const [deviceType, setDeviceType] = useState();
   const [deviceOS, setDeviceOS] = useState();
   const [manufacturedAt, setManufacturedAt] = useState();
+  const [iconType, setIconType] = useState('#000000');
 
-  const [iconType, setIconType] = useState('red');
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let newNodeData;
     switch (category) {
       case 'device':
         newNodeData = {
-          id: deviceIP,
-          objectType: category,
-          deviceName: deviceName,
-          deviceManangementType: deviceManagementType,
-          publicIp: deviceIP,
-          osType: deviceOS,
-          vendor: manufacturedAt,
-          deviceType: deviceType,
-          source: deviceType,
+          nodeType: 'NEW_DEVICE',
+          positionX: 50,
+          positionY: 50,
+          nodeSize: 30,
+          newDeviceName: deviceName,
+          newDeviceAlias: deviceName,
+          newDeviceType: deviceType,
+          newDevicePublicIp: deviceIP,
+          newDeviceOs: deviceOS,
+          newDeviceVendor: manufacturedAt,
         };
         break;
       case 'icon':
         newNodeData = {
-          id: `icon-${Date.now()}`,
-          objectType: category,
+          nodeType: 'ICON',
+          positionX: 50,
+          positionY: 50,
+          nodeSize: 30,
           iconType: iconType,
         };
+        break;
+      case 'text':
+        newNodeData = {
+          nodeType: 'TEXT',
+          positionX: 50,
+          positionY: 50,
+          nodeSize: 30,
+          textContent: '',
+          textColor: '',
+        };
+        break;
     }
 
-    const newNodes = [
-      ...nodes,
-      {
-        group: 'nodes',
-        data: { ...newNodeData },
-        // classes: `object ${category}`,
-        classes: `object ${
-          category === 'icon' ? category + ' noResizeMode' : category
-        }`,
-        grabbable: true,
+    let nodeId = await createNodeId(newNodeData);
+
+    let newNode = {
+      group: 'nodes',
+      data: {
+        id: nodeId,
+        projectId: curProjectId,
+        ...newNodeData,
       },
-    ];
-    setNodes(newNodes);
+      position: { x: newNodeData.positionX, y: newNodeData.positionY },
+      style: { width: newNodeData.nodeSize, height: newNodeData.nodeSize },
+      classes: `object ${
+        category === 'icon'
+          ? newNodeData.nodeType + ' noResizeMode'
+          : newNodeData.nodeType
+      }`,
+      grabbable: true,
+    };
+
+    delete newNode.data.positionX;
+    delete newNode.data.positionY;
+    delete newNode.data.nodeSize;
+
+    setNodes([...nodes, newNode]);
     setIsModalOpen(false);
     setCurModalType('');
   };
