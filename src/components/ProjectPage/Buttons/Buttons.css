@@ -1,3 +1,9 @@
+.add-button {
+  display: flex;
+  align-items: center; 
+  position: relative;
+}
+
 .add-button-wrapper {
   width: 40px;
   height: 40px;
@@ -6,6 +12,7 @@
   align-items: center;
   position: relative;
   margin: 10px;
+  transition: width 0.3s ease, height 0.3s ease;
 }
 
 .add-button-wrapper.disabled {
@@ -14,8 +21,8 @@
 }
 
 .add-button-content-container {
-  width: 100%;
-  height: 100%;
+  width: 40px;
+  height: 40px;
   border-radius: 100%;
   background-color: #0066ff;
   border: 3px solid rgb(133, 133, 133);
@@ -32,14 +39,14 @@
 }
 
 .add-button-symbol-container {
-  position: absolute; /* 절대 위치로 설정 */
+  position: absolute;
   width: 15px;
   height: 15px;
   border-radius: 100%;
   background-color: #0066ff;
   border: 3px solid rgb(133, 133, 133);
-  top: -5px; /* 버튼 위쪽에 위치 */
-  right: -5px; /* 버튼 오른쪽에 위치 */
+  top: -5px;
+  right: -5px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -49,7 +56,7 @@
   width: 80%;
   height: 80%;
   object-fit: contain;
-  transition: transform 0.3s ease; /* 애니메이션을 부드럽게 */
+  transition: transform 0.3s ease;
 }
 
 .cancel {
@@ -58,5 +65,18 @@
 
 .rotate {
   transform: rotate(45deg); /* 45도 회전 */
+}
+
+.hidden-text {
+  opacity: 0; 
+  white-space: nowrap; 
+  margin-left: -10px; 
+  /* transition: opacity 0.3s ease;  */
+  position: absolute; 
+  left: 70px;
+}
+
+.add-button:hover {
+    width: auto;
 }
 

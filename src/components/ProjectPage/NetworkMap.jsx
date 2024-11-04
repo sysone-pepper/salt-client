@@ -3,6 +3,9 @@ import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 import edgehandles from 'cytoscape-edgehandles';
+import nodeEditing from 'cytoscape-node-editing';
+import jQuery from 'jquery';
+import konva from 'konva';
 import EHoptions from '../../constants/EdgeHandleOptions';
 import sizes from '../../constants/SizesOption';
 
@@ -13,11 +16,16 @@ import { CustomIconNode } from './CustomIconNode';
 import { ToolBox } from './ToolBox';
 import { Modal } from './Modals/Modal';
 import { BackgroundNode } from './BackgroundNode';
+import navigator from 'cytoscape-navigator';
+import 'cytoscape-navigator/cytoscape.js-navigator.css';
+import './NetworkMap.css';
 import Combobox from '../common/Combobox';
 
 cytoscape.use(dagre);
 cytoscape.use(edgehandles);
 nodeHtmlLabel(cytoscape);
+navigator(cytoscape);
+nodeEditing(cytoscape, jQuery, konva);
 
 export const NetworkMap = ({ projectId }) => {
   const {
@@ -31,11 +39,9 @@ export const NetworkMap = ({ projectId }) => {
     edges,
     setEdges,
     isLinking,
-    setIsLinking,
     isModalOpen,
+    setNodes,
     isResizable,
-    isUngroupNeeded,
-    setIsUngroupNeeded,
     setisResizable,
     selectedSize,
     setSelectedSize,
@@ -55,25 +61,33 @@ export const NetworkMap = ({ projectId }) => {
         {
           selector: '.device',
           style: {
-            'background-opacity': 0,
-            width: `${selectedSize}px`,
-            height: `${selectedSize}px`,
+            width: 'data(width)',
+            height: 'data(height)',
+            // width: `${selectedSize}px`,
+            // height: `${selectedSize}px`,
           },
         },
         {
           selector: '.device:selected',
           style: {
-            'background-opacity': 0,
-            width: `${selectedSize}px`,
-            height: `${selectedSize}px`,
+            width: 'data(width)',
+            height: 'data(height)',
+            // width: `${selectedSize}px`,
+            // height: `${selectedSize}px`,
           },
         },
         {
           selector: '.icon',
           style: {
-            'background-opacity': 0,
-            width: '50px',
-            height: '70px',
+            width: '40px',
+            height: '40px',
+          },
+        },
+        {
+          selector: ':parent',
+          style: {
+            backgroundColor: 'white',
+            opacity: 1,
           },
         },
       ],
@@ -83,10 +97,13 @@ export const NetworkMap = ({ projectId }) => {
         spacingFactor: 1.5,
       },
       elements: [...nodes, ...edges],
+      autoungrabify: false,
+      boxSelectionEnabled: true,
+      minZoom: 0.5,
+      maxZoom: 3,
       zoomingEnabled: true,
       userZoomingEnabled: true,
-      autoungrabify: false,
-      boxSelectionEnabled: true, // 박스 선택 활성화
+      wheelSensitivity: 0.2,
     });
 
     cy.nodeHtmlLabel([
@@ -151,6 +168,18 @@ export const NetworkMap = ({ projectId }) => {
       },
     ]);
 
+    cy.nodeEditing({
+      padding: 5,
+      undoable: true,
+      grappleSize: 6,
+      grappleColor: '#fff',
+      grappleStrokeColor: '#666666',
+      grappleStrokeWidth: 1,
+      inactiveGrappleStroke: 'inside 1px',
+      boundingRectangleLineDash: [2, 4],
+      boundingRectangleLineColor: '#666666',
+    });
+
     // 노드 리사이징을 하고 나면 state에 width와 height를 반영
     cy.on('nodeediting.resizeend', async function (event, type, target) {
       const width = target.width();
@@ -176,6 +205,18 @@ export const NetworkMap = ({ projectId }) => {
       const node = event.target;
       console.log(node.width());
     });
+
+    const navConfig = {
+      container: document.getElementById('navigator-container'),
+      viewLiveFramerate: 0,
+      thumbnailEventFramerate: 30,
+      thumbnailLiveFramerate: false,
+      dblClickDelay: 200,
+      removeCustomContainer: true,
+      rerenderDelay: 100,
+    };
+
+    cy.navigator(navConfig);
 
     cyRef.current = cy;
 
@@ -285,14 +326,16 @@ export const NetworkMap = ({ projectId }) => {
   };
 
   return (
-    <>
-      <button onClick={infoButtonOnClick}>정보 출력</button>
-      <Combobox
-        label="노드 크기"
-        placeholder="20"
-        items={sizes}
-        onSelect={setSelectedSize}
-      />
+    <div>
+      <div className="toolbar">
+        <button onClick={infoButtonOnClick}>정보 출력</button>
+        <Combobox
+          label="노드 크기"
+          placeholder="20"
+          items={sizes}
+          onSelect={setSelectedSize}
+        />
+      </div>
       {isModalOpen && <Modal />}
       <ToolBox />
       <div
@@ -303,6 +346,6 @@ export const NetworkMap = ({ projectId }) => {
           border: '1px solid lightgray',
         }}
       />
-    </>
+    </div>
   );
 };

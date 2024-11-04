@@ -26,7 +26,7 @@ export const CustomDeviceNode = ({ node, data, isSelected }) => {
     >
       <div
         className="inner-device-node"
-        style={{ width: node?.width(), height: node?.height() }}
+        // style={{ width: node?.width(), height: node?.height() }}
       >
         <img
           className="device-node-icon"
