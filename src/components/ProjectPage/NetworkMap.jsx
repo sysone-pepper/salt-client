@@ -34,7 +34,6 @@ function tippyFactory(ref, content) {
     arrow: true,
     placement: 'bottom',
     hideOnClick: false,
-    // sticky: 'reference',
     interactive: true,
     appendTo: document.body,
   });
