@@ -4,6 +4,8 @@ import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 import edgehandles from 'cytoscape-edgehandles';
 import nodeEditing from 'cytoscape-node-editing';
+import popper from 'cytoscape-popper';
+import tippy from 'tippy.js';
 import jQuery from 'jquery';
 import konva from 'konva';
 import EHoptions from '../../constants/EdgeHandleOptions';
@@ -20,9 +22,29 @@ import navigator from 'cytoscape-navigator';
 import 'cytoscape-navigator/cytoscape.js-navigator.css';
 import './NetworkMap.css';
 import Combobox from '../common/Combobox';
+import cytoscapePopper from 'cytoscape-popper';
+
+function tippyFactory(ref, content) {
+  const dummyDomElement = document.createElement('div');
+
+  const tip = tippy(dummyDomElement, {
+    getReferenceClientRect: ref.getBoundingClientRect,
+    trigger: 'manual',
+    content: content,
+    arrow: true,
+    placement: 'bottom',
+    hideOnClick: false,
+    // sticky: 'reference',
+    interactive: true,
+    appendTo: document.body,
+  });
+
+  return tip;
+}
 
 cytoscape.use(dagre);
 cytoscape.use(edgehandles);
+cytoscape.use(cytoscapePopper(tippyFactory));
 nodeHtmlLabel(cytoscape);
 navigator(cytoscape);
 nodeEditing(cytoscape, jQuery, konva);
@@ -104,6 +126,17 @@ export const NetworkMap = ({ projectId }) => {
       zoomingEnabled: true,
       userZoomingEnabled: true,
       wheelSensitivity: 0.2,
+    });
+
+    cy.on('mouseover', 'node', (event) => {
+      const node = event.target;
+      const popperRef = node.popperRef();
+      const tip = tippyFactory(popperRef, `Tooltip for ${node.id()}`);
+
+      tip.show();
+      node.on('mouseout', () => {
+        tip.hide();
+      });
     });
 
     cy.nodeHtmlLabel([
