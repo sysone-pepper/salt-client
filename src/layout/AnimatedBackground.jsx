@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { Outlet } from "react-router-dom";
-import "./AnimatedBackground.css";
+import React, { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { Outlet } from 'react-router-dom';
+import './AnimatedBackground.css';
 
 const AnimatedBackground = () => {
   const canvasRef = useRef(null);
@@ -24,70 +24,76 @@ const AnimatedBackground = () => {
       target = { x: width / 2, y: height / 2 };
 
       largeHeader = headerRef.current;
-      largeHeader.style.height = `${height}px`;
-
-      canvas = canvasRef.current;
-      canvas.width = width;
-      canvas.height = height;
-      ctx = canvas.getContext("2d");
-
-      points = [];
-      const pointSpacingX = width / 20;
-      const pointSpacingY = height / 20;
-      for (let x = 0; x < width; x += pointSpacingX) {
-        for (let y = 0; y < height; y += pointSpacingY) {
-          const px = x + Math.random() * pointSpacingX;
-          const py = y + Math.random() * pointSpacingY;
-          const p = { x: px, originX: px, y: py, originY: py };
-          points.push(p);
-        }
+      if (largeHeader) {
+        // Add null check
+        largeHeader.style.height = `${height}px`;
       }
 
-      for (let i = 0; i < points.length; i++) {
-        const closest = [];
-        const p1 = points[i];
-        for (let j = 0; j < points.length; j++) {
-          const p2 = points[j];
-          if (!(p1 === p2)) {
-            let placed = false;
-            for (let k = 0; k < 5; k++) {
-              if (!placed) {
-                if (closest[k] === undefined) {
-                  closest[k] = p2;
-                  placed = true;
+      canvas = canvasRef.current;
+      if (canvas) {
+        // Add null check
+        canvas.width = width;
+        canvas.height = height;
+        ctx = canvas.getContext('2d');
+
+        points = [];
+        const pointSpacingX = width / 20;
+        const pointSpacingY = height / 20;
+        for (let x = 0; x < width; x += pointSpacingX) {
+          for (let y = 0; y < height; y += pointSpacingY) {
+            const px = x + Math.random() * pointSpacingX;
+            const py = y + Math.random() * pointSpacingY;
+            const p = { x: px, originX: px, y: py, originY: py };
+            points.push(p);
+          }
+        }
+
+        for (let i = 0; i < points.length; i++) {
+          const closest = [];
+          const p1 = points[i];
+          for (let j = 0; j < points.length; j++) {
+            const p2 = points[j];
+            if (!(p1 === p2)) {
+              let placed = false;
+              for (let k = 0; k < 5; k++) {
+                if (!placed) {
+                  if (closest[k] === undefined) {
+                    closest[k] = p2;
+                    placed = true;
+                  }
                 }
               }
-            }
 
-            for (let k = 0; k < 5; k++) {
-              if (!placed) {
-                if (getDistance(p1, p2) < getDistance(p1, closest[k])) {
-                  closest[k] = p2;
-                  placed = true;
+              for (let k = 0; k < 5; k++) {
+                if (!placed) {
+                  if (getDistance(p1, p2) < getDistance(p1, closest[k])) {
+                    closest[k] = p2;
+                    placed = true;
+                  }
                 }
               }
             }
           }
+          p1.closest = closest;
         }
-        p1.closest = closest;
-      }
 
-      for (let i in points) {
-        const c = new Circle(
-          points[i],
-          2 + Math.random() * 2,
-          "rgba(255,255,255,0.3)"
-        );
-        points[i].circle = c;
+        for (let i in points) {
+          const c = new Circle(
+            points[i],
+            2 + Math.random() * 2,
+            'rgba(255,255,255,0.3)',
+          );
+          points[i].circle = c;
+        }
       }
     };
 
     const addListeners = () => {
-      if (!("ontouchstart" in window)) {
-        window.addEventListener("mousemove", mouseMove);
+      if (!('ontouchstart' in window)) {
+        window.addEventListener('mousemove', mouseMove);
       }
-      window.addEventListener("scroll", scrollCheck);
-      window.addEventListener("resize", resize);
+      window.addEventListener('scroll', scrollCheck);
+      window.addEventListener('resize', resize);
     };
 
     const mouseMove = (e) => {
@@ -102,9 +108,15 @@ const AnimatedBackground = () => {
     const resize = () => {
       width = window.innerWidth;
       height = document.documentElement.scrollHeight;
-      largeHeader.style.height = `${height}px`;
-      canvas.width = width;
-      canvas.height = height;
+      if (largeHeader) {
+        // Add null check
+        largeHeader.style.height = `${height}px`;
+      }
+      if (canvas) {
+        // Add null check
+        canvas.width = width;
+        canvas.height = height;
+      }
 
       initHeader();
       initAnimation();
@@ -147,7 +159,7 @@ const AnimatedBackground = () => {
         duration: 1 + 1 * Math.random(),
         x: p.originX - 50 + Math.random() * 100,
         y: p.originY - 50 + Math.random() * 100,
-        ease: "circ.inOut",
+        ease: 'circ.inOut',
         onComplete: () => {
           shiftPoint(p);
         },
@@ -201,9 +213,10 @@ const AnimatedBackground = () => {
     resizeObserverRef.current.observe(document.body);
 
     return () => {
-      window.removeEventListener("mousemove", mouseMove);
-      window.removeEventListener("scroll", scrollCheck);
-      window.removeEventListener("resize", resize);
+      window.removeEventListener('mousemove', mouseMove);
+      window.removeEventListener('scroll', scrollCheck);
+      window.removeEventListener('resize', resize);
+      resizeObserverRef.current.disconnect();
     };
   }, []);
 
