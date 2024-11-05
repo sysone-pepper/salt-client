@@ -6,6 +6,8 @@ import LinkIcon from '../../../assets/images/link-icon2.png';
 import group from '../../../assets/images/group.png';
 import ungroup from '../../../assets/images/ungroup.png';
 import navigatorIcon from '../../../assets/images/navigator-icon.png';
+import objectDeleteIcon from '../../../assets/images/object-delete-icon.png';
+import backgroundIcon from '../../../assets/images/background-icon.png';
 
 const images = {
   'add-icon.png': AddIcon,
@@ -14,6 +16,8 @@ const images = {
   'group.png': group,
   'ungroup.png': ungroup,
   'navigator-icon.png': navigatorIcon,
+  'object-delete-icon.png': objectDeleteIcon,
+  'background-icon.png': backgroundIcon,
 };
 
 export const AddButton = ({
