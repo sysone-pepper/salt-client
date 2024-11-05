@@ -41,15 +41,9 @@ const deviceManagementTypes = [
   'WMI',
 ];
 
-export const CreateObjectForm = () => {
-  const {
-    curProjectId,
-    createNodeId,
-    nodes,
-    setNodes,
-    setIsModalOpen,
-    setCurModalType,
-  } = useContext(NetworkContext);
+export const CreateObjectForm = ({ closeModal }) => {
+  const { curProjectId, createNodeId, nodes, setNodes, setCurModalType } =
+    useContext(NetworkContext);
 
   const [category, setCategory] = useState('device');
   const [deviceName, setDeviceName] = useState();
@@ -123,8 +117,7 @@ export const CreateObjectForm = () => {
     delete newNode.data.nodeSize;
 
     setNodes([...nodes, newNode]);
-    setIsModalOpen(false);
-    setCurModalType('');
+    closeModal();
   };
 
   const formByCategory = () => {

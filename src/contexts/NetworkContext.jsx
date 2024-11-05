@@ -8,19 +8,24 @@ export function NetworkProvider({ children }) {
   const [curProjectId, setCurProjectId] = useState();
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
+  const [bgImg, setBgImg] = useState(null);
 
   const [isLinking, setIsLinking] = useState(false);
+  const [isObjectDelete, setIsObjectDelete] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isResizable, setisResizable] = useState(true);
   const [selectedSize, setSelectedSize] = useState('20');
   const [isNavigatorToggled, setIsNavigatorToggled] = useState(true);
 
   const fetchMapData = async () => {
-    const { nodes, edges } = await api.fetchDiagramData(curProjectId);
+    const { backgroundSource, nodes, edges } = await api.fetchDiagramData(
+      curProjectId,
+    );
+    console.log(backgroundSource);
     const newNodes = [
       {
         group: 'nodes',
-        data: { id: 'background', src: null },
+        data: { id: 'background', src: backgroundSource },
         position: { x: 400, y: 300 }, // 캔버스의 중앙 위치 (적절히 조정 가능)
         locked: true,
       },
@@ -62,8 +67,6 @@ export function NetworkProvider({ children }) {
       positionY: updatedNode.position.y,
     };
 
-    console.log(input);
-
     // API 호출
     switch (input.nodeType) {
       case 'NEW_DEVICE':
@@ -98,6 +101,11 @@ export function NetworkProvider({ children }) {
     return res.data;
   };
 
+  const updateBgImg = async (file) => {
+    const res = await api.updateBgImg(curProjectId, file);
+    return res;
+  };
+
   return (
     <NetworkContext.Provider
       value={{
@@ -105,6 +113,7 @@ export function NetworkProvider({ children }) {
         createLink,
         fetchMapData,
         updateNode,
+        updateBgImg,
         cyRef,
         curProjectId,
         setCurProjectId,
@@ -114,6 +123,8 @@ export function NetworkProvider({ children }) {
         setEdges,
         isLinking,
         setIsLinking,
+        isObjectDelete,
+        setIsObjectDelete,
         isModalOpen,
         setIsModalOpen,
         isResizable,
