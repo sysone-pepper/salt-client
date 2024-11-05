@@ -3,12 +3,9 @@ import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 import edgehandles from 'cytoscape-edgehandles';
-import nodeEditing from 'cytoscape-node-editing';
 import navigator from 'cytoscape-navigator';
 import cytoscapePopper from 'cytoscape-popper';
 import tippy from 'tippy.js';
-import jQuery from 'jquery';
-import konva from 'konva';
 
 // 내부 컴포넌트
 import EHoptions from '../../constants/EdgeHandleOptions';
@@ -25,6 +22,7 @@ import 'cytoscape-navigator/cytoscape.js-navigator.css';
 import 'tippy.js/dist/tippy.css';
 import './NetworkMap.css';
 
+// 툴팁 기능을 위한 설정
 function tippyFactory(ref, content) {
   const dummyDomElement = document.createElement('div');
 
@@ -48,7 +46,6 @@ cytoscape.use(edgehandles);
 cytoscape.use(cytoscapePopper(tippyFactory));
 nodeHtmlLabel(cytoscape);
 navigator(cytoscape);
-nodeEditing(cytoscape, jQuery, konva);
 
 export const NetworkMap = ({ projectId }) => {
   const {
@@ -63,8 +60,6 @@ export const NetworkMap = ({ projectId }) => {
     setEdges,
     isLinking,
     isModalOpen,
-    isResizable,
-    setisResizable,
     selectedSize,
     setSelectedSize,
   } = useContext(NetworkContext);
@@ -99,25 +94,21 @@ export const NetworkMap = ({ projectId }) => {
             },
           },
           {
-            selector: '.device',
+            selector: '.NEW_DEVICE',
             style: {
               width: 'data(width)',
               height: 'data(height)',
-              // width: `${selectedSize}px`,
-              // height: `${selectedSize}px`,
             },
           },
           {
-            selector: '.device:selected',
+            selector: '.NEW_DEVICE:selected',
             style: {
               width: 'data(width)',
               height: 'data(height)',
-              // width: `${selectedSize}px`,
-              // height: `${selectedSize}px`,
             },
           },
           {
-            selector: '.icon',
+            selector: '.ICON',
             style: {
               width: '40px',
               height: '40px',
@@ -194,30 +185,6 @@ export const NetworkMap = ({ projectId }) => {
           },
         },
       ]);
-
-      const nodeEditingInstance = cy.nodeEditing({
-        padding: 5,
-        undoable: true,
-        grappleSize: 6,
-        grappleColor: '#fff',
-        grappleStrokeColor: '#666666',
-        grappleStrokeWidth: 1,
-        inactiveGrappleStroke: 'inside 1px',
-        boundingRectangleLineDash: [2, 4],
-        boundingRectangleLineColor: '#666666',
-      });
-
-      // 노드 리사이징을 하고 나면 state에 width와 height를 반영
-      cy.on('nodeediting.resizeend', async function (event, type, target) {
-        const width = target.width();
-        target.data('width', width);
-        target.data('height', width);
-
-        const node = target.json();
-        node.data.nodeSize = target.width();
-
-        await updateNode(node);
-      });
 
       cy.on('dragfree', 'node', async (event) => {
         const target = event.target;
@@ -320,8 +287,6 @@ export const NetworkMap = ({ projectId }) => {
 
       if (isLinking) {
         eh.enableDrawMode();
-        setisResizable(false);
-        // 링크 편집을 활성화할 경우 디바이스 노드에 noResizeMode추가
 
         cy.on('ehstart', (event, sourceNode) => {
           if (sourceNode.id() === 'background') {
@@ -348,8 +313,6 @@ export const NetworkMap = ({ projectId }) => {
         );
       } else {
         eh.disableDrawMode();
-        setisResizable(true);
-
         cy.off('ehstart');
       }
 
@@ -359,18 +322,6 @@ export const NetworkMap = ({ projectId }) => {
       };
     }
   }, [isLinking]);
-
-  useEffect(() => {
-    if (cyRef.current) {
-      const cy = cyRef.current;
-
-      if (isResizable) {
-        cy.nodes('.NEW_DEVICE').removeClass('noResizeMode');
-      } else {
-        cy.nodes('.NEW_DEVICE').addClass('noResizeMode');
-      }
-    }
-  }, [isResizable]);
 
   const infoButtonOnClick = () => {
     // 노드 정보 가져오기
@@ -402,7 +353,7 @@ export const NetworkMap = ({ projectId }) => {
         <button onClick={infoButtonOnClick}>정보 출력</button>
         <Combobox
           label="노드 크기"
-          placeholder="20"
+          placeholder="노드 크기설정"
           items={sizes}
           onSelect={setSelectedSize}
         />
