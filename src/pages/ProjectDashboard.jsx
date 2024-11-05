@@ -8,7 +8,7 @@ import {
   getProjects,
   createProjectAPI,
   deleteProjectAPI,
-} from '../api/Diagram';
+} from '../api/Projects';
 import { addUserAPI, getUsers, deleteUserAPI } from '../api/User';
 import defaultImage from '../assets/images/default_Image.webp';
 import { Modal } from '../components/common/Modal';

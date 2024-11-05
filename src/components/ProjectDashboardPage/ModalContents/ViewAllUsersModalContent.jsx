@@ -1,7 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './ViewAllUsersModalContent.css';
 
 const ViewAllUsersModalContent = ({ users, deleteUser, currentRole }) => {
+  const [search, setSearch] = useState('');
+
+  const filteredUsers = users.filter((user) => {
+    const lowerCaseQuery = search.toLowerCase();
+    return (
+      user.username.toLowerCase().includes(lowerCaseQuery) ||
+      user.name.toLowerCase().includes(lowerCaseQuery)
+    );
+  });
+
   const copyToClipboard = (password) => {
     navigator.clipboard.writeText(password).then(
       () => {
@@ -19,6 +29,13 @@ const ViewAllUsersModalContent = ({ users, deleteUser, currentRole }) => {
     <>
       <div className="vau-header">
         <h2>유저 목록</h2>
+        <input
+          className="vau-search"
+          type="text"
+          placeholder="사용자 계정 또는 이름 검색"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
       <table className="vau-table">
         <thead>
@@ -31,7 +48,7 @@ const ViewAllUsersModalContent = ({ users, deleteUser, currentRole }) => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
+          {filteredUsers.map((user) => (
             <tr key={user.username}>
               <td>{user.username}</td>
               <td>{user.name}</td>
