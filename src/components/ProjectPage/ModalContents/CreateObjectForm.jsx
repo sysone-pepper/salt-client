@@ -110,11 +110,7 @@ export const CreateObjectForm = () => {
       },
       position: { x: newNodeData.positionX, y: newNodeData.positionY },
       style: { width: newNodeData.nodeSize, height: newNodeData.nodeSize },
-      classes: `object ${
-        category === 'icon'
-          ? newNodeData.nodeType + ' noResizeMode'
-          : newNodeData.nodeType
-      }`,
+      classes: `object ${newNodeData.nodeType + ' noControlsMode'}`,
       grabbable: true,
     };
 
