@@ -1,16 +1,16 @@
-import React, { useState } from "react";
-import "./CreateNodeContent.css";
-import { CreateObjectForm } from "./CreateObjectForm";
-import { LoadDeviceForm } from "./LoadDeviceForm";
+import React, { useState } from 'react';
+import './CreateNodeContent.css';
+import { CreateObjectForm } from './CreateObjectForm';
+import { LoadDeviceForm } from './LoadDeviceForm';
 
-export const CreateNodeContent = () => {
+export const CreateNodeContent = ({ closeModal }) => {
   const [isCreateForm, setIsCreateForm] = useState(true);
   return (
     <>
       <span className="create-option-container">
         <div
           className={`option load-option ${
-            isCreateForm ? "" : "selected-option"
+            isCreateForm ? '' : 'selected-option'
           }`}
           onClick={() => setIsCreateForm(false)}
         >
@@ -18,7 +18,7 @@ export const CreateNodeContent = () => {
         </div>
         <div
           className={`option create-option ${
-            isCreateForm ? "selected-option" : ""
+            isCreateForm ? 'selected-option' : ''
           }`}
           onClick={() => setIsCreateForm(true)}
         >
@@ -26,8 +26,8 @@ export const CreateNodeContent = () => {
         </div>
       </span>
       <div className="content-form-container">
-        {!isCreateForm && <LoadDeviceForm />}
-        {isCreateForm && <CreateObjectForm />}
+        {!isCreateForm && <LoadDeviceForm closeModal={closeModal} />}
+        {isCreateForm && <CreateObjectForm closeModal={closeModal} />}
       </div>
     </>
   );
