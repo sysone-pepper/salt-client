@@ -9,14 +9,20 @@ const HIDDEN_CLASSNAME = 'hidden';
 
 export const ToolBox = () => {
   const {
+    nodes,
+    setNodes,
     isLinking,
     setIsLinking,
+    isObjectDelete,
+    setIsObjectDelete,
     cyRef,
     isNavigatorToggled,
     setIsNavigatorToggled,
+    updateBgImg,
   } = useContext(NetworkContext);
 
   const [modalOpen, setModalOpen] = useState(false);
+  const fileInputRef = useRef(null);
 
   const toggleAddNode = () => {
     setModalOpen(true);
@@ -27,6 +33,41 @@ export const ToolBox = () => {
   const inactiveAddLink = () => {
     setIsLinking(false);
   };
+  const activeDeleteObject = () => {
+    setIsObjectDelete(true);
+  };
+  const inactiveDeleteObject = () => {
+    setIsObjectDelete(false);
+  };
+  const onBgImgBtnClick = () => {
+    fileInputRef.current.click();
+  };
+  const handleFileChange = async (event) => {
+    let result;
+    const file = event.target.files[0];
+
+    if (file) {
+      let ok = confirm(`${file.name}을 배경이미지로 등록하시겠습니까?`);
+
+      if (ok) {
+        const formData = new FormData();
+        formData.append('file', file);
+        result = await updateBgImg(formData);
+
+        if (result.success) {
+          const newNodes = nodes.map((node) => {
+            if (node.data.id === 'background') {
+              console.log(result.data);
+              node.data.src = result.data;
+            }
+            return node;
+          });
+          setNodes(newNodes);
+        }
+      }
+    }
+  };
+
   function getChildNodes(parentId) {
     const cy = cyRef.current;
 
@@ -92,9 +133,15 @@ export const ToolBox = () => {
 
   return (
     <>
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        onChange={handleFileChange}
+      />
       {modalOpen && (
         <Modal
-          child={<CreateNodeContent />}
+          child={<CreateNodeContent closeModal={() => setModalOpen(false)} />}
           closeModal={() => setModalOpen(false)}
         />
       )}
@@ -132,12 +179,39 @@ export const ToolBox = () => {
           </AddButton>
         )}
 
-        <AddButton fileName={'group.png'} onClickEvent={group}>
+        {isObjectDelete ? (
+          <AddButton
+            fileName={'object-delete-icon.png'}
+            onClickEvent={inactiveDeleteObject}
+            needCancel={true}
+          >
+            구성도 제거모드 끄기
+          </AddButton>
+        ) : (
+          <AddButton
+            fileName={'object-delete-icon.png'}
+            onClickEvent={activeDeleteObject}
+            needCancel={false}
+          >
+            구성도 제거모드 켜기
+          </AddButton>
+        )}
+
+        <AddButton
+          fileName={'background-icon.png'}
+          onClickEvent={onBgImgBtnClick}
+          needCancel={false}
+          for="bgImgInput"
+        >
+          배경 이미지 수정
+        </AddButton>
+
+        {/* <AddButton fileName={'group.png'} onClickEvent={group}>
           그룹화
         </AddButton>
         <AddButton fileName={'ungroup.png'} onClickEvent={ungroup}>
           그룹 해제
-        </AddButton>
+        </AddButton> */}
       </div>
     </>
   );
