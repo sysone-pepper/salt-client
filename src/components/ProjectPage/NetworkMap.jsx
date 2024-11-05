@@ -1,27 +1,54 @@
+import { useContext, useEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
+
+// 외부 라이브러리
 import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 import edgehandles from 'cytoscape-edgehandles';
 import nodeEditing from 'cytoscape-node-editing';
+import navigator from 'cytoscape-navigator';
+import cytoscapePopper from 'cytoscape-popper';
+import tippy from 'tippy.js';
 import jQuery from 'jquery';
 import konva from 'konva';
+
+// 내부 컴포넌트
 import EHoptions from '../../constants/EdgeHandleOptions';
 import sizes from '../../constants/SizesOption';
-
-import { useContext, useEffect } from 'react';
 import { NetworkContext } from '../../contexts/NetworkContext';
 import { CustomDeviceNode } from './CustomDeviceNode';
 import { CustomIconNode } from './CustomIconNode';
 import { ToolBox } from './ToolBox';
 import { BackgroundNode } from './BackgroundNode';
-import navigator from 'cytoscape-navigator';
-import 'cytoscape-navigator/cytoscape.js-navigator.css';
-import './NetworkMap.css';
 import Combobox from '../common/Combobox';
+
+// 스타일
+import 'cytoscape-navigator/cytoscape.js-navigator.css';
+import 'tippy.js/dist/tippy.css';
+import './NetworkMap.css';
+
+function tippyFactory(ref, content) {
+  const dummyDomElement = document.createElement('div');
+
+  const tip = tippy(dummyDomElement, {
+    allowHTML: true,
+    appendTo: document.body,
+    arrow: true,
+    content: content,
+    getReferenceClientRect: ref.getBoundingClientRect,
+    hideOnClick: true,
+    interactive: true,
+    placement: 'bottom',
+    trigger: 'mouseover',
+  });
+
+  return tip;
+}
 
 cytoscape.use(dagre);
 cytoscape.use(edgehandles);
+cytoscape.use(cytoscapePopper(tippyFactory));
 nodeHtmlLabel(cytoscape);
 navigator(cytoscape);
 nodeEditing(cytoscape, jQuery, konva);
@@ -39,7 +66,6 @@ export const NetworkMap = ({ projectId }) => {
     setEdges,
     isLinking,
     isModalOpen,
-    setNodes,
     isResizable,
     setisResizable,
     selectedSize,
@@ -58,7 +84,7 @@ export const NetworkMap = ({ projectId }) => {
       // 노드 스타일 : elements의 크기를 반영하는데 필요
       style: [
         {
-          selector: '.device',
+          selector: '.NEW_DEVICE',
           style: {
             width: 'data(width)',
             height: 'data(height)',
@@ -67,7 +93,7 @@ export const NetworkMap = ({ projectId }) => {
           },
         },
         {
-          selector: '.device:selected',
+          selector: '.NEW_DEVICE:selected',
           style: {
             width: 'data(width)',
             height: 'data(height)',
@@ -137,7 +163,7 @@ export const NetworkMap = ({ projectId }) => {
         },
       },
       {
-        query: '.device:selected',
+        query: '.NEW_DEVICE:selected',
         halign: 'center',
         valign: 'center',
         halignBox: 'center',
@@ -202,7 +228,28 @@ export const NetworkMap = ({ projectId }) => {
     // 온클릭에 노드 정보 띄우기(차후 삭제 예정)
     cy.on('select', 'node', function (event) {
       const node = event.target;
-      console.log(node.width());
+      console.log(node.json());
+    });
+
+    cy.on('mouseover', '.NEW_DEVICE', (event) => {
+      const node = event.target;
+      const popperRef = node.popperRef();
+
+      const content = `
+                      ID : ${node.id()} <br>
+                      장비명 : ${node.data('newDeviceAlias')} <br>
+                      IP : ${node.data('newDevicePublicIp')} <br>
+                      유형 : ${node.data('newDeviceType')} <br>
+                      OS : ${node.data('newDeviceOs')} <br>
+                      제조사 : ${node.data('newDeviceVendor')} <br>
+                      `;
+
+      const tip = tippyFactory(popperRef, content);
+
+      tip.show();
+      node.on('mouseout', () => {
+        tip.hide();
+      });
     });
 
     const navConfig = {
@@ -242,7 +289,7 @@ export const NetworkMap = ({ projectId }) => {
   useEffect(() => {
     if (cyRef.current) {
       const cy = cyRef.current;
-      cy.nodes('.device').forEach((node) => {
+      cy.nodes('.NEW_DEVICE').forEach((node) => {
         node.style({
           width: `${selectedSize}px`,
           height: `${selectedSize}px`,
@@ -296,9 +343,9 @@ export const NetworkMap = ({ projectId }) => {
     const cy = cyRef.current;
 
     if (isResizable) {
-      cy.nodes('.device').removeClass('noResizeMode');
+      cy.nodes('.NEW_DEVICE').removeClass('noResizeMode');
     } else {
-      cy.nodes('.device').addClass('noResizeMode');
+      cy.nodes('.NEW_DEVICE').addClass('noResizeMode');
     }
   }, [isResizable]);
 
