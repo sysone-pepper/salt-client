@@ -5,6 +5,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  padding-right: 40px;
 }
 
 .vau-header h2 {
@@ -12,6 +13,17 @@
   font-weight: 800;
   color: #a5d3ec;
   margin: 0;
+}
+
+.vau-search {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 700;
+  width: 250px;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  outline: none;
+  margin-left: 20px;  
 }
 
 .vau-close-button {
@@ -65,4 +77,18 @@
 
 .vau-copy-button:hover {
   color: #93c2db;
+}
+
+@media (max-width: 768px) {
+  .vau-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-right: 0;
+  }
+
+  .vau-search {
+    margin-left: 0;
+    margin-top: 10px;
+    width: 100%;
+  }
 }
