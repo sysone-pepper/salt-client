@@ -85,7 +85,7 @@ export const NetworkMap = ({ projectId }) => {
       // 노드 스타일 : elements의 크기를 반영하는데 필요
       style: [
         {
-          selector: '.device',
+          selector: '.NEW_DEVICE',
           style: {
             width: 'data(width)',
             height: 'data(height)',
@@ -94,7 +94,7 @@ export const NetworkMap = ({ projectId }) => {
           },
         },
         {
-          selector: '.device:selected',
+          selector: '.NEW_DEVICE:selected',
           style: {
             width: 'data(width)',
             height: 'data(height)',
@@ -164,7 +164,7 @@ export const NetworkMap = ({ projectId }) => {
         },
       },
       {
-        query: '.device:selected',
+        query: '.NEW_DEVICE:selected',
         halign: 'center',
         valign: 'center',
         halignBox: 'center',
@@ -237,13 +237,14 @@ export const NetworkMap = ({ projectId }) => {
       const popperRef = node.popperRef();
 
       const content = `
-      ID : ${node.id()} <br>
-      장비명 : ${node.data('newDeviceAlias')} <br>
-      IP : ${node.data('newDevicePublicIp')} <br>
-      유형 : ${node.data('newDeviceType')} <br>
-      OS : ${node.data('newDeviceOs')} <br>
-      제조사 : ${node.data('newDeviceVendor')} <br>
-      `;
+                      ID : ${node.id()} <br>
+                      장비명 : ${node.data('newDeviceAlias')} <br>
+                      IP : ${node.data('newDevicePublicIp')} <br>
+                      유형 : ${node.data('newDeviceType')} <br>
+                      OS : ${node.data('newDeviceOs')} <br>
+                      제조사 : ${node.data('newDeviceVendor')} <br>
+                      `;
+
       const tip = tippyFactory(popperRef, content);
 
       tip.show();
@@ -287,7 +288,7 @@ export const NetworkMap = ({ projectId }) => {
   useEffect(() => {
     if (cyRef.current) {
       const cy = cyRef.current;
-      cy.nodes('.device').forEach((node) => {
+      cy.nodes('.NEW_DEVICE').forEach((node) => {
         node.style({
           width: `${selectedSize}px`,
           height: `${selectedSize}px`,
@@ -341,9 +342,9 @@ export const NetworkMap = ({ projectId }) => {
     const cy = cyRef.current;
 
     if (isResizable) {
-      cy.nodes('.device').removeClass('noResizeMode');
+      cy.nodes('.NEW_DEVICE').removeClass('noResizeMode');
     } else {
-      cy.nodes('.device').addClass('noResizeMode');
+      cy.nodes('.NEW_DEVICE').addClass('noResizeMode');
     }
   }, [isResizable]);
 
