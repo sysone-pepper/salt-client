@@ -1,6 +1,3 @@
-import { useContext, useEffect } from 'react';
-import ReactDOMServer from 'react-dom/server';
-
 // 외부 라이브러리
 import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
@@ -16,12 +13,12 @@ import konva from 'konva';
 // 내부 컴포넌트
 import EHoptions from '../../constants/EdgeHandleOptions';
 import sizes from '../../constants/SizesOption';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { NetworkContext } from '../../contexts/NetworkContext';
 import { CustomDeviceNode } from './CustomDeviceNode';
 import { CustomIconNode } from './CustomIconNode';
 import { ToolBox } from './ToolBox';
-import navigator from 'cytoscape-navigator';
 import Combobox from '../common/Combobox';
 
 import 'cytoscape-navigator/cytoscape.js-navigator.css';
@@ -256,7 +253,7 @@ export const NetworkMap = ({ projectId }) => {
           tip.hide();
         });
       });
-      
+
       const navConfig = {
         container: document.getElementById('navigator-container'),
         viewLiveFramerate: 0,
@@ -266,7 +263,7 @@ export const NetworkMap = ({ projectId }) => {
         removeCustomContainer: true,
         rerenderDelay: 100,
       };
-      
+
       const navigatorInstance = cy.navigator(navConfig);
 
       cyRef.current = cy;
@@ -367,10 +364,11 @@ export const NetworkMap = ({ projectId }) => {
     if (cyRef.current) {
       const cy = cyRef.current;
 
-    if (isResizable) {
-      cy.nodes('.NEW_DEVICE').removeClass('noResizeMode');
-    } else {
-      cy.nodes('.NEW_DEVICE').addClass('noResizeMode');
+      if (isResizable) {
+        cy.nodes('.NEW_DEVICE').removeClass('noResizeMode');
+      } else {
+        cy.nodes('.NEW_DEVICE').addClass('noResizeMode');
+      }
     }
   }, [isResizable]);
 
