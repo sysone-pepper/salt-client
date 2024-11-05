@@ -104,8 +104,6 @@ export const deleteLink = async (linkId) => {
 
 export const updateBgImg = async (projectId, file) => {
   const existingHeaders = api.defaults.headers.common;
-  console.log(existingHeaders);
-  console.log(file);
   const response = await api.put(`/api/v1/projects/${projectId}/bgImg`, file, {
     headers: {
       'Content-Type': 'multipart/form-data',
