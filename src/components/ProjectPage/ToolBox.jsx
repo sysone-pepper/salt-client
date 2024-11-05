@@ -1,7 +1,9 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { AddButton } from './Buttons/AddButton';
-import './ToolBox.css';
+import { Modal } from '../common/Modal';
 import { NetworkContext } from '../../contexts/NetworkContext';
+import { CreateNodeContent } from './ModalContents/CreateNodeContent';
+import './ToolBox.css';
 
 const HIDDEN_CLASSNAME = 'hidden';
 
@@ -9,15 +11,15 @@ export const ToolBox = () => {
   const {
     isLinking,
     setIsLinking,
-    setIsModalOpen,
-    setCurModalType,
     cyRef,
     isNavigatorToggled,
     setIsNavigatorToggled,
   } = useContext(NetworkContext);
+
+  const [modalOpen, setModalOpen] = useState(false);
+
   const toggleAddNode = () => {
-    setIsModalOpen(true);
-    setCurModalType('create');
+    setModalOpen(true);
   };
   const activeAddLink = () => {
     setIsLinking(true);
@@ -89,46 +91,54 @@ export const ToolBox = () => {
   };
 
   return (
-    <div className="tool-box-container">
-      <AddButton
-        fileName={'object-icon.png'}
-        onClickEvent={toggleAddNode}
-        disabled={isLinking}
-      >
-        요소 추가
-      </AddButton>
-      <AddButton
-        fileName={'navigator-icon.png'}
-        onClickEvent={toggeleNavigator}
-        needCancel={!isNavigatorToggled}
-      >
-        네비게이터 {isNavigatorToggled ? '숨기기' : '호출'}
-      </AddButton>
-
-      {isLinking ? (
-        <AddButton
-          fileName={'link-icon.png'}
-          onClickEvent={inactiveAddLink}
-          needCancel={true}
-        >
-          링크추가모드 끄기
-        </AddButton>
-      ) : (
-        <AddButton
-          fileName={'link-icon.png'}
-          onClickEvent={activeAddLink}
-          disabled={false}
-        >
-          링크추가모드 켜기
-        </AddButton>
+    <>
+      {modalOpen && (
+        <Modal
+          child={<CreateNodeContent />}
+          closeModal={() => setModalOpen(false)}
+        />
       )}
+      <div className="tool-box-container">
+        <AddButton
+          fileName={'object-icon.png'}
+          onClickEvent={toggleAddNode}
+          disabled={isLinking}
+        >
+          요소 추가
+        </AddButton>
+        <AddButton
+          fileName={'navigator-icon.png'}
+          onClickEvent={toggeleNavigator}
+          needCancel={!isNavigatorToggled}
+        >
+          네비게이터 {isNavigatorToggled ? '숨기기' : '호출'}
+        </AddButton>
 
-      <AddButton fileName={'group.png'} onClickEvent={group}>
-        그룹화
-      </AddButton>
-      <AddButton fileName={'ungroup.png'} onClickEvent={ungroup}>
-        그룹 해제
-      </AddButton>
-    </div>
+        {isLinking ? (
+          <AddButton
+            fileName={'link-icon.png'}
+            onClickEvent={inactiveAddLink}
+            needCancel={true}
+          >
+            링크추가모드 끄기
+          </AddButton>
+        ) : (
+          <AddButton
+            fileName={'link-icon.png'}
+            onClickEvent={activeAddLink}
+            disabled={false}
+          >
+            링크추가모드 켜기
+          </AddButton>
+        )}
+
+        <AddButton fileName={'group.png'} onClickEvent={group}>
+          그룹화
+        </AddButton>
+        <AddButton fileName={'ungroup.png'} onClickEvent={ungroup}>
+          그룹 해제
+        </AddButton>
+      </div>
+    </>
   );
 };

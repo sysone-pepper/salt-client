@@ -20,7 +20,6 @@ import { NetworkContext } from '../../contexts/NetworkContext';
 import { CustomDeviceNode } from './CustomDeviceNode';
 import { CustomIconNode } from './CustomIconNode';
 import { ToolBox } from './ToolBox';
-import { Modal } from './Modals/Modal';
 import { BackgroundNode } from './BackgroundNode';
 import Combobox from '../common/Combobox';
 
@@ -132,7 +131,7 @@ export const NetworkMap = ({ projectId }) => {
       wheelSensitivity: 0.2,
     });
 
-    cy.nodeHtmlLabel([
+    const htmlLabelInstance = cy.nodeHtmlLabel([
       {
         query: '#background',
         halign: 'center',
@@ -194,7 +193,7 @@ export const NetworkMap = ({ projectId }) => {
       },
     ]);
 
-    cy.nodeEditing({
+    const nodeEditingInstance = cy.nodeEditing({
       padding: 5,
       undoable: true,
       grappleSize: 6,
@@ -263,12 +262,14 @@ export const NetworkMap = ({ projectId }) => {
       rerenderDelay: 100,
     };
 
-    cy.navigator(navConfig);
+    const navigatorInstance = cy.navigator(navConfig);
 
     cyRef.current = cy;
 
     return () => {
+      navigatorInstance.destroy();
       cy.destroy();
+      cyRef.current = null;
     };
   }, [curProjectId]);
 
@@ -383,14 +384,14 @@ export const NetworkMap = ({ projectId }) => {
           onSelect={setSelectedSize}
         />
       </div>
-      {isModalOpen && <Modal />}
       <ToolBox />
       <div
         id="cy"
         style={{
           width: '800px',
-          height: '1600px',
+          height: '600px',
           border: '1px solid lightgray',
+          zIndex: '10',
         }}
       />
     </div>
