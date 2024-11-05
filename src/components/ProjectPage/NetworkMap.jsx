@@ -6,12 +6,9 @@ import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 import edgehandles from 'cytoscape-edgehandles';
-import nodeEditing from 'cytoscape-node-editing';
 import navigator from 'cytoscape-navigator';
 import cytoscapePopper from 'cytoscape-popper';
 import tippy from 'tippy.js';
-import jQuery from 'jquery';
-import konva from 'konva';
 
 // 내부 컴포넌트
 import EHoptions from '../../constants/EdgeHandleOptions';
@@ -28,6 +25,7 @@ import 'cytoscape-navigator/cytoscape.js-navigator.css';
 import 'tippy.js/dist/tippy.css';
 import './NetworkMap.css';
 
+// 툴팁 기능을 위한 설정
 function tippyFactory(ref, content) {
   const dummyDomElement = document.createElement('div');
 
@@ -51,7 +49,6 @@ cytoscape.use(edgehandles);
 cytoscape.use(cytoscapePopper(tippyFactory));
 nodeHtmlLabel(cytoscape);
 navigator(cytoscape);
-nodeEditing(cytoscape, jQuery, konva);
 
 export const NetworkMap = ({ projectId }) => {
   const {
@@ -81,15 +78,12 @@ export const NetworkMap = ({ projectId }) => {
     }
     const cy = cytoscape({
       container: document.getElementById('cy'),
-      // 노드 스타일 : elements의 크기를 반영하는데 필요
       style: [
         {
           selector: '.NEW_DEVICE',
           style: {
             width: 'data(width)',
             height: 'data(height)',
-            // width: `${selectedSize}px`,
-            // height: `${selectedSize}px`,
           },
         },
         {
@@ -97,8 +91,6 @@ export const NetworkMap = ({ projectId }) => {
           style: {
             width: 'data(width)',
             height: 'data(height)',
-            // width: `${selectedSize}px`,
-            // height: `${selectedSize}px`,
           },
         },
         {
@@ -193,30 +185,6 @@ export const NetworkMap = ({ projectId }) => {
       },
     ]);
 
-    const nodeEditingInstance = cy.nodeEditing({
-      padding: 5,
-      undoable: true,
-      grappleSize: 6,
-      grappleColor: '#fff',
-      grappleStrokeColor: '#666666',
-      grappleStrokeWidth: 1,
-      inactiveGrappleStroke: 'inside 1px',
-      boundingRectangleLineDash: [2, 4],
-      boundingRectangleLineColor: '#666666',
-    });
-
-    // 노드 리사이징을 하고 나면 state에 width와 height를 반영
-    cy.on('nodeediting.resizeend', async function (event, type, target) {
-      const width = target.width();
-      target.data('width', width);
-      target.data('height', width);
-
-      const node = target.json();
-      node.data.nodeSize = target.width();
-
-      await updateNode(node);
-    });
-
     cy.on('dragfree', 'node', async (event) => {
       const target = event.target;
       const node = target.json();
@@ -231,6 +199,7 @@ export const NetworkMap = ({ projectId }) => {
       console.log(node.json());
     });
 
+    // 노드 위에 마우스를 올리면 툴팁에 content를 출력
     cy.on('mouseover', '.NEW_DEVICE', (event) => {
       const node = event.target;
       const popperRef = node.popperRef();
@@ -379,7 +348,7 @@ export const NetworkMap = ({ projectId }) => {
         <button onClick={infoButtonOnClick}>정보 출력</button>
         <Combobox
           label="노드 크기"
-          placeholder="20"
+          placeholder="노드 크기설정"
           items={sizes}
           onSelect={setSelectedSize}
         />

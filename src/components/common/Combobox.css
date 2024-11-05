@@ -23,7 +23,7 @@ ul {
   width: 12rem;
   max-height: 10rem;
   position: absolute;
-  top: 4.5rem;
+  top: 4rem;
   overflow-y: auto;  
   overflow-x: hidden;
   background-color: white; 
@@ -33,8 +33,8 @@ ul {
 
 .dd-div {
   display: flex;
-  height: 2.5rem;
-  width: 19rem;
+  height: 1.8rem;
+  width: 6rem;
   box-shadow: 1px 1px 5px #ccc;
 }
 
@@ -42,6 +42,7 @@ ul {
   flex-grow: 1; 
   padding: 0.5rem; 
   border: none;
+  width: 3rem;
 }
 
 .dd-div .dd-toggle-button {
