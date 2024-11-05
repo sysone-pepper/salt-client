@@ -3,9 +3,11 @@
 .projects-page {
   position: relative;
   z-index: 2;
-  padding: 20px;
   min-height: 100vh;
-  overflow-y: auto;
+}
+
+.user-management{
+  margin: 20px;
 }
 
 .my-users {
@@ -20,7 +22,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin: 20px;
 }
 
 .title-and-add {
@@ -69,6 +71,7 @@
 
 .my-pjt-hr {
   border-color: #fff;
+  margin: 20px;
 }
 
 .projects-wrapper {

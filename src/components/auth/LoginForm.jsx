@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import "./LoginForm.css";
+import React, { useState } from 'react';
+import './LoginForm.css';
+import ImageLogo from '../../assets/images/salt-Logo-white-rm.png';
 
 const LoginForm = ({ onSubmit }) => {
-  const [id, setId] = useState("");
-  const [password, setPassword] = useState("");
+  const [id, setId] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -12,7 +13,7 @@ const LoginForm = ({ onSubmit }) => {
 
   return (
     <div className="login">
-      <h1>SALT</h1>
+      <img src={ImageLogo} alt="SALT Logo" className="logo" />
       <form onSubmit={handleSubmit}>
         <input
           type="text"
