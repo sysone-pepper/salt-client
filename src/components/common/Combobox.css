@@ -20,15 +20,16 @@ ul {
 
 
 .dd-menu {
-  width: 12rem;
+  width: 6rem;
   max-height: 10rem;
   position: absolute;
-  top: 4rem;
+  top: 3.8rem;
   overflow-y: auto;  
   overflow-x: hidden;
   background-color: white; 
   border: 0 1px 1px 1px solid #ccc; 
   z-index: 9999999999; 
+  font-size: .5rem;
 }
 
 .dd-div {
