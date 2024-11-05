@@ -4,7 +4,6 @@ import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 import edgehandles from 'cytoscape-edgehandles';
 import nodeEditing from 'cytoscape-node-editing';
-import popper from 'cytoscape-popper';
 import tippy from 'tippy.js';
 import jQuery from 'jquery';
 import konva from 'konva';
@@ -20,6 +19,8 @@ import { Modal } from './Modals/Modal';
 import { BackgroundNode } from './BackgroundNode';
 import navigator from 'cytoscape-navigator';
 import 'cytoscape-navigator/cytoscape.js-navigator.css';
+import 'tippy.js/dist/tippy.css';
+
 import './NetworkMap.css';
 import Combobox from '../common/Combobox';
 import cytoscapePopper from 'cytoscape-popper';
@@ -29,11 +30,11 @@ function tippyFactory(ref, content) {
 
   const tip = tippy(dummyDomElement, {
     getReferenceClientRect: ref.getBoundingClientRect,
-    trigger: 'manual',
+    trigger: 'mouseover',
     content: content,
     arrow: true,
     placement: 'bottom',
-    hideOnClick: false,
+    hideOnClick: true,
     interactive: true,
     appendTo: document.body,
   });
@@ -61,7 +62,6 @@ export const NetworkMap = ({ projectId }) => {
     setEdges,
     isLinking,
     isModalOpen,
-    setNodes,
     isResizable,
     setisResizable,
     selectedSize,
