@@ -197,7 +197,6 @@ export const NetworkMap = ({ projectId }) => {
       // 온클릭에 노드 정보 띄우기(차후 삭제 예정)
       cy.on('select', 'node', function (event) {
         const node = event.target;
-        console.log(node.width());
       });
 
       cy.on('mouseover', '.NEW_DEVICE', (event) => {
