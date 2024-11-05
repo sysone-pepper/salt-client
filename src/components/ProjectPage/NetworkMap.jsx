@@ -353,7 +353,7 @@ export const NetworkMap = ({ projectId }) => {
         <button onClick={infoButtonOnClick}>정보 출력</button>
         <Combobox
           label="노드 크기"
-          placeholder="노드 크기설정"
+          placeholder="노드 크기"
           items={sizes}
           onSelect={setSelectedSize}
         />
