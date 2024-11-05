@@ -94,17 +94,17 @@ export const NetworkMap = ({ projectId }) => {
             },
           },
           {
-            selector: '.NEW_DEVICE',
+            selector: '.NEW_DEVICE[nodeSize]',
             style: {
-              width: 'data(width)',
-              height: 'data(height)',
+              width: 'data(nodeSize)',
+              height: 'data(nodeSize)',
             },
           },
           {
-            selector: '.NEW_DEVICE:selected',
+            selector: '.NEW_DEVICE[nodeSize]:selected',
             style: {
-              width: 'data(width)',
-              height: 'data(height)',
+              width: 'data(nodeSize)',
+              height: 'data(nodeSize)',
             },
           },
           {
@@ -197,7 +197,6 @@ export const NetworkMap = ({ projectId }) => {
       // 온클릭에 노드 정보 띄우기(차후 삭제 예정)
       cy.on('select', 'node', function (event) {
         const node = event.target;
-        console.log(node.width());
       });
 
       cy.on('mouseover', '.NEW_DEVICE', (event) => {
