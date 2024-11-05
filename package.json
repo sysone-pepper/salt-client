@@ -19,12 +19,14 @@
     "cytoscape-navigator": "^2.0.2",
     "cytoscape-node-editing": "^4.1.1",
     "cytoscape-node-html-label": "^1.2.2",
+    "cytoscape-popper": "^4.0.1",
     "downshift": "^9.0.8",
     "gsap": "^3.12.5",
     "jwt-decode": "^4.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.27.0"
+    "react-router-dom": "^6.27.0",
+    "tippy.js": "^6.3.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",

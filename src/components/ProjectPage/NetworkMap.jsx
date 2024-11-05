@@ -1,26 +1,54 @@
+import { useContext, useEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
+
+// 외부 라이브러리
 import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 import edgehandles from 'cytoscape-edgehandles';
 import nodeEditing from 'cytoscape-node-editing';
+import navigator from 'cytoscape-navigator';
+import cytoscapePopper from 'cytoscape-popper';
+import tippy from 'tippy.js';
 import jQuery from 'jquery';
 import konva from 'konva';
+
+// 내부 컴포넌트
 import EHoptions from '../../constants/EdgeHandleOptions';
 import sizes from '../../constants/SizesOption';
-
 import { useContext, useEffect, useState } from 'react';
 import { NetworkContext } from '../../contexts/NetworkContext';
 import { CustomDeviceNode } from './CustomDeviceNode';
 import { CustomIconNode } from './CustomIconNode';
 import { ToolBox } from './ToolBox';
 import navigator from 'cytoscape-navigator';
-import 'cytoscape-navigator/cytoscape.js-navigator.css';
-import './NetworkMap.css';
 import Combobox from '../common/Combobox';
+
+import 'cytoscape-navigator/cytoscape.js-navigator.css';
+import 'tippy.js/dist/tippy.css';
+import './NetworkMap.css';
+
+function tippyFactory(ref, content) {
+  const dummyDomElement = document.createElement('div');
+
+  const tip = tippy(dummyDomElement, {
+    allowHTML: true,
+    appendTo: document.body,
+    arrow: true,
+    content: content,
+    getReferenceClientRect: ref.getBoundingClientRect,
+    hideOnClick: true,
+    interactive: true,
+    placement: 'bottom',
+    trigger: 'mouseover',
+  });
+
+  return tip;
+}
 
 cytoscape.use(dagre);
 cytoscape.use(edgehandles);
+cytoscape.use(cytoscapePopper(tippyFactory));
 nodeHtmlLabel(cytoscape);
 navigator(cytoscape);
 nodeEditing(cytoscape, jQuery, konva);
@@ -38,7 +66,6 @@ export const NetworkMap = ({ projectId }) => {
     setEdges,
     isLinking,
     isModalOpen,
-    setNodes,
     isResizable,
     setisResizable,
     selectedSize,
@@ -209,6 +236,27 @@ export const NetworkMap = ({ projectId }) => {
         console.log(node.width());
       });
 
+      cy.on('mouseover', '.NEW_DEVICE', (event) => {
+        const node = event.target;
+        const popperRef = node.popperRef();
+
+        const content = `
+                        ID : ${node.id()} <br>
+                        장비명 : ${node.data('newDeviceAlias')} <br>
+                        IP : ${node.data('newDevicePublicIp')} <br>
+                        유형 : ${node.data('newDeviceType')} <br>
+                        OS : ${node.data('newDeviceOs')} <br>
+                        제조사 : ${node.data('newDeviceVendor')} <br>
+                        `;
+
+        const tip = tippyFactory(popperRef, content);
+
+        tip.show();
+        node.on('mouseout', () => {
+          tip.hide();
+        });
+      });
+      
       const navConfig = {
         container: document.getElementById('navigator-container'),
         viewLiveFramerate: 0,
@@ -218,7 +266,7 @@ export const NetworkMap = ({ projectId }) => {
         removeCustomContainer: true,
         rerenderDelay: 100,
       };
-
+      
       const navigatorInstance = cy.navigator(navConfig);
 
       cyRef.current = cy;
@@ -257,7 +305,7 @@ export const NetworkMap = ({ projectId }) => {
   useEffect(() => {
     if (cyRef.current) {
       const cy = cyRef.current;
-      cy.nodes('.device').forEach((node) => {
+      cy.nodes('.NEW_DEVICE').forEach((node) => {
         node.style({
           width: `${selectedSize}px`,
           height: `${selectedSize}px`,
@@ -319,11 +367,10 @@ export const NetworkMap = ({ projectId }) => {
     if (cyRef.current) {
       const cy = cyRef.current;
 
-      if (isResizable) {
-        cy.nodes('.device').removeClass('noResizeMode');
-      } else {
-        cy.nodes('.device').addClass('noResizeMode');
-      }
+    if (isResizable) {
+      cy.nodes('.NEW_DEVICE').removeClass('noResizeMode');
+    } else {
+      cy.nodes('.NEW_DEVICE').addClass('noResizeMode');
     }
   }, [isResizable]);
 
