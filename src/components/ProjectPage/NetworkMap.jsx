@@ -156,7 +156,7 @@ export const NetworkMap = ({ projectId }) => {
           },
         },
         {
-          query: '.device:selected',
+          query: '.NEW_DEVICE:selected',
           halign: 'center',
           valign: 'center',
           halignBox: 'center',
