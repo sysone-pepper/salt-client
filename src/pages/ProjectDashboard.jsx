@@ -16,6 +16,8 @@ import AddUserModalContent from '../components/ProjectDashboardPage/ModalContent
 import ViewAllUsersModalContent from '../components/ProjectDashboardPage/ModalContents/ViewAllUsersModalContent';
 import AddProjectModalContent from '../components/ProjectDashboardPage/ModalContents/AddProjectModalContent';
 import ProjectSummaryModalContent from '../components/ProjectDashboardPage/ModalContents/ProjectSummaryModalContent';
+import Header from '../layout/Header';
+import FooterDark from '../layout/FooterDark';
 
 const ProjectDashboard = () => {
   const { currentUser, isAuthenticated } = useAuth();
@@ -196,6 +198,7 @@ const ProjectDashboard = () => {
 
   return (
     <div className="projects-page">
+      <Header />
       <div className="user-management">
         <div className="users-header">
           <div className="title-and-add">
@@ -294,6 +297,7 @@ const ProjectDashboard = () => {
           closeModal={() => setShowProjectSummaryModal(false)}
         />
       )}
+      <FooterDark />
     </div>
   );
 };
