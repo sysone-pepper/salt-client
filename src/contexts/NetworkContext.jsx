@@ -1,5 +1,5 @@
 import React, { createContext, useState, useRef } from 'react';
-import * as api from '../api/Graph';
+import * as api from '../api/Diagram';
 
 export const NetworkContext = createContext();
 
