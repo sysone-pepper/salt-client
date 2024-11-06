@@ -4,6 +4,7 @@ import { NetworkContext, NetworkProvider } from '../contexts/NetworkContext';
 import './ProjectPage.css';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
+import { DiagramField } from '../components/ProjectPage/DiagramField';
 
 const ProjectPage = () => {
   const { projectId } = useParams();
@@ -21,7 +22,8 @@ const ProjectPage = () => {
       <NetworkProvider>
         {' '}
         <div>ProjectPage</div>
-        <NetworkMap projectId={Number(projectId)} />
+        {/* <NetworkMap projectId={Number(projectId)} /> */}
+        <DiagramField projectId={Number(projectId)} />
       </NetworkProvider>
     </>
   );
