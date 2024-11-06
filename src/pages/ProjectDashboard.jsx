@@ -51,7 +51,6 @@ const ProjectDashboard = () => {
         const response = await getUsers();
         if (response.data.success) {
           const { users, currentRole } = response.data.data;
-          console.log(response);
           const formattedUsers = users.map((user) => ({
             id: user.id,
             username: user.id,
@@ -59,7 +58,6 @@ const ProjectDashboard = () => {
             authority: user.authority,
             role: user.role,
           }));
-          console.log(formattedUsers);
           setUsersData([
             {
               id: 'view-all',
