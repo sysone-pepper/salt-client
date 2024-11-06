@@ -1,10 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap");
-
 .ft-container {
   background-color: #ffffff;
   padding-top: 40px;
   padding-bottom: 10px;
-  font-family: "Nanum Gothic", sans-serif;
   margin-top: 80px;
 }
 
@@ -27,7 +24,7 @@
 
 .ft-title {
   font-size: 24px;
-  font-weight: bold;
+  font-weight: 800;
 }
 
 .ft-contact-info {
@@ -41,7 +38,7 @@
 }
 
 .ft-contact-value {
-  font-weight: bold;
+  font-weight: 800;
 }
 
 .ft-cta-title {
@@ -56,11 +53,9 @@
 }
 
 .ft-button {
-  font-family: "Nanum Gothic", sans-serif;
   font-weight: 700;
   padding: 10px 20px;
   border-radius: 20px;
-  font-weight: bold;
   cursor: pointer;
 }
 

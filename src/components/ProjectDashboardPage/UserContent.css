@@ -7,7 +7,6 @@
   height: 100px;
   margin: 10px;
   cursor: pointer;
-  font-family: "Nanum Gothic", sans-serif;
   transition: all 0.3s ease;
 }
 
@@ -30,7 +29,7 @@
 
 .user-content.view-all .user-icon {
   background-color: #93c2db;
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .user-content h2 {
