@@ -9,27 +9,28 @@ export function NetworkProvider({ children }) {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const [bgImg, setBgImg] = useState(null);
-
+  const [dataReady, setDataReady] = useState(false);
   const [isLinking, setIsLinking] = useState(false);
   const [isObjectDelete, setIsObjectDelete] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedSize, setSelectedSize] = useState('20');
+  const [selectedSize, setSelectedSize] = useState(20);
   const [isNavigatorToggled, setIsNavigatorToggled] = useState(true);
 
   const fetchMapData = async () => {
-    const { backgroundSource, nodes, edges } = await api.fetchDiagramData(
-      curProjectId,
-    );
-    console.log(backgroundSource);
+    const { nodeSize, backgroundSource, nodes, edges } =
+      await api.fetchDiagramData(curProjectId);
+
+    setSelectedSize(nodeSize < 20 ? 20 : nodeSize);
     const newNodes = [
       {
         group: 'nodes',
-        data: { id: 'background', src: backgroundSource },
+        data: { id: 'background' },
         position: { x: 400, y: 300 }, // 캔버스의 중앙 위치 (적절히 조정 가능)
         locked: true,
       },
       ...nodes,
     ];
+    setBgImg(backgroundSource);
     setNodes(newNodes);
     setEdges(edges);
   };
@@ -82,7 +83,6 @@ export function NetworkProvider({ children }) {
         break;
     }
 
-    // nodes 상태 업데이트
     setNodes((prevNodes) =>
       prevNodes.map((node) =>
         node.data.id === updatedNode.data.id ? updatedNode : node,
@@ -90,19 +90,67 @@ export function NetworkProvider({ children }) {
     );
   };
 
-  const createLink = async (source, target) => {
+  const updateNodeSize = async () => {
+    if (selectedSize >= 20) {
+      const res = await api.updateNodeSize(curProjectId, selectedSize);
+      if (res.success) {
+        const updatedNodes = [...nodes].map((node, idx) => {
+          if (idx > 0) {
+            node.data.nodeSize = Number(selectedSize);
+          }
+          return node;
+        });
+        setNodes(updatedNodes);
+      }
+    }
+  };
+
+  const createLink = async (startNodeId, endNodeId) => {
     const input = {
-      startNodeId: source.data.id,
-      endNodeId: target.data.id,
+      startNodeId,
+      endNodeId,
     };
     const res = await api.createLink(input);
-    console.log(res);
     return res.data;
   };
 
   const updateBgImg = async (file) => {
     const res = await api.updateBgImg(curProjectId, file);
-    return res;
+    setBgImg(res.data);
+  };
+
+  const deleteObject = async (obj) => {
+    let res;
+    if (obj.data.id.startsWith('edge')) {
+      const linkId = obj.data.id.split('-')[1];
+      res = await api.deleteLink(linkId);
+      if (res.success) {
+        const newEdges = edges.filter(
+          (edge) => edge.data.id !== `edge-${linkId}`,
+        );
+        setEdges(newEdges);
+      }
+    } else {
+      const nodeId = obj.data.id;
+      res = await api.deleteNode(nodeId);
+      if (res.success) {
+        const updatedEdges = [];
+        for (const edge of edges) {
+          if (edge.data.source === nodeId || edge.data.target === nodeId) {
+            const linkId = edge.data.id.split('-')[1];
+            const res = await api.deleteLink(linkId);
+            if (!res.success) {
+              updatedEdges.push(edge);
+            }
+          } else {
+            updatedEdges.push(edge);
+          }
+        }
+        setEdges(updatedEdges);
+        const newNodes = nodes.filter((node) => node.data.id !== nodeId);
+        setNodes(newNodes);
+      }
+    }
   };
 
   return (
@@ -112,14 +160,20 @@ export function NetworkProvider({ children }) {
         createLink,
         fetchMapData,
         updateNode,
+        updateNodeSize,
         updateBgImg,
+        deleteObject,
         cyRef,
         curProjectId,
         setCurProjectId,
+        bgImg,
+        setBgImg,
         nodes,
         setNodes,
         edges,
         setEdges,
+        dataReady,
+        setDataReady,
         isLinking,
         setIsLinking,
         isObjectDelete,
