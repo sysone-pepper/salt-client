@@ -42,7 +42,7 @@ const deviceManagementTypes = [
 ];
 
 export const CreateObjectForm = ({ closeModal }) => {
-  const { curProjectId, createNodeId, nodes, setNodes, setCurModalType } =
+  const { curProjectId, createNodeId, nodes, setNodes, selectedSize } =
     useContext(NetworkContext);
 
   const [category, setCategory] = useState('device');
@@ -63,7 +63,7 @@ export const CreateObjectForm = ({ closeModal }) => {
           nodeType: 'NEW_DEVICE',
           positionX: 50,
           positionY: 50,
-          nodeSize: 30,
+          nodeSize: selectedSize,
           newDeviceName: deviceName,
           newDeviceAlias: deviceName,
           newDeviceType: deviceType,
@@ -77,7 +77,7 @@ export const CreateObjectForm = ({ closeModal }) => {
           nodeType: 'ICON',
           positionX: 50,
           positionY: 50,
-          nodeSize: 30,
+          nodeSize: selectedSize,
           iconType: iconType,
         };
         break;
@@ -86,7 +86,7 @@ export const CreateObjectForm = ({ closeModal }) => {
           nodeType: 'TEXT',
           positionX: 50,
           positionY: 50,
-          nodeSize: 30,
+          nodeSize: selectedSize,
           textContent: '',
           textColor: '',
         };
@@ -99,6 +99,7 @@ export const CreateObjectForm = ({ closeModal }) => {
       group: 'nodes',
       data: {
         id: nodeId,
+        nodeId,
         projectId: curProjectId,
         ...newNodeData,
       },
@@ -110,7 +111,6 @@ export const CreateObjectForm = ({ closeModal }) => {
 
     delete newNode.data.positionX;
     delete newNode.data.positionY;
-    delete newNode.data.nodeSize;
 
     setNodes([...nodes, newNode]);
     closeModal();
