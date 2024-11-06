@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import CustomInput from '../common/CustomInput';
 import './LoginForm.css';
 import ImageLogo from '../../assets/images/salt-Logo-white-rm.png';
 
@@ -15,7 +16,7 @@ const LoginForm = ({ onSubmit }) => {
     <div className="login">
       <img src={ImageLogo} alt="SALT Logo" className="logo" />
       <form onSubmit={handleSubmit}>
-        <input
+        <CustomInput
           type="text"
           name="u"
           placeholder="Username"
@@ -23,7 +24,7 @@ const LoginForm = ({ onSubmit }) => {
           value={id}
           onChange={(e) => setId(e.target.value)}
         />
-        <input
+        <CustomInput
           type="password"
           name="p"
           placeholder="Password"
