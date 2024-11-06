@@ -3,6 +3,7 @@ import { lazy, Suspense } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import AnimatedBackground from './layout/AnimatedBackground';
 import ProjectPage from './pages/ProjectPage';
+import ServerDashboard from './pages/ServerDashboard';
 
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const ProjectDashboardPage = lazy(() => import('./pages/ProjectDashboard'));
@@ -21,6 +22,8 @@ function App() {
                   element={<ProjectDashboardPage />}
                 />
               </Route>
+              <Route path="project/" element={<ProjectPage />} />
+              <Route path="dashboard/" element={<ServerDashboard />} />
               <Route
                 path="project-detail/:projectId"
                 element={<ProjectPage />}
