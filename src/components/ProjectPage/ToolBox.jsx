@@ -1,14 +1,31 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { AddButton } from './Buttons/AddButton';
-import './ToolBox.css';
+import { Modal } from '../common/Modal';
 import { NetworkContext } from '../../contexts/NetworkContext';
+import { CreateNodeContent } from './ModalContents/CreateNodeContent';
+import './ToolBox.css';
+
+const HIDDEN_CLASSNAME = 'hidden';
 
 export const ToolBox = () => {
-  const { isLinking, setIsLinking, setIsModalOpen, setCurModalType, cyRef } =
-    useContext(NetworkContext);
+  const {
+    nodes,
+    setNodes,
+    isLinking,
+    setIsLinking,
+    isObjectDelete,
+    setIsObjectDelete,
+    cyRef,
+    isNavigatorToggled,
+    setIsNavigatorToggled,
+    updateBgImg,
+  } = useContext(NetworkContext);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const fileInputRef = useRef(null);
+
   const toggleAddNode = () => {
-    setIsModalOpen(true);
-    setCurModalType('create');
+    setModalOpen(true);
   };
   const activeAddLink = () => {
     setIsLinking(true);
@@ -16,6 +33,41 @@ export const ToolBox = () => {
   const inactiveAddLink = () => {
     setIsLinking(false);
   };
+  const activeDeleteObject = () => {
+    setIsObjectDelete(true);
+  };
+  const inactiveDeleteObject = () => {
+    setIsObjectDelete(false);
+  };
+  const onBgImgBtnClick = () => {
+    fileInputRef.current.click();
+  };
+  const handleFileChange = async (event) => {
+    let result;
+    const file = event.target.files[0];
+
+    if (file) {
+      let ok = confirm(`${file.name}을 배경이미지로 등록하시겠습니까?`);
+
+      if (ok) {
+        const formData = new FormData();
+        formData.append('file', file);
+        result = await updateBgImg(formData);
+
+        if (result.success) {
+          const newNodes = nodes.map((node) => {
+            if (node.data.id === 'background') {
+              console.log(result.data);
+              node.data.src = result.data;
+            }
+            return node;
+          });
+          setNodes(newNodes);
+        }
+      }
+    }
+  };
+
   function getChildNodes(parentId) {
     const cy = cyRef.current;
 
@@ -67,30 +119,100 @@ export const ToolBox = () => {
     setNodes(cy.elements().map((ele) => ele.json()));
   };
 
+  const toggeleNavigator = () => {
+    const navigator = document.getElementsByClassName('cytoscape-navigator')[0];
+    setIsNavigatorToggled((prevState) => {
+      if (prevState) {
+        navigator.classList.add(HIDDEN_CLASSNAME);
+      } else {
+        navigator.classList.remove(HIDDEN_CLASSNAME);
+      }
+      return !prevState;
+    });
+  };
+
   return (
-    <div className="tool-box-container">
-      <AddButton
-        fileName={'object-icon.png'}
-        onClickEvent={toggleAddNode}
-        disabled={isLinking}
+    <>
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        onChange={handleFileChange}
       />
-      {isLinking ? (
-        <AddButton
-          fileName={'link-icon.png'}
-          onClickEvent={inactiveAddLink}
-          needCancel={true}
-          disabled={false}
-        />
-      ) : (
-        <AddButton
-          fileName={'link-icon.png'}
-          onClickEvent={activeAddLink}
-          disabled={false}
+      {modalOpen && (
+        <Modal
+          child={<CreateNodeContent closeModal={() => setModalOpen(false)} />}
+          closeModal={() => setModalOpen(false)}
         />
       )}
+      <div className="tool-box-container">
+        <AddButton
+          fileName={'object-icon.png'}
+          onClickEvent={toggleAddNode}
+          disabled={isLinking}
+        >
+          요소 추가
+        </AddButton>
+        <AddButton
+          fileName={'navigator-icon.png'}
+          onClickEvent={toggeleNavigator}
+          needCancel={!isNavigatorToggled}
+        >
+          네비게이터 {isNavigatorToggled ? '숨기기' : '호출'}
+        </AddButton>
 
-      <AddButton fileName={'group.png'} onClickEvent={group} />
-      <AddButton fileName={'ungroup.png'} onClickEvent={ungroup} />
-    </div>
+        {isLinking ? (
+          <AddButton
+            fileName={'link-icon.png'}
+            onClickEvent={inactiveAddLink}
+            needCancel={true}
+          >
+            링크추가모드 끄기
+          </AddButton>
+        ) : (
+          <AddButton
+            fileName={'link-icon.png'}
+            onClickEvent={activeAddLink}
+            disabled={false}
+          >
+            링크추가모드 켜기
+          </AddButton>
+        )}
+
+        {isObjectDelete ? (
+          <AddButton
+            fileName={'object-delete-icon.png'}
+            onClickEvent={inactiveDeleteObject}
+            needCancel={true}
+          >
+            구성도 제거모드 끄기
+          </AddButton>
+        ) : (
+          <AddButton
+            fileName={'object-delete-icon.png'}
+            onClickEvent={activeDeleteObject}
+            needCancel={false}
+          >
+            구성도 제거모드 켜기
+          </AddButton>
+        )}
+
+        <AddButton
+          fileName={'background-icon.png'}
+          onClickEvent={onBgImgBtnClick}
+          needCancel={false}
+          for="bgImgInput"
+        >
+          배경 이미지 수정
+        </AddButton>
+
+        {/* <AddButton fileName={'group.png'} onClickEvent={group}>
+          그룹화
+        </AddButton>
+        <AddButton fileName={'ungroup.png'} onClickEvent={ungroup}>
+          그룹 해제
+        </AddButton> */}
+      </div>
+    </>
   );
 };

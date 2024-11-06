@@ -1,5 +1,6 @@
-import React from "react";
-import "./ProjectContent.css";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import './ProjectContent.css';
 
 const ProjectContent = ({
   id,
@@ -28,9 +29,9 @@ const ProjectContent = ({
           <span>@{author}</span>
         </h2>
         {/* <p>{description}</p> */}
-        <a href="#" className="follow">
+        <Link to={`/project-detail/${id}`} className="follow">
           구성도 구성
-        </a>
+        </Link>
         <a
           href="#"
           className="info"

@@ -1,184 +1,275 @@
-import ReactDOMServer from 'react-dom/server';
+// 외부 라이브러리
 import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 import edgehandles from 'cytoscape-edgehandles';
+import navigator from 'cytoscape-navigator';
+import cytoscapePopper from 'cytoscape-popper';
+import tippy from 'tippy.js';
+
+// 내부 컴포넌트
 import EHoptions from '../../constants/EdgeHandleOptions';
 import sizes from '../../constants/SizesOption';
-
 import { useContext, useEffect } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { NetworkContext } from '../../contexts/NetworkContext';
 import { CustomDeviceNode } from './CustomDeviceNode';
 import { CustomIconNode } from './CustomIconNode';
 import { ToolBox } from './ToolBox';
-import { Modal } from './Modals/Modal';
-import { BackgroundNode } from './BackgroundNode';
 import Combobox from '../common/Combobox';
+
+import 'cytoscape-navigator/cytoscape.js-navigator.css';
+import 'tippy.js/dist/tippy.css';
+import './NetworkMap.css';
+
+// 툴팁 기능을 위한 설정
+function tippyFactory(ref, content) {
+  const dummyDomElement = document.createElement('div');
+
+  const tip = tippy(dummyDomElement, {
+    allowHTML: true,
+    appendTo: document.body,
+    arrow: true,
+    content: content,
+    getReferenceClientRect: ref.getBoundingClientRect,
+    hideOnClick: true,
+    interactive: true,
+    placement: 'bottom',
+    trigger: 'mouseover',
+  });
+
+  return tip;
+}
 
 cytoscape.use(dagre);
 cytoscape.use(edgehandles);
+cytoscape.use(cytoscapePopper(tippyFactory));
 nodeHtmlLabel(cytoscape);
+navigator(cytoscape);
 
-export const NetworkMap = () => {
+export const NetworkMap = ({ projectId }) => {
   const {
+    curProjectId,
+    setCurProjectId,
+    fetchMapData,
+    updateNode,
+    createLink,
     cyRef,
     nodes,
     edges,
+    setEdges,
     isLinking,
-    setIsLinking,
     isModalOpen,
-    isResizable,
-    isUngroupNeeded,
-    setIsUngroupNeeded,
-    setisResizable,
     selectedSize,
     setSelectedSize,
   } = useContext(NetworkContext);
+
   useEffect(() => {
-    const cy = cytoscape({
-      container: document.getElementById('cy'),
-      // 노드 스타일 : elements의 크기를 반영하는데 필요
-      style: [
-        {
-          selector: '.device',
-          style: {
-            'background-opacity': 0,
-            width: `${selectedSize}px`,
-            height: `${selectedSize}px`,
-          },
-        },
-        {
-          selector: '.device:selected',
-          style: {
-            'background-opacity': 0,
-            width: `${selectedSize}px`,
-            height: `${selectedSize}px`,
-          },
-        },
-        {
-          selector: '.icon',
-          style: {
-            'background-opacity': 0,
-            width: '50px',
-            height: '70px',
-          },
-        },
-      ],
-      layout: {
-        name: 'dagre',
-        padding: 24,
-        spacingFactor: 1.5,
-      },
-      elements: [...nodes, ...edges],
-      zoomingEnabled: true,
-      userZoomingEnabled: true,
-      autoungrabify: false,
-      boxSelectionEnabled: true, // 박스 선택 활성화
-    });
-
-    cy.nodeHtmlLabel([
-      {
-        query: '#background',
-        halign: 'center',
-        valign: 'center',
-        halignBox: 'center',
-        valignBox: 'center',
-        cssClass: '',
-        tpl(data) {
-          return `${ReactDOMServer.renderToString(
-            <BackgroundNode data={data} />,
-          )}`;
-        },
-      },
-      {
-        query: '.device',
-        halign: 'center',
-        valign: 'center',
-        halignBox: 'center',
-        valignBox: 'center',
-        cssClass: '',
-        tpl(data) {
-          return `${ReactDOMServer.renderToString(
-            <CustomDeviceNode
-              node={cy.getElementById(data.id)}
-              data={data}
-              isSelected={false}
-            />,
-          )}`;
-        },
-      },
-      {
-        query: '.device:selected',
-        halign: 'center',
-        valign: 'center',
-        halignBox: 'center',
-        valignBox: 'center',
-        tpl(data) {
-          return `${ReactDOMServer.renderToString(
-            <CustomDeviceNode
-              node={cy.getElementById(data.id)}
-              data={data}
-              isSelected={true}
-            />,
-          )}`;
-        },
-      },
-      {
-        query: '.icon',
-        halign: 'center',
-        valign: 'center',
-        halignBox: 'center',
-        valignBox: 'center',
-        cssClass: '',
-        tpl(data) {
-          return `${ReactDOMServer.renderToString(
-            <CustomIconNode node={cy.getElementById(data.id)} data={data} />,
-          )}`;
-        },
-      },
-    ]);
-
-    // 노드 리사이징을 하고 나면 state에 width와 height를 반영
-    cy.on('nodeediting.resizeend', function (event, type, node) {
-      const width = node.width();
-      const height = node.height();
-
-      node.data('width', width);
-      node.data('height', height);
-
-      setNodes(cy.elements().map((ele) => ele.json()));
-    });
-
-    // 온클릭에 노드 정보 띄우기(차후 삭제 예정)
-    cy.on('select', 'node', function (event) {
-      const node = event.target;
-      console.log(node.width());
-    });
-
-    cyRef.current = cy;
-
-    return () => {
-      cy.destroy();
-    };
+    setCurProjectId(projectId);
   }, []);
+
+  useEffect(() => {
+    if (!!curProjectId) {
+      const initDraw = async () => {
+        await fetchMapData();
+      };
+      initDraw();
+
+      const cy = cytoscape({
+        container: document.getElementById('cy'),
+        // 노드 스타일 : elements의 크기를 반영하는데 필요
+        style: [
+          {
+            selector: '#background',
+            style: {
+              'background-image': `url(${nodes[0]?.data.src || ''})`,
+              'background-fit': 'cover',
+              'z-index': -1,
+              width: 600,
+              height: 400,
+              shape: 'rectangle',
+              'background-color': '#e1e1e1',
+              'z-compound-depth': 'bottom',
+              events: 'no',
+            },
+          },
+          {
+            selector: '.NEW_DEVICE',
+            style: {
+              width: 'data(width)',
+              height: 'data(height)',
+            },
+          },
+          {
+            selector: '.NEW_DEVICE:selected',
+            style: {
+              width: 'data(width)',
+              height: 'data(height)',
+            },
+          },
+          {
+            selector: '.ICON',
+            style: {
+              width: '40px',
+              height: '40px',
+            },
+          },
+          {
+            selector: ':parent',
+            style: {
+              backgroundColor: 'white',
+              opacity: 1,
+            },
+          },
+        ],
+        layout: {
+          name: 'dagre',
+          padding: 24,
+          spacingFactor: 1.5,
+        },
+        elements: [...nodes, ...edges],
+        autoungrabify: false,
+        boxSelectionEnabled: true,
+        minZoom: 0.5,
+        maxZoom: 3,
+        zoomingEnabled: true,
+        userZoomingEnabled: true,
+        wheelSensitivity: 0.2,
+      });
+
+      const htmlLabelInstance = cy.nodeHtmlLabel([
+        {
+          query: '.NEW_DEVICE',
+          halign: 'center',
+          valign: 'center',
+          halignBox: 'center',
+          valignBox: 'center',
+          cssClass: '',
+          tpl(data) {
+            return `${ReactDOMServer.renderToString(
+              <CustomDeviceNode
+                node={cy.getElementById(data.id)}
+                data={data}
+                isSelected={false}
+              />,
+            )}`;
+          },
+        },
+        {
+          query: '.device:selected',
+          halign: 'center',
+          valign: 'center',
+          halignBox: 'center',
+          valignBox: 'center',
+          tpl(data) {
+            return `${ReactDOMServer.renderToString(
+              <CustomDeviceNode
+                node={cy.getElementById(data.id)}
+                data={data}
+                isSelected={true}
+              />,
+            )}`;
+          },
+        },
+        {
+          query: '.ICON',
+          halign: 'center',
+          valign: 'center',
+          halignBox: 'center',
+          valignBox: 'center',
+          cssClass: '',
+          tpl(data) {
+            return `${ReactDOMServer.renderToString(
+              <CustomIconNode node={cy.getElementById(data.id)} data={data} />,
+            )}`;
+          },
+        },
+      ]);
+
+      cy.on('dragfree', 'node', async (event) => {
+        const target = event.target;
+        const node = target.json();
+        node.data.nodeSize = target.width();
+
+        await updateNode(node);
+      });
+
+      // 온클릭에 노드 정보 띄우기(차후 삭제 예정)
+      cy.on('select', 'node', function (event) {
+        const node = event.target;
+        console.log(node.width());
+      });
+
+      cy.on('mouseover', '.NEW_DEVICE', (event) => {
+        const node = event.target;
+        const popperRef = node.popperRef();
+
+        const content = `
+                        ID : ${node.id()} <br>
+                        장비명 : ${node.data('newDeviceAlias')} <br>
+                        IP : ${node.data('newDevicePublicIp')} <br>
+                        유형 : ${node.data('newDeviceType')} <br>
+                        OS : ${node.data('newDeviceOs')} <br>
+                        제조사 : ${node.data('newDeviceVendor')} <br>
+                        `;
+
+        const tip = tippyFactory(popperRef, content);
+
+        tip.show();
+        node.on('mouseout', () => {
+          tip.hide();
+        });
+      });
+
+      const navConfig = {
+        container: document.getElementById('navigator-container'),
+        viewLiveFramerate: 0,
+        thumbnailEventFramerate: 30,
+        thumbnailLiveFramerate: false,
+        dblClickDelay: 200,
+        removeCustomContainer: true,
+        rerenderDelay: 100,
+      };
+
+      const navigatorInstance = cy.navigator(navConfig);
+
+      cyRef.current = cy;
+
+      return () => {
+        navigatorInstance.destroy();
+        cy.destroy();
+      };
+    }
+  }, [curProjectId]);
 
   useEffect(() => {
     if (cyRef.current) {
       const cy = cyRef.current;
       cy.elements().remove();
       cy.add([...nodes, ...edges]);
-      cy.layout({
-        name: 'dagre',
-        padding: 24,
-        spacingFactor: 1.5,
-      }).run();
+      cy.getElementById('background').style({
+        'background-image': `url(${nodes[0]?.data.src || ''})`,
+        'background-fit': 'cover',
+        'z-index': -1,
+        width: 600,
+        height: 400,
+        shape: 'rectangle',
+        'background-color': '#e1e1e1',
+        'z-compound-depth': 'bottom',
+        events: 'no',
+      });
+      if (!cy.layoutInitialized) {
+        cy.layout({
+          name: 'preset',
+        });
+      }
     }
-  }, [nodes]);
+  }, [nodes, edges]);
 
   useEffect(() => {
     if (cyRef.current) {
       const cy = cyRef.current;
-      cy.nodes('.device').forEach((node) => {
+      cy.nodes('.NEW_DEVICE').forEach((node) => {
         node.style({
           width: `${selectedSize}px`,
           height: `${selectedSize}px`,
@@ -188,43 +279,49 @@ export const NetworkMap = () => {
   }, [selectedSize]);
 
   useEffect(() => {
-    const cy = cyRef.current;
-    const eh = cy.edgehandles(EHoptions);
+    if (cyRef.current) {
+      const cy = cyRef.current;
+      const eh = cy.edgehandles(EHoptions);
 
-    cy.elements().unselect(); // 링크 편집상태를 바꾸면 모든 노드 선택 초기화
+      cy.elements().unselect(); // 링크 편집상태를 바꾸면 모든 노드 선택 초기화
 
-    if (isLinking) {
-      eh.enableDrawMode();
-      setisResizable(false);
-      // 링크 편집을 활성화할 경우 디바이스 노드에 noResizeMode추가
+      if (isLinking) {
+        eh.enableDrawMode();
 
-      cy.on('ehstart', (event, sourceNode) => {
-        if (sourceNode.id() === 'background') {
-          eh.stop();
-        }
-      });
-    } else {
-      eh.disableDrawMode();
-      setisResizable(true);
+        cy.on('ehstart', (event, sourceNode) => {
+          if (sourceNode.id() === 'background') {
+            eh.stop();
+          }
+        });
 
-      cy.off('ehstart');
+        cy.on(
+          'ehcomplete',
+          async (event, sourceNode, targetNode, addedEdge) => {
+            const edgeId = await createLink(
+              sourceNode.json(),
+              targetNode.json(),
+            );
+            const edge = {
+              data: {
+                id: 'edge-' + edgeId,
+                source: sourceNode.id(),
+                target: targetNode.id(),
+              },
+            };
+            setEdges((prevEdges) => [...prevEdges, edge]);
+          },
+        );
+      } else {
+        eh.disableDrawMode();
+        cy.off('ehstart');
+      }
+
+      return () => {
+        eh.disableDrawMode();
+        cy.off('ehstart');
+      };
     }
-
-    return () => {
-      eh.disableDrawMode();
-      cy.off('ehstart');
-    };
   }, [isLinking]);
-
-  useEffect(() => {
-    const cy = cyRef.current;
-
-    if (isResizable) {
-      cy.nodes('.device').removeClass('noResizeMode');
-    } else {
-      cy.nodes('.device').addClass('noResizeMode');
-    }
-  }, [isResizable]);
 
   const infoButtonOnClick = () => {
     // 노드 정보 가져오기
@@ -242,34 +339,35 @@ export const NetworkMap = () => {
         id: edge.id(),
         source: edge.source().id(),
         target: edge.target().id(),
-        position: edge.position(), // 엣지는 위치가 없으므로 이 부분은 필요에 따라 수정
       };
     });
 
     // 콘솔에 정보 출력
-    console.log('노드 정보:', nodesInfo);
-    console.log('엣지 정보:', edgesInfo);
+    console.log('노드 상세 정보:', nodes);
+    console.log('엣지 상세 정보:', edges);
   };
 
   return (
-    <>
-      <button onClick={infoButtonOnClick}>정보 출력</button>
-      <Combobox
-        label="노드 크기"
-        placeholder="20"
-        items={sizes}
-        onSelect={setSelectedSize}
-      />
-      {isModalOpen && <Modal />}
+    <div>
+      <div className="toolbar">
+        <button onClick={infoButtonOnClick}>정보 출력</button>
+        <Combobox
+          label="노드 크기"
+          placeholder="노드 크기설정"
+          items={sizes}
+          onSelect={setSelectedSize}
+        />
+      </div>
       <ToolBox />
       <div
         id="cy"
         style={{
           width: '800px',
-          height: '1600px',
+          height: '600px',
           border: '1px solid lightgray',
+          zIndex: '10',
         }}
       />
-    </>
+    </div>
   );
 };

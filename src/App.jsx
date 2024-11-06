@@ -24,6 +24,10 @@ function App() {
               </Route>
               <Route path="project/" element={<ProjectPage />} />
               <Route path="dashboard/" element={<ServerDashboard />} />
+              <Route
+                path="project-detail/:projectId"
+                element={<ProjectPage />}
+              />
             </Routes>
           </Suspense>
         </div>

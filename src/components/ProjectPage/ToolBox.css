@@ -2,9 +2,21 @@
   position: absolute;
   display: flex;
   flex-direction: column;
-  z-index: 1000;
+  z-index: 500;
   border-radius: 10px;
-  border: 2px gray solid;
   margin-top: 10px;
   margin-left: 10px;
+  background-color: #fff;
+  box-shadow: 1px 1px 5px #aaa;
+  width: 60px;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+
+.tool-box-container:hover {
+  width: 200px; 
+}
+.tool-box-container:hover .hidden-text {
+  opacity: 1;
+  transition-delay: .3s;
 }

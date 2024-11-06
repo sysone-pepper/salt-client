@@ -13,7 +13,9 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!localStorage.getItem('token'),
   );
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(
+    JSON.parse(localStorage.getItem('currentUser')) || null,
+  );
 
   const login = async (credentials) => {
     const data = await loginUser(credentials); // API 호출
@@ -26,6 +28,7 @@ export const AuthProvider = ({ children }) => {
       const user = { username: credentials.id };
 
       setCurrentUser(user);
+      localStorage.setItem('currentUser', JSON.stringify(user));
       return user; // 사용자 정보 반환
     } else {
       throw new Error('로그인 실패');
@@ -35,6 +38,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setIsAuthenticated(false);
     localStorage.removeItem('token'); // 토큰 삭제
+    localStorage.removeItem('currentUser');
     setCurrentUser(null); // 사용자 정보 초기화
   };
 

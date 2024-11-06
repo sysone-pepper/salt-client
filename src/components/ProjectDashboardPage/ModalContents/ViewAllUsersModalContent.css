@@ -1,33 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap");
 
-.vau-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.vau-modal-content {
-  background-color: #424242;
-  padding: 20px;
-  border-radius: 5px;
-  width: 80%;
-  max-width: 800px;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
 .vau-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  padding-right: 40px;
 }
 
 .vau-header h2 {
@@ -35,6 +13,17 @@
   font-weight: 800;
   color: #a5d3ec;
   margin: 0;
+}
+
+.vau-search {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 700;
+  width: 250px;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  outline: none;
+  margin-left: 20px;  
 }
 
 .vau-close-button {
@@ -88,4 +77,18 @@
 
 .vau-copy-button:hover {
   color: #93c2db;
+}
+
+@media (max-width: 768px) {
+  .vau-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-right: 0;
+  }
+
+  .vau-search {
+    margin-left: 0;
+    margin-top: 10px;
+    width: 100%;
+  }
 }

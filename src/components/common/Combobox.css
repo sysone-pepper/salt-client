@@ -10,30 +10,29 @@ label {
   box-sizing: border-box;
 }
 
-
 ul {
 	list-style: none;
   margin: 0;
   padding: 0;
 }
 
-
-
 .dd-menu {
-  width: 12rem;
+  width: 6rem;
   max-height: 10rem;
   position: absolute;
+  top: 3.8rem;
   overflow-y: auto;  
   overflow-x: hidden;
   background-color: white; 
-  border: 1px solid #ccc; 
+  border: 0 1px 1px 1px solid #ccc; 
   z-index: 9999999999; 
+  font-size: .5rem;
 }
 
 .dd-div {
   display: flex;
-  height: 2.5rem;
-  width: 19rem;
+  height: 1.8rem;
+  width: 6rem;
   box-shadow: 1px 1px 5px #ccc;
 }
 
@@ -41,6 +40,7 @@ ul {
   flex-grow: 1; 
   padding: 0.5rem; 
   border: none;
+  width: 3rem;
 }
 
 .dd-div .dd-toggle-button {

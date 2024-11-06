@@ -1,0 +1,13 @@
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 1px 1px 5px #999;
+  background-color: #fff;
+  border-radius: 50%;
+}
+
+.icon-container .bi {
+  font-size: 30px;
+}
+

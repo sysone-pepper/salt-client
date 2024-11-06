@@ -15,7 +15,7 @@ export const IconInput = ({ setIconType }) => {
               key={key}
               className="icon-type-label"
               onClick={() => {
-                setIconType(key);
+                setIconType(iconTypes[key]);
               }}
               required={idx === 0}
             >

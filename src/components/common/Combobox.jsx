@@ -32,20 +32,22 @@ const Combobox = ({ label, placeholder, items, onSelect }) => {
         <button className="dd-toggle-button" {...getToggleButtonProps()}>
           {isOpen ? <>&#8593;</> : <>&#8595;</>}
         </button>
+        <ul className="dd-menu" {...getMenuProps()}>
+          {isOpen &&
+            items.map((item, index) => (
+              <li
+                {...getItemProps({ item, index })}
+                key={item}
+                style={{
+                  background: index === highlightedIndex && 'lightgray',
+                }}
+                className="dd-list-element"
+              >
+                {item}
+              </li>
+            ))}
+        </ul>
       </div>
-      <ul className="dd-menu" {...getMenuProps()}>
-        {isOpen &&
-          items.map((item, index) => (
-            <li
-              {...getItemProps({ item, index })}
-              key={item}
-              style={{ background: index === highlightedIndex && 'lightgray' }}
-              className="dd-list-element"
-            >
-              {item}
-            </li>
-          ))}
-      </ul>
     </>
   );
 };
