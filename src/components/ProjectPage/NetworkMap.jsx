@@ -110,8 +110,8 @@ export const NetworkMap = ({ projectId }) => {
           {
             selector: '.ICON',
             style: {
-              width: '40px',
-              height: '40px',
+              width: '30px',
+              height: '30px',
             },
           },
           {
@@ -156,7 +156,7 @@ export const NetworkMap = ({ projectId }) => {
           },
         },
         {
-          query: '.device:selected',
+          query: '.NEW_DEVICE:selected',
           halign: 'center',
           valign: 'center',
           halignBox: 'center',
@@ -197,7 +197,6 @@ export const NetworkMap = ({ projectId }) => {
       // 온클릭에 노드 정보 띄우기(차후 삭제 예정)
       cy.on('select', 'node', function (event) {
         const node = event.target;
-        console.log(node.width());
       });
 
       cy.on('mouseover', '.NEW_DEVICE', (event) => {
@@ -353,7 +352,7 @@ export const NetworkMap = ({ projectId }) => {
         <button onClick={infoButtonOnClick}>정보 출력</button>
         <Combobox
           label="노드 크기"
-          placeholder="노드 크기설정"
+          placeholder="노드 크기"
           items={sizes}
           onSelect={setSelectedSize}
         />
