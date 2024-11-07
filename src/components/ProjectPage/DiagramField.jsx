@@ -354,7 +354,7 @@ export const DiagramField = ({ projectId }) => {
   }, [selectedSize]);
 
   return (
-    <>
+    <div className="diagram-field">
       <Combobox
         label="노드 크기"
         placeholder="노드 크기설정"
@@ -371,6 +371,6 @@ export const DiagramField = ({ projectId }) => {
         }}
       />
       <div className="navigator-container" />
-    </>
+    </div>
   );
 };
