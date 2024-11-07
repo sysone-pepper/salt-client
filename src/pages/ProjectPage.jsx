@@ -4,6 +4,7 @@ import { NetworkContext, NetworkProvider } from '../contexts/NetworkContext';
 import './ProjectPage.css';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
+import Sidebar from '../components/ProjectPage/Sidebar/Sidebar';
 
 const ProjectPage = () => {
   const { projectId } = useParams();
@@ -21,7 +22,10 @@ const ProjectPage = () => {
       <NetworkProvider>
         {' '}
         <div>ProjectPage</div>
-        <NetworkMap projectId={Number(projectId)} />
+        <div className="flex-div">
+          <Sidebar />
+          <NetworkMap projectId={Number(projectId)} />
+        </div>
       </NetworkProvider>
     </>
   );
