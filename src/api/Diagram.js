@@ -3,13 +3,17 @@ import api from './index';
 export const fetchDiagramData = async (projectId) => {
   const response = await api.get(`/api/v1/diagrams/${projectId}`);
   let backgroundSource = null;
+  let nodeSize = 0;
   const nodes = response.data.data.nodes.map((data, idx) => {
-    let nodeData = { ...data, id: Number(data.nodeId) };
+    let nodeData = {
+      ...data,
+      id: Number(data.nodeId),
+    };
     delete nodeData.positionX;
     delete nodeData.positionY;
-    delete nodeData.nodeSize;
     if (idx === 0) {
       backgroundSource = data.bgImgUrl;
+      nodeSize = data.nodeSize;
     }
     return {
       classes: `object ${nodeData.nodeType}`,
@@ -28,7 +32,7 @@ export const fetchDiagramData = async (projectId) => {
     };
   });
 
-  return { backgroundSource, nodes, edges };
+  return { nodeSize, backgroundSource, nodes, edges };
 };
 
 export const createExistDeviceNode = async (nodeData) => {
@@ -72,6 +76,13 @@ export const createLink = async (linkData) => {
   return response.data;
 };
 
+export const updateNodeSize = async (projectId, size) => {
+  const response = await api.put(
+    `/api/v1/diagrams/${projectId}/node/size?size=${size}`,
+  );
+  return response.data;
+};
+
 export const updateExistDeviceNode = async (nodeData) => {
   const response = await api.put('/api/v1/diagrams/exist-device', nodeData);
   return response.data;
@@ -109,6 +120,5 @@ export const updateBgImg = async (projectId, file) => {
       'Content-Type': 'multipart/form-data',
     },
   });
-  console.log(response.data);
   return response.data;
 };

@@ -34,33 +34,27 @@ export const AddButton = ({
   };
 
   return (
-    <div className="add-button">
+    <div
+      className={`add-button-wrapper ${disabled ? 'disabled' : ''}`}
+      onClick={handleClick}
+    >
       <div
-        className={`add-button-wrapper ${disabled ? 'disabled' : ''}`}
-        onClick={handleClick}
+        className={`add-button-content-container ${needCancel ? 'cancel' : ''}`}
       >
-        <div
-          className={`add-button-content-container ${
-            needCancel ? 'cancel' : ''
-          }`}
-        >
-          <img
-            src={images[fileName]}
-            alt="오브젝트 추가"
-            className="add-button-content"
-          />
-        </div>
-        <div
-          className={`add-button-symbol-container ${
-            needCancel ? 'cancel' : ''
-          }`}
-        >
-          <img
-            src={AddIcon}
-            alt="더하기 기호"
-            className={`add-button-symbol ${needCancel ? 'rotate' : ''}`}
-          />
-        </div>
+        <img
+          src={images[fileName]}
+          alt="오브젝트 추가"
+          className="add-button-content"
+        />
+      </div>
+      <div
+        className={`add-button-symbol-container ${needCancel ? 'cancel' : ''}`}
+      >
+        <img
+          src={AddIcon}
+          alt="더하기 기호"
+          className={`add-button-symbol ${needCancel ? 'rotate' : ''}`}
+        />
       </div>
       <div className="hidden-text">{children}</div>
     </div>

@@ -11,6 +11,7 @@ export const ToolBox = () => {
   const {
     nodes,
     setNodes,
+    setDataReady,
     isLinking,
     setIsLinking,
     isObjectDelete,
@@ -52,18 +53,8 @@ export const ToolBox = () => {
       if (ok) {
         const formData = new FormData();
         formData.append('file', file);
-        result = await updateBgImg(formData);
-
-        if (result.success) {
-          const newNodes = nodes.map((node) => {
-            if (node.data.id === 'background') {
-              console.log(result.data);
-              node.data.src = result.data;
-            }
-            return node;
-          });
-          setNodes(newNodes);
-        }
+        await updateBgImg(formData);
+        setDataReady(true);
       }
     }
   };
@@ -149,7 +140,7 @@ export const ToolBox = () => {
         <AddButton
           fileName={'object-icon.png'}
           onClickEvent={toggleAddNode}
-          disabled={isLinking}
+          disabled={isLinking || isObjectDelete || modalOpen}
         >
           요소 추가
         </AddButton>
@@ -173,7 +164,7 @@ export const ToolBox = () => {
           <AddButton
             fileName={'link-icon.png'}
             onClickEvent={activeAddLink}
-            disabled={false}
+            disabled={isObjectDelete || modalOpen}
           >
             링크추가모드 켜기
           </AddButton>
@@ -192,6 +183,7 @@ export const ToolBox = () => {
             fileName={'object-delete-icon.png'}
             onClickEvent={activeDeleteObject}
             needCancel={false}
+            disabled={isLinking || modalOpen}
           >
             구성도 제거모드 켜기
           </AddButton>
@@ -202,6 +194,7 @@ export const ToolBox = () => {
           onClickEvent={onBgImgBtnClick}
           needCancel={false}
           for="bgImgInput"
+          disabled={isLinking || isObjectDelete || modalOpen}
         >
           배경 이미지 수정
         </AddButton>

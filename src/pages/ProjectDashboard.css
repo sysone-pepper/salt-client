@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap");
-
 .projects-page {
   position: relative;
   z-index: 2;
@@ -11,7 +9,6 @@
 }
 
 .my-users {
-  font-family: "Nanum Gothic", sans-serif;
   font-weight: 800;
   color: #fff;
   margin: 0;
@@ -31,7 +28,6 @@
 }
 
 .my-project {
-  font-family: "Nanum Gothic", sans-serif;
   font-weight: 800;
   color: #fff;
   margin: 0;
@@ -60,7 +56,6 @@
 }
 
 .project-details {
-  font-family: "Nanum Gothic", sans-serif;
   font-weight: 700;
   width: 300px;
   padding: 10px;
