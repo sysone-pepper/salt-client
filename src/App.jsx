@@ -22,7 +22,7 @@ function App() {
                   element={<ProjectDashboardPage />}
                 />
               </Route>
-              <Route path="project/" element={<ProjectPage />} />
+              {/* <Route path="project/" element={<ProjectPage />} /> */}
               <Route path="dashboard/" element={<ServerDashboard />} />
               <Route
                 path="project-detail/:projectId"
