@@ -10,10 +10,8 @@ import edgehandles from 'cytoscape-edgehandles';
 import cyNavigator from 'cytoscape-navigator';
 import navConfig from '../../constants/NavigatorConfig';
 import ehConfig from '../../constants/EdgeHandleOptions';
-import sizes from '../../constants/SizesOption';
 import { CustomDeviceNode } from './CustomDeviceNode';
 import { CustomIconNode } from './CustomIconNode';
-import Combobox from '../common/Combobox';
 
 const registerCytoscapeExtensions = () => {
   cytoscape.use(dagre);
@@ -30,7 +28,7 @@ export const DiagramField = ({ projectId }) => {
     curProjectId,
     setCurProjectId,
     fetchMapData,
-    bgImg,
+    bgImgInfo,
     updateNode,
     updateNodeSize,
     createLink,
@@ -40,6 +38,7 @@ export const DiagramField = ({ projectId }) => {
     edges,
     dataReady,
     setDataReady,
+    setNodes,
     setEdges,
     isLinking,
     isObjectDelete,
@@ -49,6 +48,15 @@ export const DiagramField = ({ projectId }) => {
   } = useContext(NetworkContext);
 
   const [navigatorInitialized, setNavigatorInitialized] = useState(false); // 네비게이터 초기화 상태
+  const [inputSize, setInputSize] = useState(20);
+
+  const handleSizeInputChange = (e) => {
+    setInputSize(e.target.value);
+  };
+
+  const handleSizeButtonClick = () => {
+    setSelectedSize(parseInt(inputSize, 10));
+  };
 
   const createCyInstance = () => {
     if (!cyRef.current) {
@@ -56,20 +64,20 @@ export const DiagramField = ({ projectId }) => {
       const cy = cytoscape({
         container: document.getElementById('cy'),
         style: [
-          {
-            selector: '#background',
-            style: {
-              'background-image': `url(${nodes[0]?.data.src || ''})`,
-              'background-fit': 'cover',
-              'z-index': -1,
-              width: 600,
-              height: 400,
-              shape: 'rectangle',
-              'background-color': '#e1e1e1',
-              'z-compound-depth': 'bottom',
-              events: 'no',
-            },
-          },
+          // {
+          //   selector: '#background',
+          //   style: {
+          //     'background-image': `url(${bgImgInfo?.src})`,
+          //     'background-fit': 'cover',
+          //     'z-index': -1,
+          //     width: 600,
+          //     height: 400,
+          //     shape: 'rectangle',
+          //     'background-color': '#e1e1e1',
+          //     'z-compound-depth': 'bottom',
+          //     events: 'no',
+          //   },
+          // },
           {
             selector: 'node[id != "background"][nodeSize][nodeId]',
             style: {
@@ -80,14 +88,11 @@ export const DiagramField = ({ projectId }) => {
         ],
         layout: {
           name: 'preset',
-          //   name: 'dagre',
-          //   padding: 24,
-          //   spacingFactor: 1.5,
         },
         autoungrabify: false,
         boxSelectionEnabled: true,
-        minZoom: 0.5,
-        maxZoom: 5,
+        // minZoom: 0.5,
+        // maxZoom: 5,
         zoomingEnabled: true,
         userZoomingEnabled: true,
       });
@@ -217,7 +222,6 @@ export const DiagramField = ({ projectId }) => {
       }
       return () => {
         if (cyRef.current) {
-          //   alert('DiagramField component is unmounting.');
           cyRef.current.destroy();
           cyRef.current = null;
           nav?.destroy();
@@ -229,17 +233,83 @@ export const DiagramField = ({ projectId }) => {
 
   // 배경 이미지 수정 기능
   useEffect(() => {
-    if (bgImg && cyRef.current && dataReady) {
+    if (bgImgInfo && cyRef.current && dataReady) {
       const cy = cyRef.current;
       const bgNode = cy.getElementById('background');
-      bgNode.style({
-        'background-image': `url(${bgImg})`,
-        'background-fit': 'cover',
-        events: 'no',
-      });
+      if (bgNode.data('src') !== bgImgInfo.src) {
+        const newNodes = [...nodes].map((node, idx) => {
+          if (idx === 0) {
+            const newBgNode = { ...bgNode.json() };
+
+            newBgNode.data.src = bgImgInfo.src;
+            newBgNode.data.size = bgImgInfo.size;
+            newBgNode.style = {
+              'z-index': -1,
+              'z-compound-depth': 'bottom',
+              width: bgImgInfo.size.width,
+              height: bgImgInfo.size.height,
+              shape: 'rectangle',
+              'background-image': `url(${bgImgInfo.src})`,
+              'background-fit': 'cover',
+              events: 'no',
+            };
+            return newBgNode;
+          }
+          return node;
+        });
+        setNodes(newNodes);
+
+        // 노드의 최소 및 최대 좌표를 초기화
+        let minX = Infinity,
+          minY = Infinity,
+          maxX = -Infinity,
+          maxY = -Infinity;
+
+        // 모든 노드를 순회하며 최소/최대 좌표 구하기
+        newNodes.forEach((node, idx) => {
+          if (idx > 0) {
+            const pos = node.position;
+            minX = Math.min(minX, pos.x);
+            minY = Math.min(minY, pos.y);
+            maxX = Math.max(maxX, pos.x);
+            maxY = Math.max(maxY, pos.y);
+          }
+        });
+
+        const nodeWidth = maxX - minX;
+        const nodeHeight = maxY - minY;
+
+        const cyWidth = cy.width();
+        const cyHeight = cy.height();
+
+        const bgWidth = bgImgInfo.size.width;
+        const bgHeight = bgImgInfo.size.height;
+
+        cy.pan({ x: 0, y: 0 });
+        cy.panBy({ x: cyWidth / 2, y: cyHeight / 2 });
+
+        // option 1-1: 이미지 영역을 초과하는 노드를 고려하여 초기 화면 크기 계산
+        // const zoomX = Math.min(cyWidth / nodeWidth, cyWidth / bgWidth);
+        // const zoomY = Math.min(cyHeight / nodeHeight, cyHeight / bgHeight);
+
+        // option 1-2: 이미지 영역에 초점을 맞춰 초기화면 크기 설정
+        const zoomX = cyWidth / bgWidth;
+        const zoomY = cyHeight / bgHeight;
+
+        // option 2-1: 이미지가 화면에 꽉차도록 설정
+        // const zoomLevel = Math.max(zoomX, zoomY);
+
+        // option 2-2: 전체 이미지가 화면에 담길 수 있도록 설정
+        const zoomLevel = Math.min(zoomX, zoomY);
+        cy.zoom(zoomLevel);
+
+        cy.minZoom(Math.min(zoomX, zoomY) / 2);
+        cy.maxZoom(zoomLevel * 2);
+      }
+
       setDataReady(false);
     }
-  }, [dataReady, bgImg]);
+  }, [dataReady, bgImgInfo]);
 
   // 노드, 엣지 변동(추가, 수정, 삭제) 기능
   useEffect(() => {
@@ -254,12 +324,7 @@ export const DiagramField = ({ projectId }) => {
 
       cy.nodes().remove();
       cy.edges().remove();
-
       cy.add([...nodes, ...edges]);
-
-      //   cy.layout({
-      //     name: 'preset',
-      //   }).run();
 
       cy.endBatch();
     }
@@ -350,27 +415,32 @@ export const DiagramField = ({ projectId }) => {
       if (nodes.length > 1 && nodes[1].data.nodeSize !== selectedSize) {
         updateNodeSize();
       }
+      setInputSize(selectedSize);
     }
   }, [selectedSize]);
 
   return (
     <>
-      <Combobox
-        label="노드 크기"
-        placeholder="노드 크기설정"
-        items={sizes}
-        onSelect={setSelectedSize}
+      <label htmlFor="sizeInput">노드 크기: </label>
+      <input
+        id="sizeInput"
+        type="number"
+        min="20"
+        max="100"
+        value={inputSize}
+        onChange={handleSizeInputChange}
+        placeholder="20 - 100"
       />
+      <button onClick={handleSizeButtonClick}>확인</button>
+
       <ToolBox />
       <div
         id="cy"
         style={{
-          width: '800px',
-          height: '1000px',
           border: '1px solid black',
         }}
       />
-      <div className="navigator-container" />
+      <div id="navigator-container" />
     </>
   );
 };
