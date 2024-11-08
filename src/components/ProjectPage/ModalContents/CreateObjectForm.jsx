@@ -61,8 +61,8 @@ export const CreateObjectForm = ({ closeModal }) => {
       case 'device':
         newNodeData = {
           nodeType: 'NEW_DEVICE',
-          positionX: 50,
-          positionY: 50,
+          positionX: 0,
+          positionY: 0,
           nodeSize: selectedSize,
           newDeviceName: deviceName,
           newDeviceAlias: deviceName,
@@ -75,8 +75,8 @@ export const CreateObjectForm = ({ closeModal }) => {
       case 'icon':
         newNodeData = {
           nodeType: 'ICON',
-          positionX: 50,
-          positionY: 50,
+          positionX: 0,
+          positionY: 0,
           nodeSize: selectedSize,
           iconType: iconType,
         };
@@ -84,8 +84,8 @@ export const CreateObjectForm = ({ closeModal }) => {
       case 'text':
         newNodeData = {
           nodeType: 'TEXT',
-          positionX: 50,
-          positionY: 50,
+          positionX: 0,
+          positionY: 0,
           nodeSize: selectedSize,
           textContent: '',
           textColor: '',
@@ -218,7 +218,11 @@ export const CreateObjectForm = ({ closeModal }) => {
       case 'icon':
         return (
           <>
-            <IconInput setIconType={setIconType} onSubmit={handleSubmit} />
+            <IconInput
+              iconType={iconType}
+              setIconType={setIconType}
+              onSubmit={handleSubmit}
+            />
           </>
         );
       case 'text':
