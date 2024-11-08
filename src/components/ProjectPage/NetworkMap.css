@@ -1,3 +1,14 @@
+#cy{
+  width:100%;
+  height: 90vh;
+  bottom: 0;
+}
+
+.diagram-field {
+  flex-grow: 1;
+  max-width: none;
+}
+
 .cytoscape-navigator {
   border: 2px solid #bebebe !important;
   background: white !important;
@@ -8,7 +19,7 @@
   z-index: 500;
 }
 
-/*Add border to View container:*/
+/* Add border to View container: */
 .cytoscape-navigator .cytoscape-navigatorView {
   border: 2px solid #124191;
   background: transparent;

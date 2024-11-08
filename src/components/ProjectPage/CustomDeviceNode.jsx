@@ -18,7 +18,7 @@ const deviceIcons = {
   UPS: UPSIcon,
 };
 
-export const CustomDeviceNode = ({ node, data, isSelected }) => {
+export const CustomDeviceNode = ({ node, data, isSelected, isExistDevice }) => {
   return (
     <div
       className={`outer-device-node ${isSelected ? 'selected' : undefined}`}
@@ -34,7 +34,9 @@ export const CustomDeviceNode = ({ node, data, isSelected }) => {
           alt={data?.deviceType}
         />
       </div>
-      <p className="device-node-info">{data?.id}</p>
+      <p className="device-node-info">
+        {isExistDevice ? data.deviceAlias : data.newDeviceAlias}
+      </p>
     </div>
   );
 };

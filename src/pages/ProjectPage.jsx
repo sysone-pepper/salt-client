@@ -25,7 +25,6 @@ const ProjectPage = () => {
         <div>ProjectPage</div>
         <div className="flex-div">
           <Sidebar />
-          {/* <NetworkMap projectId={Number(projectId)} /> */}
           <DiagramField projectId={Number(projectId)} />
         </div>
       </NetworkProvider>

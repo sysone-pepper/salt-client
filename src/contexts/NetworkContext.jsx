@@ -8,7 +8,7 @@ export function NetworkProvider({ children }) {
   const [curProjectId, setCurProjectId] = useState();
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
-  const [bgImg, setBgImg] = useState(null);
+  const [bgImgInfo, setBgImgInfo] = useState(null);
   const [dataReady, setDataReady] = useState(false);
   const [isLinking, setIsLinking] = useState(false);
   const [isObjectDelete, setIsObjectDelete] = useState(false);
@@ -16,21 +16,47 @@ export function NetworkProvider({ children }) {
   const [selectedSize, setSelectedSize] = useState(20);
   const [isNavigatorToggled, setIsNavigatorToggled] = useState(true);
 
+  const getImageSizeFromUrl = async (url) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const width = img.width;
+        const height = img.height;
+        resolve({ width, height });
+      };
+      img.onerror = reject;
+      img.crossOrigin = 'anonymous';
+      img.src = url;
+    });
+  };
+
   const fetchMapData = async () => {
     const { nodeSize, backgroundSource, nodes, edges } =
       await api.fetchDiagramData(curProjectId);
 
     setSelectedSize(nodeSize < 20 ? 20 : nodeSize);
+    if (backgroundSource) {
+      const size = await getImageSizeFromUrl(backgroundSource);
+      setBgImgInfo({ src: backgroundSource, size });
+    }
     const newNodes = [
       {
         group: 'nodes',
-        data: { id: 'background' },
-        position: { x: 400, y: 300 }, // 캔버스의 중앙 위치 (적절히 조정 가능)
+        data: { id: 'background', src: '', size: {} },
+        position: { x: 0, y: 0 }, // 캔버스의 중앙 위치 (적절히 조정 가능)
         locked: true,
+        style: {
+          'z-index': -1,
+          'z-compound-depth': 'bottom',
+          width: 800,
+          height: 400,
+          shape: 'rectangle',
+          'background-color': '#424242',
+          events: 'no',
+        },
       },
       ...nodes,
     ];
-    setBgImg(backgroundSource);
     setNodes(newNodes);
     setEdges(edges);
   };
@@ -116,7 +142,10 @@ export function NetworkProvider({ children }) {
 
   const updateBgImg = async (file) => {
     const res = await api.updateBgImg(curProjectId, file);
-    setBgImg(res.data);
+    if (res.success) {
+      const size = await getImageSizeFromUrl(res.data);
+      setBgImgInfo({ src: res.data, size });
+    }
   };
 
   const deleteObject = async (obj) => {
@@ -166,8 +195,8 @@ export function NetworkProvider({ children }) {
         cyRef,
         curProjectId,
         setCurProjectId,
-        bgImg,
-        setBgImg,
+        bgImgInfo,
+        setBgImgInfo,
         nodes,
         setNodes,
         edges,
