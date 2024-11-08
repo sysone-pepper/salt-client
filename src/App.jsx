@@ -59,32 +59,4 @@ function App() {
   );
 }
 
-// function App() {
-//   return (
-//     <Router>
-//       <AuthProvider>
-//         <div className="App">
-//           <Suspense fallback={<div>Loading...</div>}>
-//             <Routes>
-//               <Route path="/" element={<AnimatedBackground />}>
-//                 <Route index element={<LoginPage />} />
-//                 <Route
-//                   path="projects/:username"
-//                   element={<ProjectDashboardPage />}
-//                 />
-//               </Route>
-//               <Route path="project/" element={<ProjectPage />} />
-//               <Route path="dashboard/" element={<ServerDashboard />} />
-//               <Route
-//                 path="project-detail/:projectId"
-//                 element={<ProjectPage />}
-//               />
-//             </Routes>
-//           </Suspense>
-//         </div>
-//       </AuthProvider>
-//     </Router>
-//   );
-// }
-
 export default App;
