@@ -28,14 +28,6 @@ function App() {
                 />
               </Route>
               <Route
-                path="project/"
-                element={
-                  <PrivateRoute>
-                    <ProjectPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
                 path="dashboard/"
                 element={
                   <PrivateRoute>

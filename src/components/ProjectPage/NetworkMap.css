@@ -1,3 +1,9 @@
+#cy{
+  width:calc(100vw-17px);
+  height: 90vh;
+  bottom: 0;
+}
+
 .cytoscape-navigator {
   border: 2px solid #bebebe !important;
   background: white !important;
@@ -8,7 +14,7 @@
   z-index: 500;
 }
 
-/*Add border to View container:*/
+/* Add border to View container: */
 .cytoscape-navigator .cytoscape-navigatorView {
   border: 2px solid #124191;
   background: transparent;
