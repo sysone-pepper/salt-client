@@ -1,7 +1,9 @@
 .projects-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   position: relative;
   z-index: 2;
-  min-height: 100vh;
 }
 
 .user-management{

@@ -4,14 +4,15 @@
 마치 호텔의 객실층 보안 게이트같은 역할
 */
 
-import { Navigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    // return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return children;

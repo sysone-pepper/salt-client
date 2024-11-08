@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import AnimatedBackground from './layout/AnimatedBackground';
+import PrivateRoute from './components/common/PrivateRoute';
 import ProjectPage from './pages/ProjectPage';
 import ServerDashboard from './pages/ServerDashboard';
 
@@ -19,14 +20,28 @@ function App() {
                 <Route index element={<LoginPage />} />
                 <Route
                   path="projects/:username"
-                  element={<ProjectDashboardPage />}
+                  element={
+                    <PrivateRoute>
+                      <ProjectDashboardPage />
+                    </PrivateRoute>
+                  }
                 />
               </Route>
-              {/* <Route path="project/" element={<ProjectPage />} /> */}
-              <Route path="dashboard/" element={<ServerDashboard />} />
+              <Route
+                path="dashboard/"
+                element={
+                  <PrivateRoute>
+                    <ServerDashboard />
+                  </PrivateRoute>
+                }
+              />
               <Route
                 path="project-detail/:projectId"
-                element={<ProjectPage />}
+                element={
+                  <PrivateRoute>
+                    <ProjectPage />
+                  </PrivateRoute>
+                }
               />
             </Routes>
           </Suspense>

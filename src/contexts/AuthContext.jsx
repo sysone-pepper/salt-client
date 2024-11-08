@@ -4,8 +4,9 @@
 마치 호텔의 투숙객 관리 시스템같은 역할
 */
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { loginUser } from '../api/Auth.js';
+import api from '../api/index';
 
 const AuthContext = createContext(null);
 
