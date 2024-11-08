@@ -6,7 +6,6 @@
 
 .diagram-field {
   flex-grow: 1;
-  max-width: none;
 }
 
 .cytoscape-navigator {
