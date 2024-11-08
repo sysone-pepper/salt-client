@@ -64,20 +64,6 @@ export const DiagramField = ({ projectId }) => {
       const cy = cytoscape({
         container: document.getElementById('cy'),
         style: [
-          // {
-          //   selector: '#background',
-          //   style: {
-          //     'background-image': `url(${bgImgInfo?.src})`,
-          //     'background-fit': 'cover',
-          //     'z-index': -1,
-          //     width: 600,
-          //     height: 400,
-          //     shape: 'rectangle',
-          //     'background-color': '#e1e1e1',
-          //     'z-compound-depth': 'bottom',
-          //     events: 'no',
-          //   },
-          // },
           {
             selector: 'node[id != "background"][nodeSize][nodeId]',
             style: {
@@ -91,8 +77,6 @@ export const DiagramField = ({ projectId }) => {
         },
         autoungrabify: false,
         boxSelectionEnabled: true,
-        // minZoom: 0.5,
-        // maxZoom: 5,
         zoomingEnabled: true,
         userZoomingEnabled: true,
       });

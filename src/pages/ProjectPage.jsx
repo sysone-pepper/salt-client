@@ -22,7 +22,6 @@ const ProjectPage = () => {
       <NetworkProvider>
         {' '}
         <div>ProjectPage</div>
-        {/* <NetworkMap projectId={Number(projectId)} /> */}
         <DiagramField projectId={Number(projectId)} />
       </NetworkProvider>
     </>
