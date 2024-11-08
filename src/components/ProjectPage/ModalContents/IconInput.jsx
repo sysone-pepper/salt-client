@@ -1,40 +1,30 @@
 const iconTypes = { red: '#dd2c31', green: '#3f7ec8', blue: '#7cbc35' };
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './IconInput.css';
+import { CustomIconNode } from '../CustomIconNode';
 
-export const IconInput = ({ setIconType }) => {
+export const IconInput = ({ iconType, setIconType }) => {
+  const handleColorChange = (e) => {
+    setIconType(e.target.value);
+  };
   return (
-    <div className="form-group">
-      <label htmlFor="icon-types">유형</label>
-      <div className="icon-types" id="icon-types">
-        {Object.entries(iconTypes).map(([key, value], idx) => {
-          console.log(`${key}, ${value}], ${idx}`);
-          return (
-            <label
-              htmlFor={`icon-type-${key}`}
-              key={key}
-              className="icon-type-label"
-              onClick={() => {
-                setIconType(iconTypes[key]);
-              }}
-              required={idx === 0}
-            >
-              <div className="icon-radio">
-                <input
-                  type="radio"
-                  name="icon-type"
-                  value={key}
-                  id={`icon-type-${key}`}
-                />
-                <i className="bi bi-geo-alt-fill" style={{ color: value }}></i>
-              </div>
-            </label>
-          );
-        })}
+    <>
+      <div className="form-group">
+        <label htmlFor="icon-types">색상</label>
+        <div className="icon-types" id="icon-types">
+          <CustomIconNode
+            id="icon-preview"
+            data={{ nodeSize: '50%', iconType }}
+          ></CustomIconNode>
+          <input
+            id="icon-color-input"
+            type="color"
+            value={iconType}
+            onChange={handleColorChange}
+          />
+        </div>
       </div>
-      <div className="form-actions">
-        <button type="submit">적용</button>
-      </div>
-    </div>
+      <button type="submit">적용</button>
+    </>
   );
 };
