@@ -1,4 +1,5 @@
-.sidebar-content {
+/* 사이드바 전체 스타일 */
+.sidebar-wrapper{
   display: flex;
   flex-direction: column;
   gap: .3rem;
@@ -8,38 +9,41 @@
   padding: .3rem;
 }
 
-.table-title {
-  font-size: .6rem;
-  height: 1.5rem;
-  border: 1px solid lightgrey;
-  background-color: #ccc;
-  text-align: left;
-  line-height: 1.5rem;
-  padding: 0 .3rem;
-}
-
+/* 테이블 요소별 스타일 */
 .table-container {
   border: 1px solid lightgrey;
   padding: .5rem;
   width: 100%;
 }
 
+.table-title {
+  height: 1.5rem;
+  border: 1px solid lightgrey;
+  background-color: #ccc;
+  text-align: left;
+  line-height: 1.5rem;
+  padding: 0 .3rem;
+  font-size: .6rem;
+}
+
 .table-header {
   display: flex;
   border-bottom: 1px solid lightgrey;
   justify-content: space-between;
-  font-size: .6rem;
 	height: 1rem;
   background-color: #eee;
   align-items: center;
   text-align: left;
+  font-size: .6rem;
 }
 
-.row-container {
+.table-row {
   display: flex;
   border-bottom: 1px solid lightgrey;
 	height: 1.5rem;
   background-color: #fff;
+  font-size: .5rem;
+  
 	}
 
 .table-field {
@@ -52,6 +56,7 @@
   margin: 0;
 }
 
+/* 장비 현황 영역 스타일 */
 .icon-image {
   height: 90%;
   vertical-align: middle;

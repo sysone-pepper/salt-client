@@ -34,7 +34,7 @@ const iconLookup = {
 };
 const Row = ({ rowData }) => {
   return (
-    <tr className="row-container">
+    <tr className="table-row">
       {Object.entries(rowData).map(([key, value]) => {
         return (
           <td key={`${key} field`} className="table-field">
