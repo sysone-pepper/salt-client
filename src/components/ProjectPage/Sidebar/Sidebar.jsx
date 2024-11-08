@@ -19,16 +19,11 @@ const tableLookup = {
 };
 
 const Sidebar = () => {
-  const [tables, setTables] = useState(() => {
-    const savedTables = localStorage.getItem('tables');
-    return savedTables
-      ? JSON.parse(savedTables)
-      : [
-          { source: 'deviceStatus' },
-          { source: 'topTrafficUsage' },
-          { source: 'deviceTraffic' },
-        ];
-  });
+  const [tables, setTables] = useState([
+    { source: 'deviceStatus' },
+    { source: 'topTrafficUsage' },
+    { source: 'deviceTraffic' },
+  ]);
 
   const dragIndexRef = useRef(null);
   useEffect(() => {
@@ -64,7 +59,6 @@ const Sidebar = () => {
       const [draggedItem] = updatedTables.splice(dragIndex, 1);
       updatedTables.splice(dropIndex, 0, draggedItem);
       setTables(updatedTables);
-      localStorage.setItem('tables', JSON.stringify(updatedTables));
     }
     dragIndexRef.current = null;
   };
