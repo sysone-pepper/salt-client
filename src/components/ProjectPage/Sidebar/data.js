@@ -1,20 +1,12 @@
-import ServerIcon from '../../../assets/images/Server-icon2.png';
-import NetworkIcon from '../../../assets/images/Network-icon2.png';
-import L3SwitchIcon from '../../../assets/images/L3Switch-icon.png';
-import L4SwitchIcon from '../../../assets/images/L4Switch-icon.png';
-import L7SwitchIcon from '../../../assets/images/L7Switch-icon.png';
-import FirewallIcon from '../../../assets/images/Firewall-icon2.png';
-import UPSIcon from '../../../assets/images/UPS-icon2.png';
-
 const deviceStatus = [
-  { imageSource: ServerIcon, category: 'Server', total: 7, warning: 4 },
-  { imageSource: NetworkIcon, category: 'Network', total: 4, warning: 0 },
-  { imageSource: L3SwitchIcon, category: 'L2Switch', total: 7, warning: 4 },
-  { imageSource: L3SwitchIcon, category: 'L3Switch', total: 7, warning: 4 },
-  { imageSource: L4SwitchIcon, category: 'L4Switch', total: 7, warning: 4 },
-  { imageSource: L7SwitchIcon, category: 'L7Switch', total: 7, warning: 4 },
-  { imageSource: FirewallIcon, category: 'FW', total: 1, warning: 0 },
-  { imageSource: UPSIcon, category: 'UPS', total: 1, warning: 0 },
+  { category: 'Server', total: 7, warning: 4 },
+  { category: 'Network', total: 4, warning: 0 },
+  { category: 'L2Switch', total: 7, warning: 4 },
+  { category: 'L3Switch', total: 7, warning: 4 },
+  { category: 'L4Switch', total: 7, warning: 4 },
+  { category: 'L7Switch', total: 7, warning: 4 },
+  { category: 'FW', total: 1, warning: 0 },
+  { category: 'UPS', total: 1, warning: 0 },
 ];
 
 const topTrafficUsage = [
@@ -90,7 +82,7 @@ const tableCategory = {
   deviceStatus: {
     title: '장비 현황',
     data: deviceStatus,
-    columnAliases: ['', '', '등록', '장애'],
+    columnAliases: ['', '등록', '장애'],
   },
   topTrafficUsage: {
     title: '장비 Traffic 사용량 TOP 5',

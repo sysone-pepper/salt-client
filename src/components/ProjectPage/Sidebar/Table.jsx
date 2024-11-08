@@ -4,7 +4,7 @@ import invariant from 'tiny-invariant'; // 객체, 함수를 검증하고 falsy�
 import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import './Sidebar.css';
 
-const Table = ({ source }) => {
+const Table = ({ location, source }) => {
   const ref = useRef(null);
   const [dragging, setDragging] = useState(false);
 
@@ -14,28 +14,30 @@ const Table = ({ source }) => {
 
     return draggable({
       element: el,
-      getInitialData: () => ({ source }),
+      getInitialData: () => ({ location, source }),
       onDragStart: () => setDragging(true),
       onDrop: () => setDragging(false),
     });
-  }, [source]);
+  }, []);
 
   return (
-    <div className="table-container" ref={ref}>
-      <div className="table-title">
-        <p>{source.title}</p>
-      </div>
-      <div className="table-header">
-        {source.columnAliases.map((alias, index) => (
-          <p key={index} className="entity">
-            {alias}
-          </p>
+    <table className="table-container" ref={ref}>
+      <caption className="table-title">{source.title}</caption>
+      <thead>
+        <tr className="table-header">
+          {source.columnAliases.map((alias, index) => (
+            <th key={index} className="table-field">
+              {alias}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {source.data.map((rowData, index) => (
+          <Row key={index} rowData={rowData} />
         ))}
-      </div>
-      {source.data.map((rowData, index) => (
-        <Row key={index} rowData={rowData} />
-      ))}
-    </div>
+      </tbody>
+    </table>
   );
 };
 
