@@ -21,7 +21,6 @@ const ProjectPage = () => {
   return (
     <>
       <NetworkProvider>
-        {' '}
         <div>ProjectPage</div>
         <div className="flex-div">
           <Sidebar />
