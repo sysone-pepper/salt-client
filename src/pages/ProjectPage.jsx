@@ -4,6 +4,7 @@ import { NetworkContext, NetworkProvider } from '../contexts/NetworkContext';
 import './ProjectPage.css';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
+import Sidebar from '../components/ProjectPage/Sidebar/Sidebar';
 import { DiagramField } from '../components/ProjectPage/DiagramField';
 
 const ProjectPage = () => {
@@ -20,9 +21,11 @@ const ProjectPage = () => {
   return (
     <>
       <NetworkProvider>
-        {' '}
         <div>ProjectPage</div>
-        <DiagramField projectId={Number(projectId)} />
+        <div className="flex-div">
+          <Sidebar />
+          <DiagramField projectId={Number(projectId)} />
+        </div>
       </NetworkProvider>
     </>
   );

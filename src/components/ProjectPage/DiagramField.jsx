@@ -404,7 +404,7 @@ export const DiagramField = ({ projectId }) => {
   }, [selectedSize]);
 
   return (
-    <>
+    <div className="diagram-field">
       <label htmlFor="sizeInput">노드 크기: </label>
       <input
         id="sizeInput"
@@ -425,6 +425,6 @@ export const DiagramField = ({ projectId }) => {
         }}
       />
       <div id="navigator-container" />
-    </>
+    </div>
   );
 };

@@ -1,7 +1,11 @@
 #cy{
-  width:calc(100vw-17px);
+  width:100%;
   height: 90vh;
   bottom: 0;
+}
+
+.diagram-field {
+  flex-grow: 1;
 }
 
 .cytoscape-navigator {
