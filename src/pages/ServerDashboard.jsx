@@ -1,105 +1,97 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ServerDashboard.css';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import saltLogo from '../assets/images/salt-Logo-white-rm.png';
+import { getDeviceData } from '../api/Dashboard';
+import { useParams } from 'react-router-dom';
 
 const ServerDashboard = () => {
   const [activeTab, setActiveTab] = useState('요약');
+  const [usageData, setUsageData] = useState(null);
+  const { deviceId } = useParams();
 
-  // 정적 차트 데이터
-  const chartData = [
-    [Date.UTC(2023, 0, 1), 29.9],
-    [Date.UTC(2023, 0, 2), 71.5],
-    [Date.UTC(2023, 0, 3), 106.4],
-    [Date.UTC(2023, 0, 6), 129.2],
-    [Date.UTC(2023, 0, 7), 144.0],
-    [Date.UTC(2023, 0, 8), 176.0],
-    [Date.UTC(2023, 0, 9), 135.6],
-    [Date.UTC(2023, 0, 10), 148.5],
-    [Date.UTC(2023, 0, 11), 216.4],
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getDeviceData(deviceId, 10);
+        if (data.success) {
+          setUsageData(data.data);
+        } else {
+          console.error('Failed to fetch usage data');
+        }
+      } catch (error) {
+        console.error('Error fetching usage data:', error);
+      }
+    };
 
-  const getChartOptions = (index) => ({
-    chart: {
-      zooming: {
-        type: 'x',
+    fetchData();
+  }, [deviceId]);
+
+  const getChartOptions = (title, yAxisTitle, dataKey) => {
+    if (!usageData) return {};
+
+    const chartData = usageData.map((item) => [
+      new Date(item.generateTime).getTime(),
+      item[dataKey],
+    ]);
+
+    return {
+      chart: {
+        zoomType: 'x',
+        backgroundColor: 'transparent',
+        height: 200,
       },
-      backgroundColor: 'transparent',
-      height: 200,
-    },
-    title: {
-      text: `차트 ${index + 1}`,
-      align: 'left',
-      style: {
-        color: '#9ca3af',
-      },
-    },
-    subtitle: {
-      text: '드래그하여 확대',
-      align: 'left',
-      style: {
-        color: '#9ca3af',
-      },
-    },
-    xAxis: {
-      type: 'datetime',
-      labels: {
-        style: {
-          color: '#9ca3af',
-        },
-      },
-    },
-    yAxis: {
       title: {
-        text: '수치',
-        style: {
-          color: '#9ca3af',
-        },
+        text: title,
+        align: 'left',
+        style: { color: '#9ca3af' },
       },
-      labels: {
-        style: {
-          color: '#9ca3af',
-        },
+      subtitle: {
+        text: '드래그하여 확대',
+        align: 'left',
+        style: { color: '#9ca3af' },
       },
-    },
-    legend: {
-      enabled: false,
-    },
-    plotOptions: {
-      area: {
-        marker: {
-          radius: 2,
+      xAxis: {
+        type: 'datetime',
+        labels: { style: { color: '#9ca3af' } },
+      },
+      yAxis: {
+        title: {
+          text: yAxisTitle,
+          style: { color: '#9ca3af' },
         },
-        lineWidth: 1,
-        color: {
-          linearGradient: {
-            x1: 0,
-            y1: 0,
-            x2: 0,
-            y2: 1,
+        labels: { style: { color: '#9ca3af' } },
+      },
+      legend: {
+        enabled: false,
+      },
+      series: [
+        {
+          type: 'area',
+          name: title,
+          data: chartData,
+          color: {
+            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+            stops: [
+              [0, 'rgb(199, 113, 243)'],
+              [1, 'rgb(76, 175, 254)'],
+            ],
           },
-          stops: [
-            [0, 'rgb(199, 113, 243)'],
-            [0.7, 'rgb(76, 175, 254)'],
-          ],
-        },
-        states: {
-          hover: {
-            lineWidth: 1,
+          marker: {
+            radius: 2,
           },
+          lineWidth: 1,
+          states: {
+            hover: {
+              lineWidth: 1,
+            },
+          },
+          threshold: null,
         },
-        threshold: null,
-      },
-    },
-    series: [
-      {
-        type: 'area',
-        name: '데이터',
-        data: chartData,
-      },
-    ],
-  });
+      ],
+    };
+  };
 
   return (
     <div className="dashboard-container">
@@ -126,7 +118,6 @@ const ServerDashboard = () => {
         </div>
       </div>
 
-      {/* 서버정보 이름 외 기타 정보 넣을지 논의 필요 */}
       <div className="welcome-section">
         <h1 className="welcome-text">
           <span>서버이름</span>
@@ -134,22 +125,95 @@ const ServerDashboard = () => {
         </h1>
       </div>
 
-      {/* 카드 형식이되 각 탭마다 사이즈 다르게 하는 부분 확인 필요 */}
       <div className="cards-grid">
-        {Array.from({ length: 8 }).map((_, index) => (
-          <div key={index} className="card">
-            <div className="card-header">
-              <div className="card-title">각각 이름 {index + 1}</div>
-            </div>
-            <div className="card-value">
-              <HighchartsReact
-                highcharts={Highcharts}
-                options={getChartOptions(index)}
-              />
-            </div>
-            <div className="card-subtitle">부제?</div>
-          </div>
-        ))}
+        {Array.from({ length: 8 }).map((_, index) => {
+          if (index === 0) {
+            // CPU
+            return (
+              <div key={index} className="card">
+                <div className="card-header">
+                  <div className="card-title">CPU Usage</div>
+                </div>
+                <div className="card-value">
+                  {usageData ? (
+                    <HighchartsReact
+                      highcharts={Highcharts}
+                      options={getChartOptions(
+                        'CPU Usage',
+                        'CPU %',
+                        'cpuProcessor',
+                      )}
+                    />
+                  ) : (
+                    <div>Loading...</div>
+                  )}
+                </div>
+                <div className="card-subtitle">CPU 사용률 추이</div>
+              </div>
+            );
+          } else if (index === 1) {
+            // MEMORY
+            return (
+              <div key={index} className="card">
+                <div className="card-header">
+                  <div className="card-title">Memory Usage</div>
+                </div>
+                <div className="card-value">
+                  {usageData ? (
+                    <HighchartsReact
+                      highcharts={Highcharts}
+                      options={getChartOptions(
+                        'Memory Usage',
+                        'Memory %',
+                        'usedMemoryPercentage',
+                      )}
+                    />
+                  ) : (
+                    <div>Loading...</div>
+                  )}
+                </div>
+                <div className="card-subtitle">메모리 사용률 추이</div>
+              </div>
+            );
+          } else if (index === 2) {
+            // Disk
+            return (
+              <div key={index} className="card">
+                <div className="card-header">
+                  <div className="card-title">Disk Usage</div>
+                </div>
+                <div className="card-value">
+                  {usageData ? (
+                    <HighchartsReact
+                      highcharts={Highcharts}
+                      options={getChartOptions(
+                        'Disk Usage',
+                        'Disk %',
+                        'usedDiskPercentage',
+                      )}
+                    />
+                  ) : (
+                    <div>Loading...</div>
+                  )}
+                </div>
+                <div className="card-subtitle">디스크 사용률 추이</div>
+              </div>
+            );
+          } else {
+            // 나머지 카드 데이터 준비 중
+            return (
+              <div key={index} className="card">
+                <div className="card-header">
+                  <div className="card-title">각각 이름 {index + 1}</div>
+                </div>
+                <div className="card-value">
+                  <div>추후 데이터 추가 예정</div>
+                </div>
+                <div className="card-subtitle">부제?</div>
+              </div>
+            );
+          }
+        })}
       </div>
     </div>
   );
