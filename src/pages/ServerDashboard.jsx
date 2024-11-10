@@ -16,7 +16,10 @@ const ServerDashboard = () => {
       try {
         const data = await getDeviceData(deviceId, 10);
         if (data.success) {
-          setUsageData(data.data);
+          const sortedData = data.data.sort(
+            (a, b) => new Date(a.generateTime) - new Date(b.generateTime),
+          );
+          setUsageData(sortedData);
         } else {
           console.error('Failed to fetch usage data');
         }
@@ -26,6 +29,12 @@ const ServerDashboard = () => {
     };
 
     fetchData();
+
+    const interval = setInterval(() => {
+      fetchData();
+    }, 60000);
+
+    return () => clearInterval(interval);
   }, [deviceId]);
 
   const getChartOptions = (title, yAxisTitle, dataKey) => {
@@ -43,20 +52,14 @@ const ServerDashboard = () => {
         height: 200,
       },
       title: {
-        text: title,
-        align: 'left',
-        style: { color: '#9ca3af' },
-      },
-      subtitle: {
-        text: '드래그하여 확대',
-        align: 'left',
-        style: { color: '#9ca3af' },
+        text: '',
       },
       xAxis: {
         type: 'datetime',
         labels: { style: { color: '#9ca3af' } },
       },
       yAxis: {
+        max: 100,
         title: {
           text: yAxisTitle,
           style: { color: '#9ca3af' },
@@ -64,6 +67,9 @@ const ServerDashboard = () => {
         labels: { style: { color: '#9ca3af' } },
       },
       legend: {
+        enabled: false,
+      },
+      credits: {
         enabled: false,
       },
       series: [
@@ -129,10 +135,13 @@ const ServerDashboard = () => {
         {Array.from({ length: 8 }).map((_, index) => {
           if (index === 0) {
             // CPU
+            const latestData = usageData && usageData[usageData.length - 1];
+            const latestCpuUsage = latestData ? latestData.cpuProcessor : null;
+
             return (
               <div key={index} className="card">
                 <div className="card-header">
-                  <div className="card-title">CPU Usage</div>
+                  <div className="card-title">CPU 사용률</div>
                 </div>
                 <div className="card-value">
                   {usageData ? (
@@ -148,15 +157,24 @@ const ServerDashboard = () => {
                     <div>Loading...</div>
                   )}
                 </div>
-                <div className="card-subtitle">CPU 사용률 추이</div>
+                <div className="card-subtitle">
+                  {latestCpuUsage !== null
+                    ? `${latestCpuUsage}%`
+                    : 'Loading...'}
+                </div>
               </div>
             );
           } else if (index === 1) {
-            // MEMORY
+            // Memory
+            const latestData = usageData && usageData[usageData.length - 1];
+            const latestMemoryUsage = latestData
+              ? latestData.usedMemoryPercentage
+              : null;
+
             return (
               <div key={index} className="card">
                 <div className="card-header">
-                  <div className="card-title">Memory Usage</div>
+                  <div className="card-title">Memory 사용률</div>
                 </div>
                 <div className="card-value">
                   {usageData ? (
@@ -172,15 +190,24 @@ const ServerDashboard = () => {
                     <div>Loading...</div>
                   )}
                 </div>
-                <div className="card-subtitle">메모리 사용률 추이</div>
+                <div className="card-subtitle">
+                  {latestMemoryUsage !== null
+                    ? `${latestMemoryUsage}%`
+                    : 'Loading...'}
+                </div>
               </div>
             );
           } else if (index === 2) {
             // Disk
+            const latestData = usageData && usageData[usageData.length - 1];
+            const latestDiskUsage = latestData
+              ? latestData.usedDiskPercentage
+              : null;
+
             return (
               <div key={index} className="card">
                 <div className="card-header">
-                  <div className="card-title">Disk Usage</div>
+                  <div className="card-title">Disk 사용률</div>
                 </div>
                 <div className="card-value">
                   {usageData ? (
@@ -196,11 +223,15 @@ const ServerDashboard = () => {
                     <div>Loading...</div>
                   )}
                 </div>
-                <div className="card-subtitle">디스크 사용률 추이</div>
+                <div className="card-subtitle">
+                  {latestDiskUsage !== null
+                    ? `${latestDiskUsage}%`
+                    : 'Loading...'}
+                </div>
               </div>
             );
           } else {
-            // 나머지 카드 데이터 준비 중
+            // 나머지 카드
             return (
               <div key={index} className="card">
                 <div className="card-header">
