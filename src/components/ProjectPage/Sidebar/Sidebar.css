@@ -2,11 +2,19 @@
 .sidebar-wrapper{
   display: flex;
   flex-direction: column;
-  gap: .3rem;
-  font-size: .5rem;
   width: 30rem;
-  border: 1px solid black;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+.sidebar {
   padding: .3rem;
+  border: 1px solid black;
+  font-size: .5rem;
+  gap: .3rem;
+}
+
+.hidden{
+  width: 0px;
 }
 
 /* 테이블 요소별 스타일 */
@@ -61,3 +69,4 @@
   height: 90%;
   vertical-align: middle;
 }
+

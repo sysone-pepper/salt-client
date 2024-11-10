@@ -45,6 +45,8 @@ export const DiagramField = ({ projectId }) => {
     setIsObjectDelete,
     selectedSize,
     setSelectedSize,
+    isSidebarPanned,
+    setIsSidebarPanned,
   } = useContext(NetworkContext);
 
   const [navigatorInitialized, setNavigatorInitialized] = useState(false); // 네비게이터 초기화 상태
@@ -403,6 +405,10 @@ export const DiagramField = ({ projectId }) => {
     }
   }, [selectedSize]);
 
+  const handleSidebarButtonClick = () => {
+    setIsSidebarPanned((prevState) => !prevState);
+  };
+
   return (
     <div className="diagram-field">
       <label htmlFor="sizeInput">노드 크기: </label>
@@ -416,7 +422,9 @@ export const DiagramField = ({ projectId }) => {
         placeholder="20 - 100"
       />
       <button onClick={handleSizeButtonClick}>확인</button>
-
+      <button className="toolbar-button" onClick={handleSidebarButtonClick}>
+        사이드바 {isSidebarPanned ? '접기' : '펼치기'}
+      </button>
       <ToolBox />
       <div
         id="cy"

@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import Table from './Table';
 import { tableCategory } from './data.js';
 import {
   draggable,
   dropTargetForElements,
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { NetworkContext } from '../../../contexts/NetworkContext.jsx';
 
 const tableLookup = {
   deviceStatus: (row) => (
@@ -19,6 +20,7 @@ const tableLookup = {
 };
 
 const Sidebar = () => {
+  const { isSidebarPanned } = useContext(NetworkContext);
   const [tables, setTables] = useState([
     { source: 'deviceStatus' },
     { source: 'topTrafficUsage' },
@@ -64,14 +66,18 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="sidebar-wrapper">
-      <ul>
-        {tables.map((table, index) => (
-          <li key={index} id={`table-${index}`}>
-            {tableLookup[table.source](index)}
-          </li>
-        ))}
-      </ul>
+    <div
+      className={`sidebar-wrapper ${isSidebarPanned ? undefined : 'hidden'}`}
+    >
+      <div className="sidebar">
+        <ul>
+          {tables.map((table, index) => (
+            <li key={index} id={`table-${index}`}>
+              {tableLookup[table.source](index)}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

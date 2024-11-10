@@ -15,6 +15,7 @@ export function NetworkProvider({ children }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSize, setSelectedSize] = useState(20);
   const [isNavigatorToggled, setIsNavigatorToggled] = useState(true);
+  const [isSidebarPanned, setIsSidebarPanned] = useState(true);
 
   const getImageSizeFromUrl = async (url) => {
     return new Promise((resolve, reject) => {
@@ -213,6 +214,8 @@ export function NetworkProvider({ children }) {
         setSelectedSize,
         isNavigatorToggled,
         setIsNavigatorToggled,
+        isSidebarPanned,
+        setIsSidebarPanned,
       }}
     >
       {children}
