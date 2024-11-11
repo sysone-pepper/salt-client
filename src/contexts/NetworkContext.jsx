@@ -8,11 +8,11 @@ export function NetworkProvider({ children }) {
   const [curProjectId, setCurProjectId] = useState();
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
+  const [existDevices, setExistDevices] = useState([]);
   const [bgImgInfo, setBgImgInfo] = useState(null);
   const [dataReady, setDataReady] = useState(false);
   const [isLinking, setIsLinking] = useState(false);
   const [isObjectDelete, setIsObjectDelete] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSize, setSelectedSize] = useState(20);
   const [isNavigatorToggled, setIsNavigatorToggled] = useState(true);
 
@@ -59,6 +59,11 @@ export function NetworkProvider({ children }) {
     ];
     setNodes(newNodes);
     setEdges(edges);
+  };
+
+  const fetchExistDeviceInfo = async () => {
+    const data = await api.fetchExistDevices(curProjectId);
+    setExistDevices(data);
   };
 
   const createNodeId = async (nodeData) => {
@@ -188,6 +193,7 @@ export function NetworkProvider({ children }) {
         createNodeId,
         createLink,
         fetchMapData,
+        fetchExistDeviceInfo,
         updateNode,
         updateNodeSize,
         updateBgImg,
@@ -201,14 +207,14 @@ export function NetworkProvider({ children }) {
         setNodes,
         edges,
         setEdges,
+        existDevices,
+        setExistDevices,
         dataReady,
         setDataReady,
         isLinking,
         setIsLinking,
         isObjectDelete,
         setIsObjectDelete,
-        isModalOpen,
-        setIsModalOpen,
         selectedSize,
         setSelectedSize,
         isNavigatorToggled,
