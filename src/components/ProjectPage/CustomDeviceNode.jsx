@@ -11,6 +11,7 @@ import UPSIcon from '../../assets/images/UPS-icon2.png';
 const deviceIcons = {
   Server: ServerIcon,
   Network: NetworkIcon,
+  L2Switch: undefined,
   L3Switch: L3SwitchIcon,
   L4Switch: L4SwitchIcon,
   L7Switch: L7SwitchIcon,
