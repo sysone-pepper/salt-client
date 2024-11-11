@@ -74,6 +74,12 @@ export const DiagramField = ({ projectId }) => {
               height: 'data(nodeSize)',
             },
           },
+          {
+            selector: '.ICON,.TEXT',
+            style: {
+              'background-opacity': '0',
+            },
+          },
         ],
         layout: {
           name: 'preset',
