@@ -1,94 +1,96 @@
-import React, { useContext, useState } from "react";
-import "./LoadDeviceForm.css";
-import { NetworkContext } from "../../../contexts/NetworkContext";
+import React, { useContext, useEffect, useState } from 'react';
+import './LoadDeviceForm.css';
+import { NetworkContext } from '../../../contexts/NetworkContext';
+import { ExistDeviceCard } from './ExistDeviceCard';
 
-const LoadDevice = () => {
-  // 기존 장비를 불러오는 함수
-  return [
-    {
-      key: 1,
-      device_alias: "DESKTOP_업무_01",
-      device_name: "DESKTOP-P3L1AHM",
-      public_ip: "10.10.10.1",
-      public_ip_v6: "00:03:EA:19:04:1D",
-      os_type: "Windows",
-      os_detail: "Microsoft Windows 10 Pro",
-      vendor: "SAMSUNG ELECTRONICS CO., LTD.",
-      device_type: "1",
-      source:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLwSPrY4-TRKuyeTujdu-_O7MgLPjR79Uhag&s",
-    },
-    {
-      key: 2,
-      device_alias: "DESKTOP_업무_02",
-      device_name: "DESKTOP-41CBLI8",
-      public_ip: "10.10.10.2",
-      public_ip_v6: "00:03:EA:19:04:1D",
-      os_type: "Windows",
-      os_detail: "Microsoft Windows 10 Pro",
-      vendor: "SAMSUNG ELECTRONICS CO., LTD.",
-      device_type: "1",
-      source:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT34w_tApxbp323ePS-g365lCM6ZP3vdhdetQ&s",
-    },
-    {
-      key: 3,
-      device_alias: "DESKTOP_업무_03",
-      device_name: "DESKTOP-41CBLI8",
-      public_ip: "10.10.10.3",
-      public_ip_v6: "00:0C:29:59:8B:13",
-      os_type: "Windows",
-      os_detail: "Microsoft Windows 10 Pro",
-      vendor: "SAMSUNG ELECTRONICS CO., LTD.",
-      device_type: "1",
-      source:
-        "https://www.shutterstock.com/image-vector/uninterrupted-power-supply-icon-vector-260nw-2223482595.jpg",
-    },
-  ];
-};
-
-export const LoadDeviceForm = () => {
-  const { setIsModalOpen, setCurModalType } = useContext(NetworkContext);
+export const LoadDeviceForm = ({ closeModal }) => {
+  const {
+    fetchExistDeviceInfo,
+    existDevices,
+    curProjectId,
+    createNodeId,
+    nodes,
+    setNodes,
+    selectedSize,
+  } = useContext(NetworkContext);
+  const [dataReady, setDataReady] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState(null);
-  const loadedDeviceData = LoadDevice();
+  const [search, setSearch] = useState('');
 
-  const LoadedDeviceTag = (data) => {
-    return (
-      <div
-        className="loaded-device-container"
-        onClick={() => {
-          console.log(data);
-          setSelectedDevice(data);
-        }}
-        key={data.public_ip}
-      >
-        <div className="loaded-deive-image-container">
-          <img
-            src={data.source}
-            alt={data.device_name}
-            className="loaded-device-image"
-          />
-        </div>
-        <p className="loaded-device-info">{data.device_name}</p>
-      </div>
-    );
-  };
+  // 실장비 데이터 로드
+  useEffect(() => {
+    fetchExistDeviceInfo();
+  }, []);
 
-  const handleLoadDeviceSubmit = (e) => {
+  // 실장비 데이터 로드 이후, 장비 카드 생성
+  useEffect(() => {
+    setDataReady(true);
+  }, [existDevices]);
+
+  const handleLoadDeviceSubmit = async (e) => {
     e.preventDefault();
     if (!selectedDevice) {
-      alert("장비를 선택해주세요!");
+      alert('장비를 선택해주세요!');
     }
-    setIsModalOpen(false);
-    setCurModalType("");
+    const newNodeData = {
+      nodeType: 'EXIST_DEVICE',
+      positionX: 0,
+      positionY: 0,
+      nodeSize: selectedSize,
+      deviceId: selectedDevice.id,
+    };
+
+    let nodeId = await createNodeId(newNodeData);
+
+    let newNode = {
+      group: 'nodes',
+      data: {
+        id: nodeId,
+        nodeId,
+        projectId: curProjectId,
+        ...newNodeData,
+      },
+      position: { x: newNodeData.positionX, y: newNodeData.positionY },
+      style: { width: newNodeData.nodeSize, height: newNodeData.nodeSize },
+      classes: `object ${newNodeData.nodeType + ' noControlsMode'}`,
+      grabbable: true,
+    };
+
+    delete newNode.data.positionX;
+    delete newNode.data.positionY;
+
+    setNodes([...nodes, newNode]);
+    closeModal();
   };
+
+  const filteredDevices = existDevices.filter((deviceData) => {
+    const lowerCaseQuery = search.toLowerCase();
+    return (
+      deviceData.deviceName.toLowerCase().includes(lowerCaseQuery) ||
+      deviceData.deviceAlias.toLowerCase().includes(lowerCaseQuery) ||
+      deviceData.publicIp.toLowerCase().includes(lowerCaseQuery)
+    );
+  });
 
   return (
     <form className="load-device-form" onSubmit={handleLoadDeviceSubmit}>
+      <input
+        className="search-device-info"
+        type="text"
+        placeholder="장비 이름, 별칭 또는 아이피 검색 "
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
       <div className="loaded-devices">
-        {loadedDeviceData.map((data) => {
-          return LoadedDeviceTag(data);
-        })}
+        {dataReady &&
+          filteredDevices.map((deviceData) => (
+            <ExistDeviceCard
+              key={deviceData.id}
+              deviceData={deviceData}
+              isSelected={selectedDevice?.id === deviceData.id}
+              onSelect={() => setSelectedDevice(deviceData)}
+            />
+          ))}
       </div>
       <div className="form-actions">
         <button type="submit">적용</button>
