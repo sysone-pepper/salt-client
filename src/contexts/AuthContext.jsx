@@ -1,36 +1,47 @@
-/*
-로그인 상태를 전체 앱에서 관리하는 중앙 저장소
-로그인/로그아웃 함수 제공
-마치 호텔의 투숙객 관리 시스템같은 역할
-*/
-
 import { createContext, useContext, useState, useEffect } from 'react';
 import { loginUser } from '../api/Auth.js';
-import api from '../api/index';
+import * as jwt_decode from 'jwt-decode';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem('token'),
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded = jwt_decode(token);
+        if (decoded.exp * 1000 > Date.now()) {
+          return true;
+        } else {
+          localStorage.removeItem('token');
+          return false;
+        }
+      } catch (error) {
+        localStorage.removeItem('token');
+        return false;
+      }
+    }
+    return false;
+  });
+
   const [currentUser, setCurrentUser] = useState(
     JSON.parse(localStorage.getItem('currentUser')) || null,
   );
 
   const login = async (credentials) => {
-    const data = await loginUser(credentials); // API 호출
+    const data = await loginUser(credentials);
+    const refreshToken = data.data.refreshToken;
     if (data.success) {
       const token = data.data.accessToken;
-      localStorage.setItem('token', token); // 토큰 저장
+      localStorage.setItem('token', token);
+      localStorage.setItem('refreshToken', refreshToken);
       setIsAuthenticated(true);
 
-      // 로그인 시 입력한 id를 currentUser로 설정
       const user = { username: credentials.id };
 
       setCurrentUser(user);
       localStorage.setItem('currentUser', JSON.stringify(user));
-      return user; // 사용자 정보 반환
+      return user;
     } else {
       throw new Error('로그인 실패');
     }
@@ -38,9 +49,10 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setIsAuthenticated(false);
-    localStorage.removeItem('token'); // 토큰 삭제
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
     localStorage.removeItem('currentUser');
-    setCurrentUser(null); // 사용자 정보 초기화
+    setCurrentUser(null);
   };
 
   return (
