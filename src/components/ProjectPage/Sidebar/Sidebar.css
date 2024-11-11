@@ -77,18 +77,19 @@
   border-bottom: 1px solid #878f9b;
 	height: 1.5rem;
   font-size: .5rem;
-  
+  color: #ddd;
+
 	}
 
 .table-field {
   padding: 0 .3rem;
-  min-width: 0; /* 내용이 길어도 너비가 고정되도록 설정 */
+  min-width: 0;
   flex-grow: 1;
   align-content: center;
   width: 25%;
   margin: 0;
   background-color: #1f2937;
-  text-align: right;
+  text-align: left;
 }
 
 .table-field span:hover {
