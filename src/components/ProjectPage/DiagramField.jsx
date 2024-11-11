@@ -12,6 +12,7 @@ import navConfig from '../../constants/NavigatorConfig';
 import ehConfig from '../../constants/EdgeHandleOptions';
 import { CustomDeviceNode } from './CustomDeviceNode';
 import { CustomIconNode } from './CustomIconNode';
+import Sidebar from './Sidebar/Sidebar';
 
 const registerCytoscapeExtensions = () => {
   cytoscape.use(dagre);
@@ -410,29 +411,38 @@ export const DiagramField = ({ projectId }) => {
   };
 
   return (
-    <div className="diagram-field">
-      <label htmlFor="sizeInput">노드 크기: </label>
-      <input
-        id="sizeInput"
-        type="number"
-        min="20"
-        max="100"
-        value={inputSize}
-        onChange={handleSizeInputChange}
-        placeholder="20 - 100"
-      />
-      <button onClick={handleSizeButtonClick}>확인</button>
-      <button className="toolbar-button" onClick={handleSidebarButtonClick}>
-        사이드바 {isSidebarPanned ? '접기' : '펼치기'}
-      </button>
-      <ToolBox />
-      <div
-        id="cy"
-        style={{
-          border: '1px solid black',
-        }}
-      />
-      <div id="navigator-container" />
-    </div>
+    <>
+      <div className="toolbar">
+        <label htmlFor="sizeInput">노드 크기 조절</label>
+        <input
+          id="sizeInput"
+          type="number"
+          min="20"
+          max="100"
+          value={inputSize}
+          onChange={handleSizeInputChange}
+          placeholder="20 - 100"
+        />
+        <button className="toolbar-button" onClick={handleSizeButtonClick}>
+          확인
+        </button>
+        <button className="toolbar-button" onClick={handleSidebarButtonClick}>
+          사이드바 {isSidebarPanned ? '접기' : '펼치기'}
+        </button>
+      </div>
+      <div className="flex-div">
+        <Sidebar />
+        <div className="diagram-field">
+          <ToolBox />
+          <div
+            id="cy"
+            style={{
+              border: '1px solid black',
+            }}
+          />
+          <div id="navigator-container" />
+        </div>
+      </div>
+    </>
   );
 };

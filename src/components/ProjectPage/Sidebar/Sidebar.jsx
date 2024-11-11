@@ -7,6 +7,8 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { NetworkContext } from '../../../contexts/NetworkContext.jsx';
 
+import './Sidebar.css';
+
 const tableLookup = {
   deviceStatus: (row) => (
     <Table source={tableCategory.deviceStatus} key={row} />
@@ -21,6 +23,7 @@ const tableLookup = {
 
 const Sidebar = () => {
   const { isSidebarPanned } = useContext(NetworkContext);
+
   const [tables, setTables] = useState([
     { source: 'deviceStatus' },
     { source: 'topTrafficUsage' },
@@ -66,18 +69,16 @@ const Sidebar = () => {
   };
 
   return (
-    <div
-      className={`sidebar-wrapper ${isSidebarPanned ? undefined : 'hidden'}`}
-    >
-      <div className="sidebar">
-        <ul>
+    <div className={`sidebar-wrapper${isSidebarPanned ? ' active' : ''}`}>
+      <aside className="sidebar">
+        <ul className="table-list">
           {tables.map((table, index) => (
             <li key={index} id={`table-${index}`}>
               {tableLookup[table.source](index)}
             </li>
           ))}
         </ul>
-      </div>
+      </aside>
     </div>
   );
 };

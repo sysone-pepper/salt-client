@@ -11,4 +11,9 @@
 
 .flex-div {
   display: flex;
+  background-color: #111827;
+  color: #878f9b;
+  padding: .3rem;
 }
+
+
