@@ -32,13 +32,17 @@ export const LoadDeviceForm = ({ closeModal }) => {
     if (!selectedDevice) {
       alert('장비를 선택해주세요!');
     }
+
     const newNodeData = {
       nodeType: 'EXIST_DEVICE',
       positionX: 0,
       positionY: 0,
       nodeSize: selectedSize,
       deviceId: selectedDevice.id,
+      ...selectedDevice,
     };
+
+    delete newNodeData.id;
 
     let nodeId = await createNodeId(newNodeData);
 
