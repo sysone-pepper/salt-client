@@ -107,6 +107,24 @@ export const DiagramField = ({ projectId }) => {
           },
         },
         {
+          query: '.EXIST_DEVICE',
+          halign: 'center',
+          valign: 'center',
+          halignBox: 'center',
+          valignBox: 'center',
+          cssClass: '',
+          tpl(data) {
+            return `${ReactDOMServer.renderToString(
+              <CustomDeviceNode
+                node={cy.getElementById(data.id)}
+                data={data}
+                isSelected={false}
+                isExistDevice={true}
+              />,
+            )}`;
+          },
+        },
+        {
           query: '.ICON',
           halign: 'center',
           valign: 'center',
@@ -137,11 +155,12 @@ export const DiagramField = ({ projectId }) => {
                 return `
                     <div>
                         ID : 기존장비-${node.id()} <br>
-                        장비명 : ${node.data('newDeviceAlias')} <br>
-                        IP : ${node.data('newDevicePublicIp')} <br>
-                        유형 : ${node.data('newDeviceType')} <br>
-                        OS : ${node.data('newDeviceOs')} <br>
-                        제조사 : ${node.data('newDeviceVendor')} <br>
+                        장비명 : ${node.data('deviceAlias')} <br>
+                        IP : ${node.data('publicIp')} <br>
+                        IPv6 : ${node.data('publicIpV6')} <br>
+                        유형 : ${node.data('deviceType')} <br>
+                        OS : ${node.data('osType')} <br>
+                        제조사 : ${node.data('vendor')} <br>
                     </div>
                     `;
               case 'NEW_DEVICE':
