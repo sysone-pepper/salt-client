@@ -41,53 +41,129 @@ const ServerDashboard = () => {
     return () => clearInterval(interval);
   }, [deviceId]);
 
-  const getSolidGaugeOptions = (title, value) => {
+  // const getSolidGaugeOptions = (title, value) => {
+  //   return {
+  //     chart: {
+  //       type: 'solidgauge',
+  //       backgroundColor: 'transparent',
+  //       height: 200,
+  //       width: 200,
+  //     },
+  //     title: null,
+  //     pane: {
+  //       center: ['50%', '85%'],
+  //       size: '100%',
+  //       startAngle: -90,
+  //       endAngle: 90,
+  //       background: {
+  //         backgroundColor: '#1f2937',
+  //         innerRadius: '60%',
+  //         outerRadius: '100%',
+  //         shape: 'arc',
+  //       },
+  //     },
+  //     tooltip: {
+  //       enabled: false,
+  //     },
+  //     yAxis: {
+  //       stops: [
+  //         [0.1, '#55BF3B'],
+  //         [0.5, '#DDDF0D'],
+  //         [0.9, '#DF5353'],
+  //       ],
+  //       lineWidth: 0,
+  //       minorTickInterval: null,
+  //       tickAmount: 2,
+  //       min: 0,
+  //       max: 100,
+  //       labels: {
+  //         y: 16,
+  //         style: { color: '#9ca3af' },
+  //       },
+  //     },
+  //     plotOptions: {
+  //       solidgauge: {
+  //         dataLabels: {
+  //           y: -10,
+  //           borderWidth: 0,
+  //           useHTML: true,
+  //           enabled: false,
+  //         },
+  //       },
+  //     },
+  //     credits: {
+  //       enabled: false,
+  //     },
+  //     series: [
+  //       {
+  //         data: [value],
+  //       },
+  //     ],
+  //   };
+  // };
+  const getGaugeOptions = (title, value) => {
     return {
       chart: {
-        type: 'solidgauge',
+        type: 'gauge',
         backgroundColor: 'transparent',
         height: 200,
         width: 200,
       },
       title: null,
       pane: {
-        center: ['50%', '85%'],
-        size: '100%',
-        startAngle: -90,
-        endAngle: 90,
-        background: {
-          backgroundColor: '#1f2937',
-          innerRadius: '60%',
-          outerRadius: '100%',
-          shape: 'arc',
-        },
+        startAngle: -150,
+        endAngle: 150,
+        background: [
+          {
+            backgroundColor: '#1f2937',
+            borderWidth: 0,
+            outerRadius: '109%',
+            innerRadius: '103%',
+          },
+        ],
       },
       tooltip: {
         enabled: false,
       },
       yAxis: {
-        stops: [
-          [0.1, '#55BF3B'],
-          [0.5, '#DDDF0D'],
-          [0.9, '#DF5353'],
-        ],
-        lineWidth: 0,
-        minorTickInterval: null,
-        tickAmount: 2,
         min: 0,
         max: 100,
+        minorTickInterval: 'auto',
+        minorTickWidth: 0,
+        minorTickLength: 0,
+        minorTickPosition: 'inside',
+        minorTickColor: '#666',
+        tickPixelInterval: 30,
+        tickWidth: 1,
+        tickPosition: 'inside',
+        tickLength: 10,
+        tickColor: '#666',
         labels: {
-          y: 16,
+          step: 2,
+          rotation: 'auto',
           style: { color: '#9ca3af' },
         },
+        plotBands: [
+          { from: 0, to: 60, color: '#55BF3B' },
+          { from: 60, to: 90, color: '#DDDF0D' },
+          { from: 90, to: 100, color: '#DF5353' },
+        ],
       },
       plotOptions: {
-        solidgauge: {
+        gauge: {
           dataLabels: {
             y: -10,
             borderWidth: 0,
             useHTML: true,
             enabled: false,
+          },
+          dial: {
+            backgroundColor: '#C0C0C0',
+            // borderColor: '#FF0000',
+            borderWidth: 1,
+            baseWidth: 8,
+            topWidth: 1,
+            radius: '90%',
           },
         },
       },
@@ -96,7 +172,11 @@ const ServerDashboard = () => {
       },
       series: [
         {
+          name: title,
           data: [value],
+          tooltip: {
+            valueSuffix: ' %',
+          },
         },
       ],
     };
@@ -244,9 +324,16 @@ const ServerDashboard = () => {
                   </div>
                   <div className="card-value">
                     {latestUsage !== null ? (
+                      // <HighchartsReact
+                      //   highcharts={Highcharts}
+                      //   options={getSolidGaugeOptions(
+                      //     `${itemType} 사용률`,
+                      //     latestUsage,
+                      //   )}
+                      // />
                       <HighchartsReact
                         highcharts={Highcharts}
-                        options={getSolidGaugeOptions(
+                        options={getGaugeOptions(
                           `${itemType} 사용률`,
                           latestUsage,
                         )}
