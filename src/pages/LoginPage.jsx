@@ -8,15 +8,15 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated && currentUser) {
-      navigate(`/projects/${currentUser.username}`, { replace: true });
+    if (isAuthenticated) {
+      navigate(`/projects`);
     }
   }, [isAuthenticated, currentUser, navigate]);
 
   const handleLogin = async (credentials) => {
     try {
-      const user = await login(credentials);
-      navigate(`/projects/${user.username}`, { replace: true });
+      await login(credentials);
+      navigate(`/projects`, { replace: true });
     } catch (error) {
       console.error('로그인 실패:', error);
       alert('로그인에 실패했습니다.');
