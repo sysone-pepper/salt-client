@@ -1,41 +1,45 @@
 .load-device-form {
-  width: 100%;
-  height: 100%;
-}
-.loaded-devices {
-  display: grid; /* Grid 사용 */
-  grid-template-columns: repeat(4, 1fr); /* 3열로 설정 */
-  gap: 20px; /* 그리드 아이템 간의 간격 설정 */
-  justify-items: center; /* 아이템을 그리드 셀 내에서 중앙 정렬 */
-  width: 100%;
-  height: 100%;
-  overflow-y: scroll;
-}
-.loaded-device-container {
   display: flex;
+  position: relative;
   flex-direction: column;
-  width: 100px;
-  height: 100px;
-  justify-content: flex-start;
-  box-sizing: border-box;
-  border: 1px solid blue;
+  align-items: center;
+  padding: 16px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  width: calc(100% - 32px);
+  top: 10%;
+  height: 80%;
+  overflow-y: auto; /* 모달 내부에서 세로 스크롤 허용 */
 }
-.loaded-deive-image-container {
-  flex-grow: 1; /* 이미지가 남은 공간을 차지하게 함 */
+
+.search-device-info {
+  width: 90%;
+  padding: 10px 15px;
+  margin-bottom: 16px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  outline: none;
+}
+
+
+.loaded-devices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(30%, 1fr)); /* 최소 2열에서 최대 3열 */
+	grid-auto-rows: 200px;
+  gap: 12px;
+  width: calc(100% - 32px);
+  height: 100%;
+  padding-right: 17px;
+  overflow-x: hidden; /* 가로 스크롤 방지 */
+  overflow-y: auto; /* 세로 스크롤 필요 시 활성화 */
+  max-height: 400px; /* 카드 컨테이너 높이 제한 */
+} 
+
+.form-actions {
   display: flex;
-  justify-content: center; /* 이미지 중앙 정렬 */
-  background-color: aqua;
-}
-
-.loaded-device-image {
-  max-width: 50%;
-  max-height: 500%; /* div 내에서 이미지가 꽉 차게 */
-  object-fit: contain; /* 이미지 비율 유지하며 div 내에 꽉 채움 */
-}
-
-.loaded-device-info {
-  margin-top: auto; /* p 태그를 하단에 배치 */
-  font-size: 15px;
-  margin-bottom: 0;
-  text-align: center; /* 텍스트 중앙 정렬 */
+  justify-content: center;
+  margin-top: 16px;
 }

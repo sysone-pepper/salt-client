@@ -11,6 +11,7 @@ import UPSIcon from '../../assets/images/UPS-icon2.png';
 const deviceIcons = {
   Server: ServerIcon,
   Network: NetworkIcon,
+  L2Switch: undefined,
   L3Switch: L3SwitchIcon,
   L4Switch: L4SwitchIcon,
   L7Switch: L7SwitchIcon,
@@ -19,24 +20,43 @@ const deviceIcons = {
 };
 
 export const CustomDeviceNode = ({ node, data, isSelected, isExistDevice }) => {
-  return (
-    <div
-      className={`outer-device-node ${isSelected ? 'selected' : undefined}`}
-      style={{ width: node?.width(), height: node?.height() }} // 바깥노드도 data의 크기를 반영하도록 변경
-    >
+  if (isExistDevice) {
+    return (
       <div
-        className="inner-device-node"
-        // style={{ width: node?.width(), height: node?.height() }}
+        className={`outer-device-node ${isSelected ? 'selected' : undefined}`}
+        style={{ width: node?.width(), height: node?.height() }} // 바깥노드도 data의 크기를 반영하도록 변경
       >
-        <img
-          className="device-node-icon"
-          src={deviceIcons[data?.newDeviceType]}
-          alt={data?.deviceType}
-        />
+        <div
+          className="inner-device-node"
+          // style={{ width: node?.width(), height: node?.height() }}
+        >
+          <img
+            className="device-node-icon"
+            src={Object.values(deviceIcons)[Number(data?.deviceType)]}
+            alt={data?.deviceType}
+          />
+        </div>
+        <p className="device-node-info">{data.deviceAlias}</p>
       </div>
-      <p className="device-node-info">
-        {isExistDevice ? data.deviceAlias : data.newDeviceAlias}
-      </p>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div
+        className={`outer-device-node ${isSelected ? 'selected' : undefined}`}
+        style={{ width: node?.width(), height: node?.height() }} // 바깥노드도 data의 크기를 반영하도록 변경
+      >
+        <div
+          className="inner-device-node"
+          // style={{ width: node?.width(), height: node?.height() }}
+        >
+          <img
+            className="device-node-icon"
+            src={deviceIcons[data?.newDeviceType]}
+            alt={data?.newDeviceType}
+          />
+        </div>
+        <p className="device-node-info">{data.newDeviceAlias}</p>
+      </div>
+    );
+  }
 };

@@ -2,7 +2,8 @@
   position: relative;
   left: 10%;
   width: 80%;
-  height: 100%;
+  top: 10%;
+  height: 80%;
   overflow-y: scroll;
 }
 
