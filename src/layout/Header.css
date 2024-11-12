@@ -4,8 +4,8 @@
     align-items: center;
     background-color: var(--background-color);
     color: var(--text-color);
-    position: relative; /* 추가 */
-    z-index: 1; /* 추가 */
+    position: relative;
+    z-index: 1;
     padding: 10px 5%;
   }
 
@@ -27,7 +27,7 @@
   .theme-toggle-button,
   .logout-button {
     font-weight: 700;
-    background-color: var(--button-background-color);
+    background-color: var(--header-button-background-color);
     color: var(--button-text-color);
     padding: 8px 16px;
     border-radius: 4px;

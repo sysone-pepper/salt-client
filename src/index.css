@@ -7,7 +7,8 @@
     --border-color: #ddd;
     --link-color: #1a0dab;
     --link-hover-color: #d22780;
-    --button-background-color: #a5d3ec;
+    --button-background-color: #5865f2;
+    --header-button-background-color: #a5d3ec; 
     --button-text-color: #ffffff;
     --button-hover-background-color: #93c2db;
     --input-background-color: #f0f0f0;
@@ -25,18 +26,19 @@
     --border-color: #4a5568;
     --link-color: #8ab4f8;
     --link-hover-color: #b366ff;
-    --button-background-color: #0063B2;
+    --button-background-color: #212830;
+    --header-button-background-color: #1f2937; 
     --button-text-color: #ffffff;
     --button-hover-background-color: #3a78b5;
-    --input-background-color: #2d3748;
-    --input-text-color: #ffffff;
+    --input-background-color: #f0f0f0;
+    --input-text-color: #000000;
     --placeholder-color: #a0aec0;
     --box-shadow-color: rgba(0, 0, 0, 0.5);
   }
   
   /* 라이트 테마 스타일 */
   body.theme-light {
-    --background-color: #ffffff;
+    --background-color: #a5d3ec;
     --text-color: #000000;
     --primary-color: #a5d3ec;
     --secondary-color: #93c2db;
@@ -46,8 +48,8 @@
     --button-background-color: #a5d3ec;
     --button-text-color: #ffffff;
     --button-hover-background-color: #93c2db;
-    --input-background-color: #f0f0f0;
-    --input-text-color: #000000;
+    --input-background-color: #2d3748;
+    --input-text-color: #ffffff;
     --placeholder-color: #888888;
     --box-shadow-color: rgba(0, 0, 0, 0.1);
   }
@@ -95,18 +97,6 @@
   
   .button-secondary:hover {
     background-color: var(--placeholder-color);
-  }
-  
-  /* 테마 토글 버튼 */
-  .theme-toggle-button {
-    background-color: var(--button-background-color);
-    color: var(--button-text-color);
-    padding: 8px 16px;
-    border-radius: 4px;
-  }
-  
-  .theme-toggle-button:hover {
-    background-color: var(--button-hover-background-color);
   }
   
   /* 링크 스타일 */
