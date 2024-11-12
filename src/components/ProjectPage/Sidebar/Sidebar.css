@@ -1,14 +1,21 @@
 /* 사이드바 전체 스타일 */
 .sidebar-wrapper {
-  width: 0;
   transition: width 0.3s ease;
-  overflow: hidden;
   font-size: .5rem;
-  margin-right: .3rem;
 }
 
-.sidebar-wrapper.active {
+.sidebar-wrapper.expanded {
+  width: 25.3rem;
+}
+
+.sidebar-wrapper.collapsed {
+  width: 0rem;
+}
+
+.sidebar {
   width: 25rem;
+  overflow: hidden;
+  margin-right: .3rem;
 }
 
 .table-list {
@@ -16,6 +23,7 @@
   flex-direction: column;
   gap: .3rem;
 }
+
 
 /* 테이블 요소별 스타일 */
 .table-container {
@@ -78,7 +86,6 @@
 	height: 1.5rem;
   font-size: .5rem;
   color: #ddd;
-
 	}
 
 .table-field {

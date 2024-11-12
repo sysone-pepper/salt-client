@@ -43,6 +43,14 @@ function App() {
                   </PrivateRoute>
                 }
               />
+              <Route
+                path="project/:projectId"
+                element={
+                  <PrivateRoute>
+                    <ProjectPage />
+                  </PrivateRoute>
+                }
+              />
             </Routes>
           </Suspense>
         </div>
