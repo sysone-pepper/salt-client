@@ -1,25 +1,15 @@
 import { useState, useEffect, useRef, useContext } from 'react';
-import Table from './Table';
-import { tableCategory } from './data.js';
 import {
   draggable,
   dropTargetForElements,
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+
+import invariant from 'tiny-invariant';
+
 import { NetworkContext } from '../../../contexts/NetworkContext.jsx';
-
+import Table from './Table';
+import { tableCategory } from './data.js';
 import './Sidebar.css';
-
-const tableLookup = {
-  deviceStatus: (row) => (
-    <Table source={tableCategory.deviceStatus} key={row} />
-  ),
-  topTrafficUsage: (row) => (
-    <Table source={tableCategory.topTrafficUsage} key={row} />
-  ),
-  deviceTraffic: (row) => (
-    <Table source={tableCategory.deviceTraffic} key={row} />
-  ),
-};
 
 const Sidebar = () => {
   const { isSidebarPanned } = useContext(NetworkContext);
@@ -34,26 +24,31 @@ const Sidebar = () => {
   useEffect(() => {
     tables.forEach((_, index) => {
       const element = document.getElementById(`table-${index}`);
-      if (element) {
-        draggable({
-          element,
-          onDragStart: () => {
-            dragIndexRef.current = index;
-          },
-        });
-      }
+      const dragHandle = document.getElementById(`drag-handle-${index}`);
+
+      invariant(element, '해당 element가 존재하지 않습니다.');
+      invariant(dragHandle, '해당 dragHandle이 존재하지 않습니다.');
+
+      draggable({
+        element,
+        dragHandle,
+        onDragStart: () => {
+          dragIndexRef.current = index;
+        },
+      });
     });
   }, [tables]);
 
   useEffect(() => {
     tables.forEach((_, index) => {
       const element = document.getElementById(`table-${index}`);
-      if (element) {
-        dropTargetForElements({
-          element,
-          onDrop: () => handleDrop(index),
-        });
-      }
+
+      invariant(element, '해당 element가 존재하지 않습니다.');
+
+      dropTargetForElements({
+        element,
+        onDrop: () => handleDrop(index),
+      });
     });
   }, [tables]);
 
@@ -69,12 +64,25 @@ const Sidebar = () => {
   };
 
   return (
-    <div className={`sidebar-wrapper${isSidebarPanned ? ' active' : ''}`}>
+    <div
+      className={`sidebar-wrapper${
+        isSidebarPanned ? ' expanded' : ' collapsed'
+      }`}
+    >
       <aside className="sidebar">
         <ul className="table-list">
           {tables.map((table, index) => (
             <li key={index} id={`table-${index}`}>
-              {tableLookup[table.source](index)}
+              <div
+                id={`drag-handle-${index}`}
+                className="drag-handle table-title"
+              >
+                <p>{'\u22EE\u22EE'}</p>
+                <p>{tableCategory[table.source].title}</p>
+              </div>
+              <div className="sidebar-element">
+                <Table source={tableCategory[table.source]} key={index} />
+              </div>
             </li>
           ))}
         </ul>

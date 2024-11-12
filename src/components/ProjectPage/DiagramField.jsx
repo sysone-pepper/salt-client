@@ -12,7 +12,7 @@ import navConfig from '../../constants/NavigatorConfig';
 import ehConfig from '../../constants/EdgeHandleOptions';
 import { CustomDeviceNode } from './CustomDeviceNode';
 import { CustomIconNode } from './CustomIconNode';
-import Sidebar from './Sidebar/Sidebar';
+import { CustomTextNode } from './CustomTextNode';
 
 const registerCytoscapeExtensions = () => {
   cytoscape.use(dagre);
@@ -31,7 +31,6 @@ export const DiagramField = ({ projectId }) => {
     fetchMapData,
     bgImgInfo,
     updateNode,
-    updateNodeSize,
     createLink,
     deleteObject,
     cyRef,
@@ -43,23 +42,9 @@ export const DiagramField = ({ projectId }) => {
     setEdges,
     isLinking,
     isObjectDelete,
-    setIsObjectDelete,
-    selectedSize,
-    setSelectedSize,
-    isSidebarPanned,
-    setIsSidebarPanned,
   } = useContext(NetworkContext);
 
   const [navigatorInitialized, setNavigatorInitialized] = useState(false); // 네비게이터 초기화 상태
-  const [inputSize, setInputSize] = useState(20);
-
-  const handleSizeInputChange = (e) => {
-    setInputSize(e.target.value);
-  };
-
-  const handleSizeButtonClick = () => {
-    setSelectedSize(parseInt(inputSize, 10));
-  };
 
   const createCyInstance = () => {
     if (!cyRef.current) {
@@ -75,9 +60,16 @@ export const DiagramField = ({ projectId }) => {
             },
           },
           {
-            selector: '.ICON,.TEXT',
+            selector: '.ICON, .TEXT',
             style: {
               'background-opacity': '0',
+            },
+          },
+          {
+            selector: '.TEXT',
+            style: {
+              width: 'data(calculatedWidth)',
+              height: 'data(nodeSize)',
             },
           },
         ],
@@ -140,8 +132,20 @@ export const DiagramField = ({ projectId }) => {
             )}`;
           },
         },
+        {
+          query: '.TEXT',
+          halign: 'center',
+          valign: 'center',
+          halignBox: 'center',
+          valignBox: 'center',
+          cssClass: '',
+          tpl(data) {
+            return `${ReactDOMServer.renderToString(
+              <CustomTextNode node={cy.getElementById(data.id)} data={data} />,
+            )}`;
+          },
+        },
       ]);
-
       cy.on('dragfree', 'node', async (event) => {
         const target = event.target;
         const updatedNode = target.json();
@@ -421,53 +425,16 @@ export const DiagramField = ({ projectId }) => {
     }
   }, [isObjectDelete, cyRef, deleteObject]);
 
-  // 노드 전체 크기 수정
-  useEffect(() => {
-    if (cyRef.current && curProjectId && selectedSize) {
-      if (nodes.length > 1 && nodes[1].data.nodeSize !== selectedSize) {
-        updateNodeSize();
-      }
-      setInputSize(selectedSize);
-    }
-  }, [selectedSize]);
-
-  const handleSidebarButtonClick = () => {
-    setIsSidebarPanned((prevState) => !prevState);
-  };
-
   return (
-    <>
-      <div className="toolbar">
-        <label htmlFor="sizeInput">노드 크기 조절</label>
-        <input
-          id="sizeInput"
-          type="number"
-          min="20"
-          max="100"
-          value={inputSize}
-          onChange={handleSizeInputChange}
-          placeholder="20 - 100"
-        />
-        <button className="toolbar-button" onClick={handleSizeButtonClick}>
-          확인
-        </button>
-        <button className="toolbar-button" onClick={handleSidebarButtonClick}>
-          사이드바 {isSidebarPanned ? '접기' : '펼치기'}
-        </button>
-      </div>
-      <div className="flex-div">
-        <Sidebar />
-        <div className="diagram-field">
-          <ToolBox />
-          <div
-            id="cy"
-            style={{
-              border: '1px solid black',
-            }}
-          />
-          <div id="navigator-container" />
-        </div>
-      </div>
-    </>
+    <div className="diagram-field">
+      <ToolBox />
+      <div
+        id="cy"
+        style={{
+          border: '1px solid black',
+        }}
+      />
+      <div id="navigator-container" />
+    </div>
   );
 };

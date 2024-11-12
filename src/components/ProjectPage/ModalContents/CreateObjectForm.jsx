@@ -9,6 +9,7 @@ import FirewallIcon from '../../../assets/images/Firewall-icon2.png';
 import UPSIcon from '../../../assets/images/UPS-icon2.png';
 import { NetworkContext } from '../../../contexts/NetworkContext.jsx';
 import { IconInput } from './IconInput.jsx';
+import { TextInput } from './TextInput.jsx';
 
 const deviceCategories = [
   'Server',
@@ -53,9 +54,15 @@ export const CreateObjectForm = ({ closeModal }) => {
   const [deviceOS, setDeviceOS] = useState();
   const [manufacturedAt, setManufacturedAt] = useState();
   const [iconType, setIconType] = useState('#000000');
+  const [textContent, setTextContent] = useState('');
+  const [textColor, setTextColor] = useState('#000000');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (category === 'text' && textContent.trim() === '') {
+      alert('최소 1글자 이상 입력해주세요.');
+      return;
+    }
     let newNodeData;
     switch (category) {
       case 'device':
@@ -82,13 +89,35 @@ export const CreateObjectForm = ({ closeModal }) => {
         };
         break;
       case 'text':
+        const defaultSize = Number(selectedSize);
+        const avgWidth = {
+          korean: defaultSize, // 한글은 보통 정사각형에 가깝게 표현
+          english: defaultSize * 0.6, // 영어는 상대적으로 좁음
+          number: defaultSize * 0.6, // 숫자도 영어와 비슷한 폭
+        };
+
+        let calculatedWidth = 0;
+        for (const char of textContent) {
+          if (/[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(char)) {
+            calculatedWidth += avgWidth.korean;
+          } else if (/[a-zA-Z]/.test(char)) {
+            calculatedWidth += avgWidth.english;
+          } else if (/[0-9]/.test(char)) {
+            calculatedWidth += avgWidth.number;
+          } else {
+            calculatedWidth += avgWidth.english;
+          }
+        }
+        console.log(calculatedWidth);
+
         newNodeData = {
           nodeType: 'TEXT',
           positionX: 0,
           positionY: 0,
           nodeSize: selectedSize,
-          textContent: '',
-          textColor: '',
+          textContent,
+          textColor,
+          calculatedWidth,
         };
         break;
     }
@@ -226,7 +255,15 @@ export const CreateObjectForm = ({ closeModal }) => {
           </>
         );
       case 'text':
-        return <>text</>;
+        return (
+          <TextInput
+            textContent={textContent}
+            setTextContent={setTextContent}
+            textColor={textColor}
+            setTextColor={setTextColor}
+            onSubmit={handleSubmit}
+          />
+        );
       default:
         return <>default</>;
     }

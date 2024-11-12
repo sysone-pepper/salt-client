@@ -14,7 +14,6 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <ThemeProvider>
           <div className="App">
             <Suspense fallback={<div>Loading...</div>}>
               <Routes>
@@ -37,18 +36,25 @@ function App() {
                     </PrivateRoute>
                   }
                 />
-                <Route
-                  path="project-detail/:projectId"
-                  element={
-                    <PrivateRoute>
-                      <ProjectPage />
-                    </PrivateRoute>
-                  }
-                />
-              </Routes>
-            </Suspense>
-          </div>
-        </ThemeProvider>
+              <Route
+                path="project/:projectId/edit"
+                element={
+                  <PrivateRoute>
+                    <ProjectPage />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="project/:projectId"
+                element={
+                  <PrivateRoute>
+                    <ProjectPage />
+                  </PrivateRoute>
+                }
+              />
+            </Routes>
+          </Suspense>
+        </div>
       </AuthProvider>
     </Router>
   );

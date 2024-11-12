@@ -1,14 +1,21 @@
 /* 사이드바 전체 스타일 */
 .sidebar-wrapper {
-  width: 0;
   transition: width 0.3s ease;
-  overflow: hidden;
   font-size: .5rem;
-  margin-right: .3rem;
 }
 
-.sidebar-wrapper.active {
+.sidebar-wrapper.expanded {
+  width: 25.3rem;
+}
+
+.sidebar-wrapper.collapsed {
+  width: 0rem;
+}
+
+.sidebar {
   width: 25rem;
+  overflow: hidden;
+  margin-right: .3rem;
 }
 
 .table-list {
@@ -16,6 +23,7 @@
   flex-direction: column;
   gap: .3rem;
 }
+
 
 /* 테이블 요소별 스타일 */
 .table-container {
@@ -44,6 +52,7 @@
 }
 
 .table-title {
+  display: flex;
   height: 1.5rem;
   background-color: #1f2b3c;
   text-align: left;
@@ -51,7 +60,10 @@
   padding: 0 .3rem;
   font-size: .6rem;
   border-radius: .3rem .3rem 0 0;
+  border-bottom: 1px solid #fff;
   color: #fff;
+  gap: .3rem;
+  cursor: move;
 }
 
 .table-header {
@@ -78,7 +90,6 @@
 	height: 1.5rem;
   font-size: .5rem;
   color: #ddd;
-
 	}
 
 .table-field {
