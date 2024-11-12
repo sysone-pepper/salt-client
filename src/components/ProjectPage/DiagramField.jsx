@@ -76,9 +76,16 @@ export const DiagramField = ({ projectId }) => {
             },
           },
           {
-            selector: '.ICON,.TEXT',
+            selector: '.ICON, .TEXT',
             style: {
               'background-opacity': '0',
+            },
+          },
+          {
+            selector: '.TEXT',
+            style: {
+              width: 'data(calculatedWidth)',
+              height: 'data(nodeSize)',
             },
           },
         ],
