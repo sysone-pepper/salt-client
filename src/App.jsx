@@ -19,49 +19,42 @@ function App() {
   return (
     <Router>
       <AuthProvider>
+        <ThemeProvider>
           <div className="App">
             <Suspense fallback={<div>Loading...</div>}>
               <Routes>
                 <Route path="/" element={<AnimatedBackground />}>
                   <Route index element={<LoginPage />} />
                   <Route
-                    path="projects/:username"
+                    path="projects"
                     element={
                       <PrivateRoute>
-                        <ProjectDashboardPage />
+                        <ProjectListPage />
                       </PrivateRoute>
                     }
                   />
                 </Route>
                 <Route
-                  path="projects"
+                  path="project/:projectId"
                   element={
                     <PrivateRoute>
-                      <ProjectListPage />
+                      <ProjectPage />
                     </PrivateRoute>
                   }
                 />
-              </Route>
-              <Route
-                path="project/:projectId"
-                element={
-                  <PrivateRoute>
-                    <ProjectPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="dashboard/:deviceId"
-                element={
-                  <PrivateRoute>
-                    <ServerDashboard />
-                  </PrivateRoute>
-                }
-              />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Suspense>
-        </div>
+                <Route
+                  path="dashboard/:deviceId"
+                  element={
+                    <PrivateRoute>
+                      <ServerDashboard />
+                    </PrivateRoute>
+                  }
+                />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Suspense>
+          </div>
+        </ThemeProvider>
       </AuthProvider>
     </Router>
   );
