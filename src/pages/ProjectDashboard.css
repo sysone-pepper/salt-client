@@ -12,7 +12,7 @@
 
 .my-users {
   font-weight: 800;
-  color: #fff;
+  color: var(--text-color);
   margin: 0;
   margin-right: 10px;
 }
@@ -31,16 +31,16 @@
 
 .my-project {
   font-weight: 800;
-  color: #fff;
+  color: var(--text-color);
   margin: 0;
   margin-right: 10px;
 }
 
 .add-button {
   margin-left: 10px;
-  background-color: #a5d3ec;
+  background-color: var(--button-background-color);
   border: none;
-  color: #fff;
+  color: var(--button-text-color);
   font-size: 16px;
   font-weight: 400;
   padding: 5px 10px;
@@ -49,7 +49,7 @@
 }
 
 .add-button:hover {
-  background-color: #93c2db;
+  background-color: var(--button-hover-background-color);
 }
 
 .search-container {

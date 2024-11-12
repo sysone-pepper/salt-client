@@ -1,18 +1,22 @@
-import React from "react";
-import "./Footer.css";
-import ImageLogo from "../assets/images/salt-Logo-color.png";
+import React, { useContext } from 'react';
+import './Footer.css';
+import { ThemeContext } from '../contexts/ThemeContext';
+import { Link } from 'react-router-dom';
+import ImageLogoDark from '../assets/images/salt-Logo-white-rm.png';
+import ImageLogoLight from '../assets/images/salt-Logo-color.png';
 
 const Footer = () => {
+  const { theme } = useContext(ThemeContext);
+  const logoImage = theme === 'dark' ? ImageLogoDark : ImageLogoLight;
+
   return (
     <footer className="ft-container">
       <div className="ft-content">
         <div className="ft-left">
           <div className="ft-logo">
-            <img
-              src={ImageLogo}
-              alt="SALT Logo"
-              className="ft-logo-image"
-            ></img>
+            <Link to="/">
+              <img src={logoImage} alt="SALT Logo" className="ft-logo-image" />
+            </Link>
           </div>
           <div className="ft-contact-info">
             <div className="ft-contact-item">

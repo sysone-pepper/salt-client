@@ -17,7 +17,7 @@ import ViewAllUsersModalContent from '../components/ProjectDashboardPage/ModalCo
 import AddProjectModalContent from '../components/ProjectDashboardPage/ModalContents/AddProjectModalContent';
 import ProjectSummaryModalContent from '../components/ProjectDashboardPage/ModalContents/ProjectSummaryModalContent';
 import Header from '../layout/Header';
-import FooterDark from '../layout/FooterDark';
+import FooterDark from '../layout/Footer';
 
 const ProjectDashboard = () => {
   const { currentUser, isAuthenticated } = useAuth();

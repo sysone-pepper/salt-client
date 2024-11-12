@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import AnimatedBackground from './layout/AnimatedBackground';
 import PrivateRoute from './components/common/PrivateRoute';
 import ProjectPage from './pages/ProjectPage';
@@ -13,28 +14,28 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <div className="App">
-          <Suspense fallback={<div>Loading...</div>}>
-            <Routes>
-              <Route path="/" element={<AnimatedBackground />}>
-                <Route index element={<LoginPage />} />
+          <div className="App">
+            <Suspense fallback={<div>Loading...</div>}>
+              <Routes>
+                <Route path="/" element={<AnimatedBackground />}>
+                  <Route index element={<LoginPage />} />
+                  <Route
+                    path="projects/:username"
+                    element={
+                      <PrivateRoute>
+                        <ProjectDashboardPage />
+                      </PrivateRoute>
+                    }
+                  />
+                </Route>
                 <Route
-                  path="projects/:username"
+                  path="dashboard/:deviceId"
                   element={
                     <PrivateRoute>
-                      <ProjectDashboardPage />
+                      <ServerDashboard />
                     </PrivateRoute>
                   }
                 />
-              </Route>
-              <Route
-                path="dashboard/:deviceId"
-                element={
-                  <PrivateRoute>
-                    <ServerDashboard />
-                  </PrivateRoute>
-                }
-              />
               <Route
                 path="project/:projectId/edit"
                 element={
