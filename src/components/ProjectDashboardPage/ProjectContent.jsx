@@ -29,7 +29,7 @@ const ProjectContent = ({
           <span>@{author}</span>
         </h2>
         {/* <p>{description}</p> */}
-        <Link to={`/project/${id}/edit`} className="follow">
+        <Link to={`/project/${id}`} className="follow">
           구성도 구성
         </Link>
         <a
