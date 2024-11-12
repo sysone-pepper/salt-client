@@ -4,7 +4,7 @@ export const ThemeContext = createContext();
 
 const getInitialTheme = () => {
   const savedTheme = localStorage.getItem('theme');
-  return savedTheme || 'dark'; // 기본값은 다크 모드
+  return savedTheme || 'dark';
 };
 
 export const ThemeProvider = ({ children }) => {
@@ -17,10 +17,8 @@ export const ThemeProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('theme', theme);
 
-    // 기존 테마 클래스 제거
     document.body.classList.remove('theme-dark', 'theme-light');
 
-    // 새로운 테마 클래스 추가
     document.body.classList.add(`theme-${theme}`);
   }, [theme]);
 
