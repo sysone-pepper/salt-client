@@ -3,7 +3,6 @@ import Row from './Row';
 const Table = ({ source }) => {
   return (
     <table className="table-container">
-      <caption className="table-title">{source.title}</caption>
       <thead>
         <tr className="table-header">
           {source.columnAliases.map((alias, index) => (
