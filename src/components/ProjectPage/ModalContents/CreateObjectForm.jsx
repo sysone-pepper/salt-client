@@ -89,6 +89,27 @@ export const CreateObjectForm = ({ closeModal }) => {
         };
         break;
       case 'text':
+        const defaultSize = Number(selectedSize);
+        const avgWidth = {
+          korean: defaultSize, // 한글은 보통 정사각형에 가깝게 표현
+          english: defaultSize * 0.6, // 영어는 상대적으로 좁음
+          number: defaultSize * 0.6, // 숫자도 영어와 비슷한 폭
+        };
+
+        let calculatedWidth = 0;
+        for (const char of textContent) {
+          if (/[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(char)) {
+            calculatedWidth += avgWidth.korean;
+          } else if (/[a-zA-Z]/.test(char)) {
+            calculatedWidth += avgWidth.english;
+          } else if (/[0-9]/.test(char)) {
+            calculatedWidth += avgWidth.number;
+          } else {
+            calculatedWidth += avgWidth.english;
+          }
+        }
+        console.log(calculatedWidth);
+
         newNodeData = {
           nodeType: 'TEXT',
           positionX: 0,
@@ -96,6 +117,7 @@ export const CreateObjectForm = ({ closeModal }) => {
           nodeSize: selectedSize,
           textContent,
           textColor,
+          calculatedWidth,
         };
         break;
     }
