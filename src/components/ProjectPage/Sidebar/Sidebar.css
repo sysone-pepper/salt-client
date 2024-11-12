@@ -15,6 +15,7 @@
 .sidebar {
   width: 25rem;
   overflow: hidden;
+  margin-right: .3rem;
 }
 
 .table-list {
