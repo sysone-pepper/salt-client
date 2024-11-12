@@ -1,6 +1,7 @@
 import { NetworkContext } from '../../contexts/NetworkContext';
 
 import { useContext, useEffect, useState } from 'react';
+import './Toolbar.css';
 
 const Toolbar = () => {
   const {
@@ -25,7 +26,7 @@ const Toolbar = () => {
     }
   }, [selectedSize]);
 
-  const handleSidebarButtonClick = () => {
+  const handlePannigButtonClick = () => {
     setIsSidebarPanned((prevState) => !prevState);
   };
 
@@ -52,7 +53,7 @@ const Toolbar = () => {
       <button className="toolbar-button" onClick={handleSizeButtonClick}>
         확인
       </button>
-      <button className="toolbar-button" onClick={handleSidebarButtonClick}>
+      <button className="toolbar-button" onClick={handlePannigButtonClick}>
         사이드바 {isSidebarPanned ? '접기' : '펼치기'}
       </button>
     </div>

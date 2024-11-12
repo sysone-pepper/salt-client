@@ -69,7 +69,11 @@ const Sidebar = () => {
   };
 
   return (
-    <div className={`sidebar-wrapper${isSidebarPanned ? ' active' : ''}`}>
+    <div
+      className={`sidebar-wrapper${
+        isSidebarPanned ? ' expanded' : ' collapsed'
+      }`}
+    >
       <aside className="sidebar">
         <ul className="table-list">
           {tables.map((table, index) => (
