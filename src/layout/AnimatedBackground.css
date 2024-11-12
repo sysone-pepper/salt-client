@@ -6,6 +6,7 @@
   /* min-height: 100vh; 차후 애니메이션 백그라운드 테스트를 위한 주석 */
   height: 100vh;
   /* background-image: url("../assets/images/space.jpg"); */
+  /* background-color: #000; */
   background-size: cover;
   background-position: center center;
   background-attachment: fixed;

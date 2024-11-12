@@ -1,5 +1,5 @@
 .ft-container {
-  background-color: #ffffff;
+  background-color: var(--background-color);
   padding-top: 40px;
   padding-bottom: 10px;
   margin-top: 80px;
@@ -33,18 +33,20 @@
 }
 
 .ft-contact-label {
-  color: #888;
+  color: var(--placeholder-color);
   margin-bottom: 5px;
 }
 
 .ft-contact-value {
   font-weight: 800;
+  color: #fff;
 }
 
 .ft-cta-title {
   font-weight: 800;
   font-size: 28px;
   margin-bottom: 20px;
+  color: #fff;
 }
 
 .ft-cta-buttons {
@@ -60,29 +62,29 @@
 }
 
 .ft-button-primary {
-  background-color: #a5d3ec;
-  color: white;
+  background-color: #fff;
+  color: #000;
   border: none;
 }
 
 .ft-button-secondary {
-  background-color: white;
-  color: black;
-  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #000;
+  border: none; 
 }
 
 .ft-bottom {
   max-width: 1200px;
   margin: 20px auto 0;
   padding-top: 10px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .ft-platforms-title {
-  color: #888;
+  color: var(--placeholder-color);
   margin-left: 30%;
   margin-bottom: 0;
 }
@@ -94,17 +96,17 @@
 }
 
 .ft-platform-item {
-  background-color: #f0f0f0;
+  background-color: var(--input-background-color);
   padding: 5px 15px;
   border-radius: 15px;
   font-size: 14px;
   text-decoration: none;
-  color: inherit;
+  color: var(--text-color);
   transition: background-color 0.3s ease;
 }
 
 .ft-platform-item:hover {
-  background-color: #bcbcbc;
+  background-color: var(--secondary-color);
 }
 
 @media (max-width: 768px) {

@@ -18,17 +18,17 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #a5d3ec;
+  background-color: var(--primary-color);
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 24px;
-  color: #fff;
+  color: var(--button-text-color);
   margin-bottom: 5px;
 }
 
 .user-content.view-all .user-icon {
-  background-color: #93c2db;
+  background-color: var(--secondary-color);
   font-weight: 700;
 }
 
@@ -36,7 +36,7 @@
   font-size: 0.8em;
   text-align: center;
   margin: 0;
-  color: #fff;
+  color: var(--text-color);
 }
 
 .users-container {

@@ -1,10 +1,12 @@
 import React, { useContext } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ThemeContext } from '../contexts/ThemeContext';
 import './Header.css';
 import ImageLogoDark from '../assets/images/salt-Logo-white-rm.png';
-import ImageLogoLight from '../assets/images/salt-Logo-color.png';
+import ImageLogoLight from '../assets/images/salt-logo-color.png';
+import ImageThemeDark from '../assets/images/moon.png';
+import ImageThemeLight from '../assets/images/sun.png';
 
 const Header = () => {
   const { logout } = useAuth();
@@ -17,16 +19,25 @@ const Header = () => {
   };
 
   const logoImage = theme === 'dark' ? ImageLogoDark : ImageLogoLight;
+  const themeIcon = theme === 'dark' ? ImageThemeDark : ImageThemeLight;
 
   return (
     <header className="header">
       <div className="logo-container">
-        <img src={logoImage} alt="SALT Logo" className="logo-image" />
+        <Link to="/">
+          <img src={logoImage} alt="SALT Logo" className="logo-image" />
+        </Link>
       </div>
       <div className="button-container">
-        <button className="theme-toggle-button" onClick={toggleTheme}>
+        <img
+          src={themeIcon}
+          alt="Theme Icon"
+          className="icon-image"
+          onClick={toggleTheme}
+        />
+        {/* <button className="theme-toggle-button" onClick={toggleTheme}>
           {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-        </button>
+        </button> */}
         <button className="logout-button" onClick={handleLogout}>
           Logout
         </button>
@@ -36,32 +47,3 @@ const Header = () => {
 };
 
 export default Header;
-
-// import React from 'react';
-// import { useAuth } from '../contexts/AuthContext';
-// import { useNavigate } from 'react-router-dom';
-// import './Header.css';
-// import ImageLogo from '../assets/images/salt-Logo-white-rm.png';
-
-// const Header = () => {
-//   const { logout } = useAuth();
-//   const navigate = useNavigate();
-
-//   const handleLogout = () => {
-//     logout();
-//     navigate('/');
-//   };
-
-//   return (
-//     <header className="header">
-//       <div className="logo-container">
-//         <img src={ImageLogo} alt="SALT Logo" className="logo-image"></img>
-//       </div>
-//       <button className="logout-button" onClick={handleLogout}>
-//         Logout
-//       </button>
-//     </header>
-//   );
-// };
-
-// export default Header;

@@ -1,14 +1,13 @@
-/* 공통 스타일 */
 :root {
     --background-color: #ffffff;
     --text-color: #000000;
-    --primary-color: #a5d3ec;
+    --primary-color: #80B6F3 ;
     --secondary-color: #93c2db;
-    --border-color: #ddd;
+    --border-color: #212830;
     --link-color: #1a0dab;
     --link-hover-color: #d22780;
     --button-background-color: #5865f2;
-    --header-button-background-color: #a5d3ec; 
+    --header-button-background-color: #80B6F3; 
     --button-text-color: #ffffff;
     --button-hover-background-color: #93c2db;
     --input-background-color: #f0f0f0;
@@ -21,40 +20,39 @@
   body.theme-dark {
     --background-color: #1f2937;
     --text-color: #ffffff;
-    --primary-color: #0063B2;
+    --primary-color: #1f2937;
     --secondary-color: #3a78b5;
-    --border-color: #4a5568;
+    --border-color: #212830;
     --link-color: #8ab4f8;
     --link-hover-color: #b366ff;
     --button-background-color: #212830;
     --header-button-background-color: #1f2937; 
     --button-text-color: #ffffff;
-    --button-hover-background-color: #3a78b5;
-    --input-background-color: #f0f0f0;
-    --input-text-color: #000000;
+    --button-hover-background-color: #212830;
+    --input-background-color: #212830;
+    --input-text-color: #fff;
     --placeholder-color: #a0aec0;
     --box-shadow-color: rgba(0, 0, 0, 0.5);
   }
   
   /* 라이트 테마 스타일 */
   body.theme-light {
-    --background-color: #a5d3ec;
+    --background-color: #80B6F3;
     --text-color: #000000;
-    --primary-color: #a5d3ec;
-    --secondary-color: #93c2db;
-    --border-color: #ddd;
+    --primary-color: #80B6F3;
+    --secondary-color: #80B6F3;
+    --border-color: #212830;
     --link-color: #1a0dab;
     --link-hover-color: #d22780;
-    --button-background-color: #a5d3ec;
+    --button-background-color: #80B6F3;
     --button-text-color: #ffffff;
     --button-hover-background-color: #93c2db;
-    --input-background-color: #2d3748;
-    --input-text-color: #ffffff;
+    --input-background-color: #fff;
+    --input-text-color: #212830;
     --placeholder-color: #888888;
     --box-shadow-color: rgba(0, 0, 0, 0.1);
   }
   
-  /* 기본 body 스타일 */
   body {
     background-color: var(--background-color);
     color: var(--text-color);
@@ -62,7 +60,6 @@
     transition: background-color 0.3s ease, color 0.3s ease;
   }
   
-  /* 전체 레이아웃 스타일 */
   .App {
     display: flex;
     flex-direction: column;

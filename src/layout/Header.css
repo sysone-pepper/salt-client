@@ -19,6 +19,12 @@
     width: auto;
   }
 
+  .icon-image {
+    height: 30px;
+    width: auto;
+    cursor: pointer;
+  }
+
   .button-container {
     display: flex;
     align-items: center;
