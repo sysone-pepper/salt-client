@@ -63,6 +63,7 @@
   border-bottom: 1px solid #fff;
   color: #fff;
   gap: .3rem;
+  cursor: move;
 }
 
 .table-header {
