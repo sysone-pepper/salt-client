@@ -6,6 +6,8 @@ import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 import cytoscapePopper from 'cytoscape-popper';
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css';
 import edgehandles from 'cytoscape-edgehandles';
 import cyNavigator from 'cytoscape-navigator';
 import navConfig from '../../constants/NavigatorConfig';
@@ -13,16 +15,7 @@ import ehConfig from '../../constants/EdgeHandleOptions';
 import { CustomDeviceNode } from './CustomDeviceNode';
 import { CustomIconNode } from './CustomIconNode';
 import { CustomTextNode } from './CustomTextNode';
-
-const registerCytoscapeExtensions = () => {
-  cytoscape.use(dagre);
-  cytoscape.use(cytoscapePopper);
-  cytoscape.use(edgehandles);
-  nodeHtmlLabel(cytoscape);
-  cyNavigator(cytoscape);
-};
-
-registerCytoscapeExtensions();
+import './NetworkMap.css';
 
 export const DiagramField = ({ projectId }) => {
   const {
@@ -45,6 +38,26 @@ export const DiagramField = ({ projectId }) => {
   } = useContext(NetworkContext);
 
   const [navigatorInitialized, setNavigatorInitialized] = useState(false); // 네비게이터 초기화 상태
+
+  const tippyFactory = (ref, content) => {
+    let dummyDomEle = document.createElement('div');
+
+    let tip = tippy(dummyDomEle, {
+      getReferenceClientRect: ref.getBoundingClientRect,
+      trigger: 'manual',
+      placement: 'bottom',
+      content: content,
+    });
+
+    return tip;
+  };
+
+  const registerCytoscapeExtensions = () => {
+    cytoscape.use(cytoscapePopper(tippyFactory));
+    cytoscape.use(edgehandles);
+    nodeHtmlLabel(cytoscape);
+    cyNavigator(cytoscape);
+  };
 
   const createCyInstance = () => {
     if (!cyRef.current) {
@@ -155,62 +168,62 @@ export const DiagramField = ({ projectId }) => {
       // cytoscape tip popper 적용
       cy.on('mouseover', 'node[id != "background"]', (event) => {
         const node = event.target;
-        const popper = node.popper({
+
+        // 팝업 콘텐츠 생성
+        const tip = node.popper({
           content: () => {
+            let content = document.createElement('div');
+
             switch (node.data('nodeType')) {
               case 'EXIST_DEVICE':
-                return `
-                    <div>
-                        ID : 기존장비-${node.id()} <br>
-                        장비명 : ${node.data('deviceAlias')} <br>
-                        IP : ${node.data('publicIp')} <br>
-                        IPv6 : ${node.data('publicIpV6')} <br>
-                        유형 : ${node.data('deviceType')} <br>
-                        OS : ${node.data('osType')} <br>
-                        제조사 : ${node.data('vendor')} <br>
-                    </div>
-                    `;
+                content.innerHTML = `
+                  <div>
+                    ID : 기존장비-${node.id()} <br>
+                    장비명 : ${node.data('deviceAlias')} <br>
+                    IP : ${node.data('publicIp')} <br>
+                    IPv6 : ${node.data('publicIpV6')} <br>
+                    유형 : ${node.data('deviceType')} <br>
+                    OS : ${node.data('osType')} <br>
+                    제조사 : ${node.data('vendor')} <br>
+                  </div>`;
+                break;
               case 'NEW_DEVICE':
-                return `
-                    <div>
-                        ID : 신규장비-${node.id()} <br>
-                        장비명 : ${node.data('newDeviceAlias')} <br>
-                        IP : ${node.data('newDevicePublicIp')} <br>
-                        유형 : ${node.data('newDeviceType')} <br>
-                        OS : ${node.data('newDeviceOs')} <br>
-                        제조사 : ${node.data('newDeviceVendor')} <br>
-                    </div>
-                    `;
+                content.innerHTML = `
+                  <div>
+                    ID : 신규장비-${node.id()} <br>
+                    장비명 : ${node.data('newDeviceAlias')} <br>
+                    IP : ${node.data('newDevicePublicIp')} <br>
+                    유형 : ${node.data('newDeviceType')} <br>
+                    OS : ${node.data('newDeviceOs')} <br>
+                    제조사 : ${node.data('newDeviceVendor')} <br>
+                  </div>`;
+                break;
               case 'ICON':
-                return `
-                    <div>
-                        ID : 아이콘-${node.id()} <br>
-                    </div>
-                    `;
+                content.innerHTML = `
+                  <div>
+                    ID : 아이콘-${node.id()} <br>
+                  </div>`;
+                break;
               case 'TEXT':
-                return `
-                    <div>
-                        ID : 아이콘-${node.id()} <br>
-                    </div>
-                    `;
+                content.innerHTML = `
+                  <div>
+                    ID : 아이콘-${node.id()} <br>
+                  </div>`;
+                break;
               default:
-                return `
-                    <div>
-                        알 수 없음<br>
-                    </div>
-                    `;
+                content.innerHTML = `<div>알 수 없음<br></div>`;
             }
+
+            return content;
           },
-          placement: 'bottom',
-          trigger: 'mouseenter',
-          hideOnClick: true,
-          interactive: true,
         });
 
-        popper.show();
+        // 팝업 표시
+        tip.show();
 
+        // 마우스를 벗어나면 팝업 숨김
         node.on('mouseout', () => {
-          popper.hide();
+          tip.hide();
         });
       });
 
@@ -221,6 +234,7 @@ export const DiagramField = ({ projectId }) => {
   // 초기화(프로젝트 아이디 컨텍스트 등록)
   useEffect(() => {
     setCurProjectId(projectId);
+    registerCytoscapeExtensions();
   }, []);
 
   // cytoscape-navigator 등록 및 언마운트 기능
@@ -434,7 +448,20 @@ export const DiagramField = ({ projectId }) => {
           border: '1px solid black',
         }}
       />
-      <div id="navigator-container" />
+      <div
+        className="cytoscape-navigator"
+        style={{
+          position: 'absolute',
+          bottom: '10px',
+          right: '10px',
+          width: '20vw',
+          height: '20vh',
+          backgroundColor: '#f4f4f4',
+          border: '1px solid #ddd',
+          overflow: 'hidden',
+          zIndex: 500,
+        }}
+      />
     </div>
   );
 };
