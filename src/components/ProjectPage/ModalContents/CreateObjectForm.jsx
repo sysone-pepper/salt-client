@@ -9,6 +9,7 @@ import FirewallIcon from '../../../assets/images/Firewall-icon2.png';
 import UPSIcon from '../../../assets/images/UPS-icon2.png';
 import { NetworkContext } from '../../../contexts/NetworkContext.jsx';
 import { IconInput } from './IconInput.jsx';
+import { TextInput } from './TextInput.jsx';
 
 const deviceCategories = [
   'Server',
@@ -53,9 +54,15 @@ export const CreateObjectForm = ({ closeModal }) => {
   const [deviceOS, setDeviceOS] = useState();
   const [manufacturedAt, setManufacturedAt] = useState();
   const [iconType, setIconType] = useState('#000000');
+  const [textContent, setTextContent] = useState('');
+  const [textColor, setTextColor] = useState('#000000');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (category === 'text' && textContent.trim() === '') {
+      alert('최소 1글자 이상 입력해주세요.');
+      return;
+    }
     let newNodeData;
     switch (category) {
       case 'device':
@@ -87,8 +94,8 @@ export const CreateObjectForm = ({ closeModal }) => {
           positionX: 0,
           positionY: 0,
           nodeSize: selectedSize,
-          textContent: '',
-          textColor: '',
+          textContent,
+          textColor,
         };
         break;
     }
@@ -226,7 +233,15 @@ export const CreateObjectForm = ({ closeModal }) => {
           </>
         );
       case 'text':
-        return <>text</>;
+        return (
+          <TextInput
+            textContent={textContent}
+            setTextContent={setTextContent}
+            textColor={textColor}
+            setTextColor={setTextColor}
+            onSubmit={handleSubmit}
+          />
+        );
       default:
         return <>default</>;
     }

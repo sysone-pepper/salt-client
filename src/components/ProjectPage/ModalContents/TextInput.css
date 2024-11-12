@@ -1,0 +1,29 @@
+.text-content,
+.text-color {
+  display: flex;
+  align-items: center;
+}
+
+#text-content-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  color: #333;
+}
+
+#text-color-input {
+  width: 50px;
+  height: 50px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.text-preview {
+    padding: 12px;
+  border: #ccc 1px solid;
+  border-radius: 5px;
+}
