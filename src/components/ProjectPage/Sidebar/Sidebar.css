@@ -64,7 +64,19 @@
   color: #fff;
   gap: .3rem;
   cursor: move;
+  justify-content: space-between;
 }
+
+.table-title .filter-toggling-btn{
+  height: calc(100% + 1px);
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  color: #fff;
+  font-size: .7rem;
+}
+
+
 
 .table-header {
   display: flex;
