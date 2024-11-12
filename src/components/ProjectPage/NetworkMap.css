@@ -1,42 +1,46 @@
-#cy{
-  width:100%;
-  height: 90vh;
+#cy {
+  width: 100%;
+  height: 90vh; /* 이 높이는 적당히 조정 */
   background-color: #1f2937;
   border-radius: .3rem;
+ }
+
+ .diagram-field {
+  width: 100%; /* main-content 내에서 가능한 최대 크기 */
+  height: 100%;
+  background-color: #1f2937;
+  border-radius: 0.3rem;
+  overflow: hidden; /* 내용이 넘치지 않도록 설정 */
+  transition: max-width 0.3s ease; /* 사이드바 상태에 따라 동적으로 변화하도록 설정 */
 }
 
-
-.diagram-field {
-  flex-grow: 1;
-  flex-shrink: 0;
-  flex-basis: 200px;
+.cytoscape-navigatorView,
+.cytoscape-navigator .cytoscape-navigatorOverlay {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 501;
 }
 
-.cytoscape-navigator {
-  border: 2px solid #bebebe !important;
-  background: white !important;
-  height: 25vh !important;
-  width: 25vw !important;
-  margin-bottom: 24px;
-  margin-right: 24px;
-  z-index: 500;
-}
-
-/* Add border to View container: */
+/* 뷰의 스타일 */
 .cytoscape-navigator .cytoscape-navigatorView {
   border: 2px solid #124191;
   background: transparent;
 }
 
-/*Ovveride overlay container when mouse is over Navigator*/
-.cytoscape-navigator:hover .cytoscape-navigatorOverlay {
+/* 오버레이 스타일 */
+.cytoscape-navigator .cytoscape-navigatorOverlay {
   border: 2px solid #124191;
+}
+
+/* 마우스 오버 시 오버레이 스타일 */
+.cytoscape-navigator:hover .cytoscape-navigatorOverlay {
   background: transparent;
 }
 
-/*Ovveride view's container when mouse is over view*/
+/* 뷰 내부에 마우스 오버 시 스타일 */
 .cytoscape-navigator.mouseover-view .cytoscape-navigatorView {
-  background-color: rgba(18, 65, 145, 0.3);
+  background-color: rgba(18, 65, 145, 0.1);
 }
 
 .hidden {
