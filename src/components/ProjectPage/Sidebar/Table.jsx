@@ -1,7 +1,5 @@
 import Row from './Row';
 
-import './Sidebar.css';
-
 const Table = ({ source }) => {
   return (
     <table className="table-container">

@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import Sidebar from '../components/ProjectPage/Sidebar/Sidebar';
 import { DiagramField } from '../components/ProjectPage/DiagramField';
+import Header from '../layout/Header';
 
 const ProjectPage = () => {
   const { projectId } = useParams();
@@ -21,11 +22,8 @@ const ProjectPage = () => {
   return (
     <>
       <NetworkProvider>
-        <div>ProjectPage</div>
-        <div className="flex-div">
-          <Sidebar />
-          <DiagramField projectId={Number(projectId)} />
-        </div>
+        <Header />
+        <DiagramField projectId={Number(projectId)} />
       </NetworkProvider>
     </>
   );

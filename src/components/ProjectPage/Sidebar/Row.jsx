@@ -1,5 +1,3 @@
-import './Sidebar.css';
-
 import ServerIcon from '../../../assets/images/Server-icon2.png';
 import NetworkIcon from '../../../assets/images/Network-icon2.png';
 import L3SwitchIcon from '../../../assets/images/L3Switch-icon.png';
@@ -39,7 +37,7 @@ const Row = ({ rowData }) => {
         return (
           <td key={`${key} field`} className="table-field">
             {iconLookup[value] && iconLookup[value]}
-            {value}
+            <span>{value}</span>
           </td>
         );
       })}
