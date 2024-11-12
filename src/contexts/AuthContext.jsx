@@ -4,9 +4,9 @@
 마치 호텔의 투숙객 관리 시스템같은 역할
 */
 
-import { createContext, useContext, useState, useEffect } from 'react';
-import { loginUser } from '../api/Auth.js';
-import api from '../api/index';
+import { createContext, useContext, useState } from 'react';
+import * as authApi from '../api/Auth.js';
+import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext(null);
 
@@ -18,18 +18,24 @@ export const AuthProvider = ({ children }) => {
     JSON.parse(localStorage.getItem('currentUser')) || null,
   );
 
+  const decodeToken = (token) => {
+    return jwtDecode(token);
+  };
+
   const login = async (credentials) => {
-    const data = await loginUser(credentials); // API 호출
+    const data = await authApi.loginUser(credentials); // API 호출
     if (data.success) {
       const token = data.data.accessToken;
       localStorage.setItem('token', token); // 토큰 저장
       setIsAuthenticated(true);
-
       // 로그인 시 입력한 id를 currentUser로 설정
-      const user = { username: credentials.id };
-
+      // 토큰 내 유저 권한 추가로 필요
+      const decodedToken = decodeToken(token);
+      const user = { username: credentials.id, role: decodedToken.role };
       setCurrentUser(user);
+
       localStorage.setItem('currentUser', JSON.stringify(user));
+
       return user; // 사용자 정보 반환
     } else {
       throw new Error('로그인 실패');

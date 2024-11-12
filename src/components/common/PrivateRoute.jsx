@@ -8,10 +8,11 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 const PrivateRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
 
   if (!isAuthenticated) {
-    // return <Navigate to="/login" replace />;
+    alert('잘못된 접근입니다.');
+    logout();
     return <Navigate to="/" replace />;
   }
 
