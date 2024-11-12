@@ -1,5 +1,3 @@
-const iconTypes = { red: '#dd2c31', green: '#3f7ec8', blue: '#7cbc35' };
-import 'bootstrap-icons/font/bootstrap-icons.css';
 import './IconInput.css';
 import { CustomIconNode } from '../CustomIconNode';
 

@@ -11,6 +11,28 @@ export const fetchDiagramData = async (projectId) => {
     };
     delete nodeData.positionX;
     delete nodeData.positionY;
+    if (nodeData.nodeType === 'TEXT') {
+      const defaultSize = Number(nodeData.nodeSize);
+      const avgWidth = {
+        korean: defaultSize * 1, // 한글은 보통 정사각형에 가깝게 표현
+        english: defaultSize * 0.6, // 영어는 상대적으로 좁음
+        number: defaultSize * 0.6, // 숫자도 영어와 비슷한 폭
+      };
+
+      let calculatedWidth = 0;
+      for (const char of nodeData.textContent) {
+        if (/[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(char)) {
+          calculatedWidth += avgWidth.korean;
+        } else if (/[a-zA-Z]/.test(char)) {
+          calculatedWidth += avgWidth.english;
+        } else if (/[0-9]/.test(char)) {
+          calculatedWidth += avgWidth.number;
+        } else {
+          calculatedWidth += avgWidth.english;
+        }
+      }
+      nodeData.calculatedWidth = calculatedWidth;
+    }
     if (idx === 0) {
       backgroundSource = data.bgImgUrl;
       nodeSize = data.nodeSize;

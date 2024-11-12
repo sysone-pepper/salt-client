@@ -1,105 +1,268 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ServerDashboard.css';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import HighchartsMore from 'highcharts/highcharts-more';
+import SolidGauge from 'highcharts/modules/solid-gauge';
 import saltLogo from '../assets/images/salt-Logo-white-rm.png';
+import { getDeviceData } from '../api/Dashboard';
+import { useParams } from 'react-router-dom';
+
+HighchartsMore(Highcharts);
+SolidGauge(Highcharts);
 
 const ServerDashboard = () => {
   const [activeTab, setActiveTab] = useState('요약');
+  const [usageData, setUsageData] = useState(null);
+  const { deviceId } = useParams();
 
-  // 정적 차트 데이터
-  const chartData = [
-    [Date.UTC(2023, 0, 1), 29.9],
-    [Date.UTC(2023, 0, 2), 71.5],
-    [Date.UTC(2023, 0, 3), 106.4],
-    [Date.UTC(2023, 0, 6), 129.2],
-    [Date.UTC(2023, 0, 7), 144.0],
-    [Date.UTC(2023, 0, 8), 176.0],
-    [Date.UTC(2023, 0, 9), 135.6],
-    [Date.UTC(2023, 0, 10), 148.5],
-    [Date.UTC(2023, 0, 11), 216.4],
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getDeviceData(deviceId, 10);
+        if (data.success) {
+          const sortedData = data.data.sort(
+            (a, b) => new Date(a.generateTime) - new Date(b.generateTime),
+          );
+          setUsageData(sortedData);
+        } else {
+          console.error('Failed to fetch usage data');
+        }
+      } catch (error) {
+        console.error('Error fetching usage data:', error);
+      }
+    };
 
-  const getChartOptions = (index) => ({
-    chart: {
-      zooming: {
-        type: 'x',
+    fetchData();
+    const interval = setInterval(() => {
+      fetchData();
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, [deviceId]);
+
+  // const getSolidGaugeOptions = (title, value) => {
+  //   return {
+  //     chart: {
+  //       type: 'solidgauge',
+  //       backgroundColor: 'transparent',
+  //       height: 200,
+  //       width: 200,
+  //     },
+  //     title: null,
+  //     pane: {
+  //       center: ['50%', '85%'],
+  //       size: '100%',
+  //       startAngle: -90,
+  //       endAngle: 90,
+  //       background: {
+  //         backgroundColor: '#1f2937',
+  //         innerRadius: '60%',
+  //         outerRadius: '100%',
+  //         shape: 'arc',
+  //       },
+  //     },
+  //     tooltip: {
+  //       enabled: false,
+  //     },
+  //     yAxis: {
+  //       stops: [
+  //         [0.1, '#55BF3B'],
+  //         [0.5, '#DDDF0D'],
+  //         [0.9, '#DF5353'],
+  //       ],
+  //       lineWidth: 0,
+  //       minorTickInterval: null,
+  //       tickAmount: 2,
+  //       min: 0,
+  //       max: 100,
+  //       labels: {
+  //         y: 16,
+  //         style: { color: '#9ca3af' },
+  //       },
+  //     },
+  //     plotOptions: {
+  //       solidgauge: {
+  //         dataLabels: {
+  //           y: -10,
+  //           borderWidth: 0,
+  //           useHTML: true,
+  //           enabled: false,
+  //         },
+  //       },
+  //     },
+  //     credits: {
+  //       enabled: false,
+  //     },
+  //     series: [
+  //       {
+  //         data: [value],
+  //       },
+  //     ],
+  //   };
+  // };
+  const getGaugeOptions = (title, value) => {
+    return {
+      chart: {
+        type: 'gauge',
+        backgroundColor: 'transparent',
+        height: 200,
+        width: 200,
       },
-      backgroundColor: 'transparent',
-      height: 200,
-    },
-    title: {
-      text: `차트 ${index + 1}`,
-      align: 'left',
-      style: {
-        color: '#9ca3af',
-      },
-    },
-    subtitle: {
-      text: '드래그하여 확대',
-      align: 'left',
-      style: {
-        color: '#9ca3af',
-      },
-    },
-    xAxis: {
-      type: 'datetime',
-      labels: {
-        style: {
-          color: '#9ca3af',
-        },
-      },
-    },
-    yAxis: {
-      title: {
-        text: '수치',
-        style: {
-          color: '#9ca3af',
-        },
-      },
-      labels: {
-        style: {
-          color: '#9ca3af',
-        },
-      },
-    },
-    legend: {
-      enabled: false,
-    },
-    plotOptions: {
-      area: {
-        marker: {
-          radius: 2,
-        },
-        lineWidth: 1,
-        color: {
-          linearGradient: {
-            x1: 0,
-            y1: 0,
-            x2: 0,
-            y2: 1,
+      title: null,
+      pane: {
+        startAngle: -150,
+        endAngle: 150,
+        background: [
+          {
+            backgroundColor: '#1f2937',
+            borderWidth: 0,
+            outerRadius: '109%',
+            innerRadius: '103%',
           },
-          stops: [
-            [0, 'rgb(199, 113, 243)'],
-            [0.7, 'rgb(76, 175, 254)'],
-          ],
+        ],
+      },
+      tooltip: {
+        enabled: false,
+      },
+      yAxis: {
+        min: 0,
+        max: 100,
+        minorTickInterval: 'auto',
+        minorTickWidth: 0,
+        minorTickLength: 0,
+        minorTickPosition: 'inside',
+        minorTickColor: '#666',
+        tickPixelInterval: 30,
+        tickWidth: 1,
+        tickPosition: 'inside',
+        tickLength: 10,
+        tickColor: '#666',
+        labels: {
+          step: 2,
+          rotation: 'auto',
+          style: { color: '#9ca3af' },
         },
-        states: {
-          hover: {
-            lineWidth: 1,
+        plotBands: [
+          { from: 0, to: 60, color: '#55BF3B' },
+          { from: 60, to: 90, color: '#DDDF0D' },
+          { from: 90, to: 100, color: '#DF5353' },
+        ],
+      },
+      plotOptions: {
+        gauge: {
+          dataLabels: {
+            y: -10,
+            borderWidth: 0,
+            useHTML: true,
+            enabled: false,
+          },
+          dial: {
+            backgroundColor: '#C0C0C0',
+            // borderColor: '#FF0000',
+            borderWidth: 1,
+            baseWidth: 8,
+            topWidth: 1,
+            radius: '90%',
           },
         },
-        threshold: null,
       },
-    },
-    series: [
-      {
+      credits: {
+        enabled: false,
+      },
+      series: [
+        {
+          name: title,
+          data: [value],
+          tooltip: {
+            valueSuffix: ' %',
+          },
+        },
+      ],
+    };
+  };
+
+  const getChartOptions = (tab) => {
+    if (!usageData) return {};
+
+    let chartData = [];
+    let yAxisTitle = '';
+
+    if (tab === 'CPU') {
+      chartData = usageData.map((item) => [
+        new Date(item.generateTime).getTime(),
+        item.cpuProcessor,
+      ]);
+      yAxisTitle = 'CPU %';
+    } else if (tab === 'Memory') {
+      chartData = usageData.map((item) => [
+        new Date(item.generateTime).getTime(),
+        item.usedMemoryPercentage,
+      ]);
+      yAxisTitle = 'Memory %';
+    } else if (tab === 'DISK') {
+      chartData = usageData.map((item) => [
+        new Date(item.generateTime).getTime(),
+        item.usedDiskPercentage,
+      ]);
+      yAxisTitle = 'Disk %';
+    } else {
+      return {};
+    }
+
+    return {
+      chart: {
         type: 'area',
-        name: '데이터',
-        data: chartData,
+        zoomType: 'x',
+        backgroundColor: 'transparent',
+        height: 400,
       },
-    ],
-  });
+      title: {
+        text: '',
+      },
+      xAxis: {
+        type: 'datetime',
+        labels: { style: { color: '#9ca3af' } },
+      },
+      yAxis: {
+        max: 100,
+        title: {
+          text: yAxisTitle,
+          style: { color: '#9ca3af' },
+        },
+        labels: { style: { color: '#9ca3af' } },
+      },
+      legend: {
+        enabled: false,
+      },
+      credits: {
+        enabled: false,
+      },
+      series: [
+        {
+          name: yAxisTitle,
+          data: chartData,
+          color: {
+            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+            stops: [
+              [0, 'rgb(199, 113, 243)'],
+              [1, 'rgb(76, 175, 254)'],
+            ],
+          },
+          marker: {
+            radius: 2,
+          },
+          lineWidth: 1,
+          states: {
+            hover: {
+              lineWidth: 1,
+            },
+          },
+          threshold: null,
+        },
+      ],
+    };
+  };
 
   return (
     <div className="dashboard-container">
@@ -126,7 +289,6 @@ const ServerDashboard = () => {
         </div>
       </div>
 
-      {/* 서버정보 이름 외 기타 정보 넣을지 논의 필요 */}
       <div className="welcome-section">
         <h1 className="welcome-text">
           <span>서버이름</span>
@@ -134,25 +296,333 @@ const ServerDashboard = () => {
         </h1>
       </div>
 
-      {/* 카드 형식이되 각 탭마다 사이즈 다르게 하는 부분 확인 필요 */}
       <div className="cards-grid">
-        {Array.from({ length: 8 }).map((_, index) => (
-          <div key={index} className="card">
+        {activeTab === '요약' ? (
+          <>
+            {Array.from({ length: 3 }).map((_, index) => {
+              const latestData = usageData && usageData[usageData.length - 1];
+              let latestUsage = null;
+              let itemType = '';
+
+              if (index === 0) {
+                itemType = 'CPU';
+                latestUsage = latestData ? latestData.cpuProcessor : null;
+              } else if (index === 1) {
+                itemType = 'Memory';
+                latestUsage = latestData
+                  ? latestData.usedMemoryPercentage
+                  : null;
+              } else if (index === 2) {
+                itemType = 'Disk';
+                latestUsage = latestData ? latestData.usedDiskPercentage : null;
+              }
+
+              return (
+                <div key={index} className="card">
+                  <div className="card-header">
+                    <div className="card-title">{itemType} 사용률</div>
+                  </div>
+                  <div className="card-value">
+                    {latestUsage !== null ? (
+                      // <HighchartsReact
+                      //   highcharts={Highcharts}
+                      //   options={getSolidGaugeOptions(
+                      //     `${itemType} 사용률`,
+                      //     latestUsage,
+                      //   )}
+                      // />
+                      <HighchartsReact
+                        highcharts={Highcharts}
+                        options={getGaugeOptions(
+                          `${itemType} 사용률`,
+                          latestUsage,
+                        )}
+                      />
+                    ) : (
+                      <div>Loading...</div>
+                    )}
+                  </div>
+                  <div className="card-subtitle">
+                    {latestUsage !== null ? `${latestUsage}%` : 'Loading...'}
+                  </div>
+                </div>
+              );
+            })}
+          </>
+        ) : (
+          <div className="card-large">
             <div className="card-header">
-              <div className="card-title">각각 이름 {index + 1}</div>
+              <div className="card-title">{activeTab} 사용률 추이</div>
             </div>
             <div className="card-value">
-              <HighchartsReact
-                highcharts={Highcharts}
-                options={getChartOptions(index)}
-              />
+              {usageData ? (
+                <HighchartsReact
+                  highcharts={Highcharts}
+                  options={getChartOptions(activeTab)}
+                />
+              ) : (
+                <div>Loading...</div>
+              )}
             </div>
-            <div className="card-subtitle">부제?</div>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
 };
 
 export default ServerDashboard;
+
+// import React, { useState, useEffect } from 'react';
+// import './ServerDashboard.css';
+// import Highcharts from 'highcharts';
+// import HighchartsReact from 'highcharts-react-official';
+// import saltLogo from '../assets/images/salt-Logo-white-rm.png';
+// import { getDeviceData } from '../api/Dashboard';
+// import { useParams } from 'react-router-dom';
+
+// const ServerDashboard = () => {
+//   const [activeTab, setActiveTab] = useState('요약');
+//   const [usageData, setUsageData] = useState(null);
+//   const { deviceId } = useParams();
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const data = await getDeviceData(deviceId, 10);
+//         if (data.success) {
+//           const sortedData = data.data.sort(
+//             (a, b) => new Date(a.generateTime) - new Date(b.generateTime),
+//           );
+//           setUsageData(sortedData);
+//         } else {
+//           console.error('Failed to fetch usage data');
+//         }
+//       } catch (error) {
+//         console.error('Error fetching usage data:', error);
+//       }
+//     };
+
+//     fetchData();
+
+//     const interval = setInterval(() => {
+//       fetchData();
+//     }, 60000);
+
+//     return () => clearInterval(interval);
+//   }, [deviceId]);
+
+//   const getChartOptions = (title, yAxisTitle, dataKey) => {
+//     if (!usageData) return {};
+
+//     const chartData = usageData.map((item) => [
+//       new Date(item.generateTime).getTime(),
+//       item[dataKey],
+//     ]);
+
+//     return {
+//       chart: {
+//         zoomType: 'x',
+//         backgroundColor: 'transparent',
+//         height: 200,
+//       },
+//       title: {
+//         text: '',
+//       },
+//       xAxis: {
+//         type: 'datetime',
+//         labels: { style: { color: '#9ca3af' } },
+//       },
+//       yAxis: {
+//         max: 100,
+//         title: {
+//           text: yAxisTitle,
+//           style: { color: '#9ca3af' },
+//         },
+//         labels: { style: { color: '#9ca3af' } },
+//       },
+//       legend: {
+//         enabled: false,
+//       },
+//       credits: {
+//         enabled: false,
+//       },
+//       series: [
+//         {
+//           type: 'area',
+//           name: title,
+//           data: chartData,
+//           color: {
+//             linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+//             stops: [
+//               [0, 'rgb(199, 113, 243)'],
+//               [1, 'rgb(76, 175, 254)'],
+//             ],
+//           },
+//           marker: {
+//             radius: 2,
+//           },
+//           lineWidth: 1,
+//           states: {
+//             hover: {
+//               lineWidth: 1,
+//             },
+//           },
+//           threshold: null,
+//         },
+//       ],
+//     };
+//   };
+
+//   return (
+//     <div className="dashboard-container">
+//       <div className="modal-header">
+//         <div className="header-content">
+//           <div className="logo-placeholder">
+//             <img src={saltLogo} alt="Salt Team Logo" className="salt-logo" />
+//           </div>
+//           <nav className="navigation">
+//             {['요약', 'CPU', 'Memory', 'DISK', 'NIC'].map((item) => (
+//               <button
+//                 key={item}
+//                 className={`nav-button ${activeTab === item ? 'active' : ''}`}
+//                 onClick={() => setActiveTab(item)}
+//               >
+//                 {item}
+//               </button>
+//             ))}
+//           </nav>
+//         </div>
+//         <div className="user-section">
+//           <div>현재 사용자 정보</div>
+//           <div>님 환영합니다.</div>
+//         </div>
+//       </div>
+
+//       <div className="welcome-section">
+//         <h1 className="welcome-text">
+//           <span>서버이름</span>
+//           <span>장비 상세</span>
+//         </h1>
+//       </div>
+
+//       <div className="cards-grid">
+//         {Array.from({ length: 8 }).map((_, index) => {
+//           if (index === 0) {
+//             // CPU
+//             const latestData = usageData && usageData[usageData.length - 1];
+//             const latestCpuUsage = latestData ? latestData.cpuProcessor : null;
+
+//             return (
+//               <div key={index} className="card">
+//                 <div className="card-header">
+//                   <div className="card-title">CPU 사용률</div>
+//                 </div>
+//                 <div className="card-value">
+//                   {usageData ? (
+//                     <HighchartsReact
+//                       highcharts={Highcharts}
+//                       options={getChartOptions(
+//                         'CPU Usage',
+//                         'CPU %',
+//                         'cpuProcessor',
+//                       )}
+//                     />
+//                   ) : (
+//                     <div>Loading...</div>
+//                   )}
+//                 </div>
+//                 <div className="card-subtitle">
+//                   {latestCpuUsage !== null
+//                     ? `${latestCpuUsage}%`
+//                     : 'Loading...'}
+//                 </div>
+//               </div>
+//             );
+//           } else if (index === 1) {
+//             // Memory
+//             const latestData = usageData && usageData[usageData.length - 1];
+//             const latestMemoryUsage = latestData
+//               ? latestData.usedMemoryPercentage
+//               : null;
+
+//             return (
+//               <div key={index} className="card">
+//                 <div className="card-header">
+//                   <div className="card-title">Memory 사용률</div>
+//                 </div>
+//                 <div className="card-value">
+//                   {usageData ? (
+//                     <HighchartsReact
+//                       highcharts={Highcharts}
+//                       options={getChartOptions(
+//                         'Memory Usage',
+//                         'Memory %',
+//                         'usedMemoryPercentage',
+//                       )}
+//                     />
+//                   ) : (
+//                     <div>Loading...</div>
+//                   )}
+//                 </div>
+//                 <div className="card-subtitle">
+//                   {latestMemoryUsage !== null
+//                     ? `${latestMemoryUsage}%`
+//                     : 'Loading...'}
+//                 </div>
+//               </div>
+//             );
+//           } else if (index === 2) {
+//             // Disk
+//             const latestData = usageData && usageData[usageData.length - 1];
+//             const latestDiskUsage = latestData
+//               ? latestData.usedDiskPercentage
+//               : null;
+
+//             return (
+//               <div key={index} className="card">
+//                 <div className="card-header">
+//                   <div className="card-title">Disk 사용률</div>
+//                 </div>
+//                 <div className="card-value">
+//                   {usageData ? (
+//                     <HighchartsReact
+//                       highcharts={Highcharts}
+//                       options={getChartOptions(
+//                         'Disk Usage',
+//                         'Disk %',
+//                         'usedDiskPercentage',
+//                       )}
+//                     />
+//                   ) : (
+//                     <div>Loading...</div>
+//                   )}
+//                 </div>
+//                 <div className="card-subtitle">
+//                   {latestDiskUsage !== null
+//                     ? `${latestDiskUsage}%`
+//                     : 'Loading...'}
+//                 </div>
+//               </div>
+//             );
+//           } else {
+//             // 나머지 카드
+//             return (
+//               <div key={index} className="card">
+//                 <div className="card-header">
+//                   <div className="card-title">각각 이름 {index + 1}</div>
+//                 </div>
+//                 <div className="card-value">
+//                   <div>추후 데이터 추가 예정</div>
+//                 </div>
+//                 <div className="card-subtitle">부제?</div>
+//               </div>
+//             );
+//           }
+//         })}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ServerDashboard;

@@ -28,7 +28,7 @@ function App() {
                 />
               </Route>
               <Route
-                path="dashboard/"
+                path="dashboard/:deviceId"
                 element={
                   <PrivateRoute>
                     <ServerDashboard />

@@ -58,6 +58,19 @@ export const DiagramField = ({ projectId }) => {
               height: 'data(nodeSize)',
             },
           },
+          {
+            selector: '.ICON, .TEXT',
+            style: {
+              'background-opacity': '0',
+            },
+          },
+          {
+            selector: '.TEXT',
+            style: {
+              width: 'data(calculatedWidth)',
+              height: 'data(nodeSize)',
+            },
+          },
         ],
         layout: {
           name: 'preset',
@@ -100,8 +113,20 @@ export const DiagramField = ({ projectId }) => {
             )}`;
           },
         },
+        {
+          query: '.TEXT',
+          halign: 'center',
+          valign: 'center',
+          halignBox: 'center',
+          valignBox: 'center',
+          cssClass: '',
+          tpl(data) {
+            return `${ReactDOMServer.renderToString(
+              <CustomTextNode node={cy.getElementById(data.id)} data={data} />,
+            )}`;
+          },
+        },
       ]);
-
       cy.on('dragfree', 'node', async (event) => {
         const target = event.target;
         const updatedNode = target.json();
