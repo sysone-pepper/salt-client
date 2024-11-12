@@ -52,6 +52,7 @@
 }
 
 .table-title {
+  display: flex;
   height: 1.5rem;
   background-color: #1f2b3c;
   text-align: left;
@@ -59,7 +60,10 @@
   padding: 0 .3rem;
   font-size: .6rem;
   border-radius: .3rem .3rem 0 0;
+  border-bottom: 1px solid #fff;
   color: #fff;
+  gap: .3rem;
+  cursor: move;
 }
 
 .table-header {

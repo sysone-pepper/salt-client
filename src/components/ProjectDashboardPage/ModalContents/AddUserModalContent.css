@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap");
-
 .au-wrapper *,
 .au-wrapper :before,
 .au-wrapper :after {
@@ -12,15 +10,14 @@
 }
 
 .au-title {
-  font-family: "Nanum Gothic", sans-serif;
   font-weight: 800;
   font-size: 2em;
   text-align: center;
-  color: #a5d3ec;
+  color: #fff;
 }
 
 .au-sep {
-  background: #a5d3ec;
+  background: var(--primary-color);
   box-shadow: none;
   border: none;
   height: 2px;
@@ -29,21 +26,20 @@
 }
 
 .au-group {
-  font-family: "Nanum Gothic", sans-serif;
   position: relative;
   margin: 45px 0;
 }
 
 .au-input {
   background: none;
-  color: #c6c6c6;
+  color: var(--input-text-color);
   font-size: 18px;
   padding: 10px 10px 10px 5px;
   display: block;
   width: 320px;
   border: none;
   border-radius: 0;
-  border-bottom: 1px solid #c6c6c6;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .au-input:focus {
@@ -54,7 +50,7 @@
 .au-input:valid ~ .au-label {
   top: -14px;
   font-size: 12px;
-  color: #a5d3ec;
+  color: var(--primary-color);
 }
 
 .au-input:focus ~ .au-bar:before {
@@ -62,8 +58,7 @@
 }
 
 .au-authority-title {
-  font-family: "Nanum Gothic", sans-serif;
-  color: #c6c6c6;
+  color: var(--input-text-color);
   font-size: 16px;
   margin-bottom: 15px;
 }
@@ -71,28 +66,21 @@
 .au-radio-group {
   display: flex;
   gap: 20px;
-  padding-left: 5px; 
+  padding-left: 5px;
 }
-
-/* .au-label-static {
-  top: -14px; 
-  font-size: 12px;
-  color: #a5d3ec;
-  transition: none;
-} */
 
 .au-radio-label {
   display: flex;
   align-items: center;
   cursor: pointer;
-  color: #c6c6c6;
+  color: var(--input-text-color);
 }
 
 .au-radio-input {
   appearance: none;
   width: 20px;
   height: 20px;
-  border: 2px solid #c6c6c6;
+  border: 2px solid var(--input-text-color);
   border-radius: 50%;
   margin-right: 8px;
   position: relative;
@@ -100,7 +88,7 @@
 }
 
 .au-radio-input:checked {
-  border-color: #a5d3ec;
+  border-color: var(--primary-color);
 }
 
 .au-radio-input:checked::after {
@@ -111,7 +99,7 @@
   transform: translate(-50%, -50%);
   width: 10px;
   height: 10px;
-  background-color: #a5d3ec;
+  background-color: var(--primary-color);
   border-radius: 50%;
 }
 
@@ -120,11 +108,11 @@
 }
 
 .au-radio-label:hover .au-radio-input {
-  border-color: #a5d3ec;
+  border-color: var(--primary-color);
 }
 
 .au-label {
-  color: #c6c6c6;
+  color: var(--input-text-color);
   font-size: 16px;
   font-weight: normal;
   position: absolute;
@@ -146,13 +134,12 @@
   width: 0;
   bottom: 0px;
   position: absolute;
-  background: #a5d3ec;
+  background: var(--primary-color);
   transition: 300ms ease all;
   left: 0%;
 }
 
 .au-btn {
-  font-family: "Nanum Gothic", sans-serif;
   font-weight: 700;
   background: #fff;
   color: #959595;
@@ -174,12 +161,12 @@
 }
 
 .au-btn-submit {
-  background: #a5d3ec;
-  color: #bce0fb;
+  background: var(--primary-color);
+  color: var(--button-text-color);
 }
 
 .au-btn-submit:hover {
-  background: #93c2db;
+  background: var(--button-hover-background-color);
   color: #deeffd;
 }
 
