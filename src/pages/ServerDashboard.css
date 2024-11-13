@@ -109,12 +109,20 @@
   margin-bottom: 0.5rem;
 }
 
+/* .card-value {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} */
 .card-value {
+  position: relative;
   flex-grow: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
 
 .card-subtitle {
   font-size: 1.2rem;
@@ -134,128 +142,21 @@
   min-height: 400px;
 }
 
-
-
-/* .dashboard-container {
-  background-color: #111827;
-  min-height: 100vh;
-  padding: 1.5rem;
-  color: white;
+.donut-label {
+  position: absolute;
+  text-align: center;
+  font-size: 1.5rem;
 }
 
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 2rem;
-}
-
-.header-content {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.logo-placeholder {
-  display: flex;
-  align-items: center;
-}
-
-.salt-logo {
-  height: 40px;
-  width: auto;
-}
-
-.navigation {
-  display: flex;
-  gap: 1rem;
-}
-
-.nav-button {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  background: none;
-  border: none;
-  color: #9ca3af;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.nav-button:hover {
+.donut-title {
+  font-size: 1.2rem;
+  font-weight: bold;
   color: #e5e7eb;
 }
 
-.nav-button.active {
-  background-color: white;
-  color: #111827;
+.donut-percentage {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-top: 0.3rem;
 }
-
-.user-section {
-  display: flex;
-  gap: 1rem;
-  color: #9ca3af;
-}
-
-.welcome-section {
-  margin-bottom: 2rem;
-}
-
-.welcome-text {
-  font-size: 1.875rem;
-  line-height: 2.25rem;
-}
-
-.welcome-text span:first-child {
-  color: white;
-}
-
-.welcome-text span:last-child {
-  color: #9ca3af;
-  margin-left: 0.5rem;
-}
-
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-.card {
-  background-color: #1f2937;
-  padding: 1rem;
-  border-radius: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  min-height: 300px;
-}
-
-.card:hover {
-  background-color: #374151;
-}
-
-.card-header {
-  margin-bottom: 1rem;
-}
-
-.card-title {
-  text-align: center;
-  font-size: 1.3rem;
-  font-weight: 800;
-  color: #9ca3af;
-  margin-bottom: 0.5rem;
-}
-
-.card-value {
-  flex-grow: 1;
-}
-
-.card-subtitle {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #9ca3af;
-  text-align: center;
-  margin-top: 0.1rem;
-} */
