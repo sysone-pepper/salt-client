@@ -1,5 +1,6 @@
 /* 사이드바 전체 스타일 */
 .sidebar-wrapper {
+  position: relative;
   transition: width 0.3s ease;
   font-size: .5rem;
 }
@@ -108,9 +109,47 @@
 }
 
 /* 장비 현황 테이블용 스타일 */
-.icon-image {
+.sb-icon-image {
   height: 90%;
   vertical-align: middle;
   margin-right: .2rem;
 }
 
+/* sb-pan-btn 스타일 */
+.sb-pan-btn {
+  position: fixed;
+  top: 50%;
+  left:25.3rem;
+  width: 15px;
+  height: 30px;
+  background-color: #1f2937;
+  border-radius: 0 15px 15px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+  transition: transform 0.4s ease-in-out, background-color 0.3s ease, left 0.3s ease; /* 사이드바와 함께 이동 */
+}
+
+.sb-pan-btn:hover {
+  background-color: #f0f0f0;
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.sb-pan-icon{
+  width: 50%;
+  height: 50%;
+  object-fit: cover;
+  rotate:180deg;
+}
+
+.sidebar-wrapper.collapsed + .sb-pan-btn {
+  left: 0;
+}
+
+.sidebar-wrapper.collapsed + .sb-pan-btn .sb-pan-icon{
+ rotate:0deg;
+}

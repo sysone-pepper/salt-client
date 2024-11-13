@@ -15,6 +15,8 @@ import { CustomIconNode } from './CustomIconNode';
 import { CustomTextNode } from './CustomTextNode';
 import { getUsers } from '../../api/User';
 import { useAuth } from '../../contexts/AuthContext';
+import closeIcon from '../../assets/images/add-icon.png';
+import openIcon from '../../assets/images/open-navigator-icon.png';
 
 import './NetworkMap.css';
 
@@ -36,6 +38,8 @@ export const DiagramField = ({ projectId }) => {
     setEdges,
     isLinking,
     isObjectDelete,
+    isNavigatorToggled,
+    setIsNavigatorToggled,
 
     isEditingPermitted,
     setIsEditingPermitted,
@@ -66,6 +70,7 @@ export const DiagramField = ({ projectId }) => {
   };
 
   const fetchUserAuthority = async () => {
+    // TODO: Authority 나중에 토큰에서 넘겨줄 예정
     try {
       const response = await getUsers(); //
       if (response.success) {
@@ -260,15 +265,21 @@ export const DiagramField = ({ projectId }) => {
     }
   };
 
+  const toggleNavigator = () => {
+    console.log(!isNavigatorToggled);
+    setIsNavigatorToggled((prevState) => !prevState);
+  };
+
   // 초기화(프로젝트 아이디 컨텍스트 등록)
   useEffect(() => {
+    console.log(currentUser);
     setCurProjectId(projectId);
     registerCytoscapeExtensions();
   }, []);
 
   // cytoscape-navigator 등록 및 언마운트 기능
   useEffect(() => {
-    fetchUserAuthority();
+    // fetchUserAuthority();
 
     if (!!curProjectId) {
       if (!cyRef.current) {
@@ -481,19 +492,32 @@ export const DiagramField = ({ projectId }) => {
         }}
       />
       <div
-        className="cytoscape-navigator"
-        style={{
-          position: 'absolute',
-          bottom: '10px',
-          right: '10px',
-          width: '20vw',
-          height: '20vh',
-          backgroundColor: '#f4f4f4',
-          border: '1px solid #ddd',
-          overflow: 'hidden',
-          zIndex: 500,
-        }}
-      />
+        className={`navigator-container ${
+          isNavigatorToggled ? '' : 'collapsed'
+        }`}
+      >
+        <div
+          className="cytoscape-navigator"
+          // cytoscape-navigator를 커스터마이징 하여 div에 직접 적용할 경우 해당 스타일이 미리 정의되어야합니다.
+          // 추후 해당 사안을 개선하겠습니다.
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            bottom: 0,
+            backgroundColor: '#f4f4f4',
+            overflow: 'hidden',
+            zIndex: 500,
+          }}
+        />
+        <div className="toggle-navigator-btn" onClick={toggleNavigator}>
+          {isNavigatorToggled ? (
+            <img className="close-navigator-icon" src={closeIcon} />
+          ) : (
+            <img className="open-navigator-icon" src={openIcon} />
+          )}
+        </div>
+      </div>
     </div>
   );
 };

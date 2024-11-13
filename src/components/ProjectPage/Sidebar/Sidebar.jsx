@@ -3,16 +3,16 @@ import {
   draggable,
   dropTargetForElements,
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
-
 import invariant from 'tiny-invariant';
 
+import sidebarToggleIcon from '../../../assets/images/sidebar-toggle-icon.png';
 import { NetworkContext } from '../../../contexts/NetworkContext.jsx';
 import Table from './Table';
 import { tableCategory } from './data.js';
 import './Sidebar.css';
 
 const Sidebar = () => {
-  const { isSidebarPanned } = useContext(NetworkContext);
+  const { isSidebarPanned, setIsSidebarPanned } = useContext(NetworkContext);
 
   const [tables, setTables] = useState([
     { source: 'deviceStatus' },
@@ -63,31 +63,40 @@ const Sidebar = () => {
     dragIndexRef.current = null;
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarPanned((prevState) => !prevState);
+  };
+
   return (
-    <div
-      className={`sidebar-wrapper${
-        isSidebarPanned ? ' expanded' : ' collapsed'
-      }`}
-    >
-      <aside className="sidebar">
-        <ul className="table-list">
-          {tables.map((table, index) => (
-            <li key={index} id={`table-${index}`}>
-              <div
-                id={`drag-handle-${index}`}
-                className="drag-handle table-title"
-              >
-                <p>{'\u22EE\u22EE'}</p>
-                <p>{tableCategory[table.source].title}</p>
-              </div>
-              <div className="sidebar-element">
-                <Table source={tableCategory[table.source]} key={index} />
-              </div>
-            </li>
-          ))}
-        </ul>
-      </aside>
-    </div>
+    <>
+      <div
+        className={`sidebar-wrapper${
+          isSidebarPanned ? ' expanded' : ' collapsed'
+        }`}
+      >
+        <aside className="sidebar">
+          <ul className="table-list">
+            {tables.map((table, index) => (
+              <li key={index} id={`table-${index}`}>
+                <div
+                  id={`drag-handle-${index}`}
+                  className="drag-handle table-title"
+                >
+                  <p>{'\u22EE\u22EE'}</p>
+                  <p>{tableCategory[table.source].title}</p>
+                </div>
+                <div className="sidebar-element">
+                  <Table source={tableCategory[table.source]} key={index} />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      </div>
+      <div className="sb-pan-btn" onClick={toggleSidebar}>
+        <img className="sb-pan-icon" src={sidebarToggleIcon} />
+      </div>
+    </>
   );
 };
 

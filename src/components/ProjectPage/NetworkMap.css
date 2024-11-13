@@ -1,17 +1,83 @@
 #cy {
   width: 100%;
-  height: 90vh; /* 이 높이는 적당히 조정 */
+  height: 100%;
   background-color: #1f2937;
   border-radius: .3rem;
  }
 
  .diagram-field {
-  width: 100%; /* main-content 내에서 가능한 최대 크기 */
+  width: 100%;
   height: 100%;
   background-color: #1f2937;
   border-radius: 0.3rem;
-  overflow: hidden; /* 내용이 넘치지 않도록 설정 */
-  transition: max-width 0.3s ease; /* 사이드바 상태에 따라 동적으로 변화하도록 설정 */
+  overflow: hidden;
+  transition: max-width 0.3s ease;
+}
+
+.navigator-container{
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 20vw;
+  height: 20vh;
+  z-index: 500;
+  border: 4px solid #1f2937;
+  transition: height 0.3s ease, bottom 0.3s ease, border 0.3s ease;
+  overflow: hidden;
+}
+
+.navigator-container.collapsed {
+  height: 0;
+  bottom: 4px;
+}
+
+.navigator-container.collapsed .toggle-navigator-btn {
+  bottom: 20px;
+  width: 50px; 
+  height: 50px;
+  border-radius: 50%;
+  background-color: #1f2937;
+  opacity: 1;
+  border: 2px white solid;
+}
+
+.toggle-navigator-btn {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: calc(20vh - 10px);
+  right: 16px;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+  background-color: #1f2937;
+  opacity: 0.2;
+  z-index: 501;
+  border-radius: 50%;
+  transition: opacity 0.3s ease, 0.3s ease, border-radius 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+
+.close-navigator-icon{
+  width: 50%;
+  height: 50%;
+  rotate: 45deg;
+  object-fit: cover;
+}
+
+.open-navigator-icon{
+  width: 70%;
+  height: 70%;
+  object-fit: cover;
+}
+
+
+.toggle-navigator-btn:hover {
+  opacity: 0.8;
+}
+
+.navigator-container.collapsed .toggle-navigator-btn:hover {
+  background-color: white;
 }
 
 .cytoscape-navigatorView,
@@ -22,15 +88,17 @@
   z-index: 501;
 }
 
+/* 네비게이터 내부 영역 커스텀 스타일 */
+
 /* 뷰의 스타일 */
 .cytoscape-navigator .cytoscape-navigatorView {
-  border: 2px solid #124191;
+  border: 2px solid #1f2937;
   background: transparent;
 }
 
 /* 오버레이 스타일 */
 .cytoscape-navigator .cytoscape-navigatorOverlay {
-  border: 2px solid #124191;
+  border: 2px solid #1f2937;
 }
 
 /* 마우스 오버 시 오버레이 스타일 */
