@@ -39,10 +39,6 @@ const Toolbar = () => {
     setIsSidebarPanned((prevState) => !prevState);
   };
 
-  const handleSizeInputChange = (e) => {
-    setInputSize(e.target.value);
-  };
-
   const toggeleNavigator = () => {
     const navigator = document.getElementsByClassName('cytoscape-navigator')[0];
     setIsNavigatorToggled((prevState) => {
@@ -193,6 +189,10 @@ const Toolbar = () => {
     setNodes(cy.elements().map((ele) => ele.json()));
   };
 
+  const handleSizeInputChange = (e) => {
+    setInputSize(e.target.value);
+  };
+
   return (
     <div className="toolbar">
       <div className="diagram-browsing-tools">
@@ -208,22 +208,9 @@ const Toolbar = () => {
             closeModal={() => setModalOpen(false)}
           />
         )}
-        <label htmlFor="sizeInput">노드 크기 조절</label>
-        <input
-          id="sizeInput"
-          type="number"
-          min="20"
-          max="100"
-          value={inputSize}
-          onChange={handleSizeInputChange}
-          placeholder="20 - 100"
-        />
-        <button className="toolbar-button" onClick={handleSizeButtonClick}>
-          확인
-        </button>
-        <button className="toolbar-button" onClick={handlePannigButtonClick}>
+        {/* <button className="toolbar-button" onClick={handlePannigButtonClick}>
           사이드바 {isSidebarPanned ? '접기' : '펼치기'}
-        </button>
+        </button> */}
         <AddButton
           fileName={'navigator-icon.png'}
           onClickEvent={toggeleNavigator}
@@ -293,6 +280,19 @@ const Toolbar = () => {
         <AddButton fileName={'ungroup.png'} onClickEvent={ungroup}>
           그룹 해제
         </AddButton> */}
+        <label htmlFor="sizeInput">노드 크기 조절</label>
+        <input
+          id="sizeInput"
+          type="number"
+          min="20"
+          max="100"
+          value={inputSize}
+          onChange={handleSizeInputChange}
+          placeholder="20 - 100"
+        />
+        <button className="toolbar-button" onClick={handleSizeButtonClick}>
+          확인
+        </button>
       </div>
     </div>
   );

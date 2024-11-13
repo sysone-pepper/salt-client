@@ -1,5 +1,6 @@
 /* 사이드바 전체 스타일 */
 .sidebar-wrapper {
+  position: relative;
   transition: width 0.3s ease;
   font-size: .5rem;
 }
@@ -114,3 +115,47 @@
   margin-right: .2rem;
 }
 
+
+
+/* sb-pan-btn 스타일 */
+.sb-pan-btn {
+  position: fixed; /* 화면에 고정 */
+  top: 50%;
+  /*left: calc(25rem + 10px); /* 사이드바 너비에 맞춰 오른쪽에 고정 */
+  left:25.3rem;
+  /* transform: translateY(-50%); */
+  width: 15px;
+  height: 30px;
+  /* border-radius: 50%; */
+  background-color: #1f2937;
+  border-radius: 0 15px 15px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  z-index: 2; /* sidebar-wrapper 위에 오도록 설정 */
+  transition: transform 0.4s ease-in-out, background-color 0.3s ease, left 0.3s ease; /* 사이드바와 함께 이동 */
+}
+
+.sb-pan-btn:hover {
+  background-color: #f0f0f0; /* 호버 시 색상 약간 변경 */
+  transform: scale(1.05); /* 살짝 커지도록 */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* 그림자 강조 */
+}
+
+.sb-pan-icon{
+  width: 50%;
+  height: 50%;
+  object-fit: cover;
+  rotate:180deg;
+}
+
+.sidebar-wrapper.collapsed + .sb-pan-btn {
+  left: 0;
+  /* rotate: 180deg; */
+}
+
+.sidebar-wrapper.collapsed + .sb-pan-btn .sb-pan-icon{
+ rotate:0deg;
+}
