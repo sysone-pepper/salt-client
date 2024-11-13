@@ -16,6 +16,7 @@ import { CustomTextNode } from './CustomTextNode';
 import { getUsers } from '../../api/User';
 import { useAuth } from '../../contexts/AuthContext';
 import closeIcon from '../../assets/images/add-icon.png';
+import openIcon from '../../assets/images/open-navigator-icon.png';
 
 import './NetworkMap.css';
 
@@ -510,7 +511,11 @@ export const DiagramField = ({ projectId }) => {
           }}
         />
         <div className="toggle-navigator-btn" onClick={toggleNavigator}>
-          <img className="toggle-navigator-icon" src={closeIcon} />
+          {isNavigatorToggled ? (
+            <img className="close-navigator-icon" src={closeIcon} />
+          ) : (
+            <img className="open-navigator-icon" src={openIcon} />
+          )}
         </div>
       </div>
     </div>

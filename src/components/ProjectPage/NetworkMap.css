@@ -32,12 +32,13 @@
 }
 
 .navigator-container.collapsed .toggle-navigator-btn {
-  bottom: 13px;
-  width: 30px; 
-  height: 15px;
-  border-radius: 15px 15px 0 0;
+  bottom: 20px;
+  width: 50px; 
+  height: 50px;
+  border-radius: 50%;
   background-color: #1f2937;
   opacity: 1;
+  border: 2px white solid;
 }
 
 .toggle-navigator-btn {
@@ -57,18 +58,19 @@
   transition: opacity 0.3s ease, 0.3s ease, border-radius 0.3s ease, width 0.3s ease, height 0.3s ease;
 }
 
-.toggle-navigator-icon{
+.close-navigator-icon{
   width: 50%;
   height: 50%;
   rotate: 45deg;
   object-fit: cover;
 }
 
-.navigator-container.collapsed .toggle-navigator-icon{
-  width: 50%;
-  height: 100%;
-  rotate: 0deg;
+.open-navigator-icon{
+  width: 70%;
+  height: 70%;
+  object-fit: cover;
 }
+
 
 .toggle-navigator-btn:hover {
   opacity: 0.8;
