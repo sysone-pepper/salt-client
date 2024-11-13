@@ -50,7 +50,8 @@
 .au-input:valid ~ .au-label {
   top: -14px;
   font-size: 12px;
-  color: var(--primary-color);
+  /* color: var(--primary-color); */
+  color:#fff;
 }
 
 .au-input:focus ~ .au-bar:before {
@@ -88,7 +89,7 @@
 }
 
 .au-radio-input:checked {
-  border-color: var(--primary-color);
+  border-color: var(--secondary-color);
 }
 
 .au-radio-input:checked::after {
@@ -99,7 +100,7 @@
   transform: translate(-50%, -50%);
   width: 10px;
   height: 10px;
-  background-color: var(--primary-color);
+  background-color: var(--secondary-color);
   border-radius: 50%;
 }
 
@@ -108,7 +109,7 @@
 }
 
 .au-radio-label:hover .au-radio-input {
-  border-color: var(--primary-color);
+  border-color: var(--secondary-color);
 }
 
 .au-label {

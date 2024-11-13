@@ -9,7 +9,7 @@ import ViewAllUsersModalContent from '../components/ProjectDashboardPage/ModalCo
 import ProjectContent from '../components/ProjectDashboardPage/ProjectContent';
 import AddProjectModalContent from '../components/ProjectDashboardPage/ModalContents/AddProjectModalContent';
 import ProjectSummaryModalContent from '../components/ProjectDashboardPage/ModalContents/ProjectSummaryModalContent';
-import FooterDark from '../layout/FooterDark';
+import FooterDark from '../layout/Footer';
 import './ProjectDashboard.css';
 import { useAuth } from '../contexts/AuthContext';
 import * as userApi from '../api/User';

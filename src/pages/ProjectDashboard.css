@@ -6,11 +6,14 @@
   z-index: 2;
 }
 
-.user-management{
+.user-management, .projects-management{
   margin: 20px;
+  margin-left: 10%;
+  margin-right: 10%;;
 }
 
 .my-users {
+  font-size: 1.5rem;
   font-weight: 800;
   color: var(--text-color);
   margin: 0;
@@ -22,6 +25,8 @@
   justify-content: space-between;
   align-items: center;
   margin: 20px;
+  margin-left: 10%;
+  margin-right: 10%;
 }
 
 .title-and-add {
@@ -30,6 +35,7 @@
 }
 
 .my-project {
+  font-size: 1.5rem;
   font-weight: 800;
   color: var(--text-color);
   margin: 0;
@@ -66,10 +72,11 @@
   outline: none;
 }
 
-.my-pjt-hr {
+/* .my-pjt-hr {
   border-color: #fff;
-  margin: 20px;
-}
+  margin: 5px;
+  margin-bottom: 20px;
+} */
 
 .projects-wrapper {
   display: flex;

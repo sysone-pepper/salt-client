@@ -3,8 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { ThemeContext } from '../contexts/ThemeContext';
 import './Header.css';
-import ImageLogoDark from '../assets/images/salt-Logo-white-rm.png';
-import ImageLogoLight from '../assets/images/salt-logo-color.png';
+import ImageLogo from '../assets/images/salt-Logo-white-rm.png';
 import ImageThemeDark from '../assets/images/moon.png';
 import ImageThemeLight from '../assets/images/sun.png';
 
@@ -18,14 +17,13 @@ const Header = () => {
     navigate('/');
   };
 
-  const logoImage = theme === 'dark' ? ImageLogoDark : ImageLogoLight;
   const themeIcon = theme === 'dark' ? ImageThemeDark : ImageThemeLight;
 
   return (
     <header className="header">
       <div className="logo-container">
         <Link to="/">
-          <img src={logoImage} alt="SALT Logo" className="logo-image" />
+          <img src={ImageLogo} alt="SALT Logo" className="logo-image" />
         </Link>
       </div>
       <div className="button-container">
