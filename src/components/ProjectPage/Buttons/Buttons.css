@@ -1,26 +1,20 @@
 .add-button-wrapper {
-  width: 40px;
-  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  margin: 10px;
   transition: width 0.3s ease, height 0.3s ease;
   cursor: pointer;
 }
 
 .add-button-wrapper.disabled {
-  opacity: 0.5; 
+  opacity: 0.2; 
   pointer-events: none;
 }
 
 .add-button-content-container {
-  width: 40px;
-  height: 40px;
-  border-radius: 100%;
-  background-color: #1f2b3c;
-  border: 3px solid rgb(133, 133, 133);
+  width: 1rem;
+  height: 1rem;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
@@ -39,9 +33,9 @@
   height: 15px;
   border-radius: 100%;
   background-color: #1f2b3c;
-  border: 2px solid rgb(133, 133, 133);
-  top: -5px;
-  right: -5px;
+  border: 1px solid rgb(133, 133, 133);
+  top: -6px;
+  right: -6px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -55,7 +49,9 @@
 }
 
 .cancel {
-  background-color: #fc746c;
+  background-color: #fc746c !important;
+  border-color: #ff9892 !important;
+  color: white !important;
 }
 
 .rotate {
@@ -68,18 +64,4 @@
   position: absolute; 
   left: 45px;
   cursor: pointer;
-}
-
-.toolbar-button {
-  background-color: #1f2937;
-  border-radius: .3rem;
-  border: 0;
-  color: #878f9b;
-  transition: color  0.2s ease;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.toolbar-button:hover {
- color: #fff;
 }

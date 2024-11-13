@@ -441,7 +441,6 @@ export const DiagramField = ({ projectId }) => {
 
   return (
     <div className="diagram-field">
-      <ToolBox />
       <div
         id="cy"
         style={{
