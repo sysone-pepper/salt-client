@@ -1,16 +1,23 @@
 .toolbar {
   display: flex;
-  gap: .3rem;
   background-color: #111827;
-  padding-top: .3rem;
+  padding: .5rem 0;
+}
+
+.toolbar > div {
+  display: flex;
+  gap: .3rem;
   color: #878f9b;
   font-size: 1rem;
   line-height: 1.8rem;
   align-items: center;
-  padding-left: .3rem;
-  padding: .7rem 0 0 .3rem;
+  margin-right: 1.5rem;
 }
 
+.diagram-editing-tools {
+  border-left: 1px dashed rgb(100, 100, 100);
+  padding-left: 1.5rem;
+}
 
 .toolbar-button {
   background-color: #1f2937;
@@ -20,8 +27,18 @@
   transition: color  0.2s ease;
   cursor: pointer;
   font-size: 1rem;
+  border: 1px solid rgb(100, 100, 100);
+  transition: background-color 0.3s;
 }
 
 .toolbar-button:hover {
   color: #fff;
+}
+
+#sizeInput {
+  height: 1.6rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgb(100, 100, 100);
+  padding-left: .3rem;
 }
