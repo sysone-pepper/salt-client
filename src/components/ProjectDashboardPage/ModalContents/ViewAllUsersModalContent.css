@@ -37,6 +37,7 @@
 .vau-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: auto;
 }
 
 .vau-table th,
@@ -45,10 +46,11 @@
   text-align: left;
   border-bottom: 1px solid var(--border-color);
   color: var(--text-color);
+  white-space: nowrap;
 }
 
 .vau-table th {
-  background-color: var(--border-color);
+  background-color: var(--secondary-color);
   font-weight: 700;
 }
 

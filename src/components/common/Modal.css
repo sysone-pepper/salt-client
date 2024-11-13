@@ -1,7 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap");
 
 .modal-overlay {
-  position: absolute;
+  /* position: absolute; */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -12,22 +13,30 @@
   align-items: center;
   z-index: 1000;
   backdrop-filter: blur(5px);
+  overflow: auto;
 }
 
 .modal-content {
   font-family: "Nanum Gothic", sans-serif;
-  background-color: #2c2c2c;
+  background-color: var(--background-color);
+  color:#fff;
   padding: 30px;
   border-radius: 15px;
+  /* 해당 코드로 인해 모달창이 가운데 뜨지 않는 현상 발생. 다른 페이지 확인 필요
   left: 10%;
   top: 10%;
   width: 80%;
-  height: 80%;
+  height: 80%; */
   /* max-width: 500px; */
-  position: fixed;
-  color: #fff;
+  /* 현재 화면 기준 가운데 뜨도록 설정해두었음 */
+  /* top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: fixed; */
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(165, 211, 236, 0.2);
+  max-height: 90vh; /* 모달의 최대 높이를 화면의 90%로 제한 */
+  overflow-y: auto; /* 모달 내부 세로 스크롤 활성화 */
 }
 
 .modal-close-button {

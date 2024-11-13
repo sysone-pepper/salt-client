@@ -3,10 +3,8 @@
   top: 0;
   left: 0;
   width: 100%;
-  /* min-height: 100vh; 차후 애니메이션 백그라운드 테스트를 위한 주석 */
   height: 100vh;
   /* background-image: url("../assets/images/space.jpg"); */
-  /* background-color: #000; */
   background-size: cover;
   background-position: center center;
   background-attachment: fixed;
@@ -19,7 +17,7 @@ body.theme-dark .large-header {
 }
 
 body.theme-light .large-header {
-  background-image: url("../assets/images/white_background_4.jpg");
+  background-image: url("../assets/images/white_cloud.jpg");
 }
 
 .main-title {
