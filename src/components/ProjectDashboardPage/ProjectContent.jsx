@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './ProjectContent.css';
+import deleteIcon from '../../assets/images/delete.png';
 
 const ProjectContent = ({
   id,
@@ -18,7 +19,7 @@ const ProjectContent = ({
         onClick={() => deleteProject(id)}
         title="프로젝트 삭제"
       >
-        🗑
+        <img src={deleteIcon} alt="삭제 아이콘" className="delete-icon" />
       </button>
       <div className="image-container">
         <img src={imageSrc} alt={projectName} />
