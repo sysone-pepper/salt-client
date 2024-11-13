@@ -6,6 +6,7 @@ import { Modal } from '../common/Modal';
 import { CreateNodeContent } from './ModalContents/CreateNodeContent';
 
 const HIDDEN_CLASSNAME = 'hidden';
+const NO_AUTHORITY_MESSAGE = '권한이 없습니다. 관리자에게 권한을 요청하세요';
 
 const Toolbar = () => {
   const {
@@ -26,22 +27,14 @@ const Toolbar = () => {
     isNavigatorToggled,
     setIsNavigatorToggled,
     updateBgImg,
+    isEditingPermitted,
   } = useContext(NetworkContext);
 
   const [inputSize, setInputSize] = useState(20);
   const [modalOpen, setModalOpen] = useState(false);
   const fileInputRef = useRef(null);
 
-  // 노드 전체 크기 수정
-  useEffect(() => {
-    if (cyRef.current && curProjectId && selectedSize) {
-      if (nodes.length > 1 && nodes[1].data.nodeSize !== selectedSize) {
-        updateNodeSize();
-      }
-      setInputSize(selectedSize);
-    }
-  }, [selectedSize]);
-
+  // 구성도 조회 - read-only권한용 기능모음
   const handlePannigButtonClick = () => {
     setIsSidebarPanned((prevState) => !prevState);
   };
@@ -50,26 +43,87 @@ const Toolbar = () => {
     setInputSize(e.target.value);
   };
 
+  const toggeleNavigator = () => {
+    const navigator = document.getElementsByClassName('cytoscape-navigator')[0];
+    setIsNavigatorToggled((prevState) => {
+      if (prevState) {
+        navigator.classList.add(HIDDEN_CLASSNAME);
+      } else {
+        navigator.classList.remove(HIDDEN_CLASSNAME);
+      }
+      return !prevState;
+    });
+  };
+
+  // 구성도 편집 - ALL권한용 기능모음
+  useEffect(() => {
+    if (cyRef.current && curProjectId && selectedSize) {
+      if (nodes.length > 1 && nodes[1].data.nodeSize !== selectedSize) {
+        if (!isEditingPermitted) {
+          alert(NO_AUTHORITY_MESSAGE);
+          return;
+        }
+        updateNodeSize();
+      }
+      setInputSize(selectedSize);
+    }
+  }, [selectedSize]);
+
   const handleSizeButtonClick = () => {
+    if (!isEditingPermitted) {
+      alert(NO_AUTHORITY_MESSAGE);
+      return;
+    }
+
     setSelectedSize(parseInt(inputSize, 10));
   };
 
   const toggleAddNode = () => {
+    if (!isEditingPermitted) {
+      alert(NO_AUTHORITY_MESSAGE);
+      return;
+    }
+
     setModalOpen(true);
   };
   const activeAddLink = () => {
+    if (!isEditingPermitted) {
+      alert(NO_AUTHORITY_MESSAGE);
+      return;
+    }
+
     setIsLinking(true);
   };
   const inactiveAddLink = () => {
+    if (!isEditingPermitted) {
+      alert(NO_AUTHORITY_MESSAGE);
+      return;
+    }
+
     setIsLinking(false);
   };
   const activeDeleteObject = () => {
+    if (!isEditingPermitted) {
+      alert(NO_AUTHORITY_MESSAGE);
+      return;
+    }
+
     setIsObjectDelete(true);
   };
   const inactiveDeleteObject = () => {
+    if (!isEditingPermitted) {
+      alert(NO_AUTHORITY_MESSAGE);
+      return;
+    }
+
     setIsObjectDelete(false);
   };
   const onBgImgBtnClick = () => {
+    if (!isEditingPermitted) {
+      alert(NO_AUTHORITY_MESSAGE);
+      return;
+    }
+
     fileInputRef.current.click();
   };
   const handleFileChange = async (event) => {
@@ -137,18 +191,6 @@ const Toolbar = () => {
       });
     } else return;
     setNodes(cy.elements().map((ele) => ele.json()));
-  };
-
-  const toggeleNavigator = () => {
-    const navigator = document.getElementsByClassName('cytoscape-navigator')[0];
-    setIsNavigatorToggled((prevState) => {
-      if (prevState) {
-        navigator.classList.add(HIDDEN_CLASSNAME);
-      } else {
-        navigator.classList.remove(HIDDEN_CLASSNAME);
-      }
-      return !prevState;
-    });
   };
 
   return (

@@ -5,6 +5,7 @@ export const NetworkContext = createContext();
 
 export function NetworkProvider({ children }) {
   const cyRef = useRef(null);
+
   const [curProjectId, setCurProjectId] = useState();
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
@@ -16,6 +17,7 @@ export function NetworkProvider({ children }) {
   const [selectedSize, setSelectedSize] = useState(20);
   const [isNavigatorToggled, setIsNavigatorToggled] = useState(true);
   const [isSidebarPanned, setIsSidebarPanned] = useState(true);
+  const [isEditingPermitted, setIsEditingPermitted] = useState(false);
 
   const getImageSizeFromUrl = async (url) => {
     return new Promise((resolve, reject) => {
@@ -222,6 +224,8 @@ export function NetworkProvider({ children }) {
         setIsNavigatorToggled,
         isSidebarPanned,
         setIsSidebarPanned,
+        isEditingPermitted,
+        setIsEditingPermitted,
       }}
     >
       {children}

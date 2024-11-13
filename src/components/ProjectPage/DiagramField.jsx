@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { ToolBox } from './ToolBox';
 import { NetworkContext } from '../../contexts/NetworkContext';
 import cytoscape from 'cytoscape';
-import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 import cytoscapePopper from 'cytoscape-popper';
 import tippy from 'tippy.js';
@@ -15,6 +13,9 @@ import ehConfig from '../../constants/EdgeHandleOptions';
 import { CustomDeviceNode } from './CustomDeviceNode';
 import { CustomIconNode } from './CustomIconNode';
 import { CustomTextNode } from './CustomTextNode';
+import { getUsers } from '../../api/User';
+import { useAuth } from '../../contexts/AuthContext';
+
 import './NetworkMap.css';
 
 export const DiagramField = ({ projectId }) => {
@@ -35,7 +36,12 @@ export const DiagramField = ({ projectId }) => {
     setEdges,
     isLinking,
     isObjectDelete,
+
+    isEditingPermitted,
+    setIsEditingPermitted,
   } = useContext(NetworkContext);
+
+  const { currentUser } = useAuth();
 
   const [navigatorInitialized, setNavigatorInitialized] = useState(false); // 네비게이터 초기화 상태
 
@@ -59,7 +65,23 @@ export const DiagramField = ({ projectId }) => {
     cyNavigator(cytoscape);
   };
 
-  const createCyInstance = () => {
+  const fetchUserAuthority = async () => {
+    try {
+      const response = await getUsers(); //
+      if (response.success) {
+        const { users, _ } = response.data;
+        const userAuthority = users.filter(
+          (user) => user.id === currentUser.username,
+        )[0].authority;
+        setIsEditingPermitted(userAuthority === 'ALL');
+      }
+    } catch (error) {
+      console.log(error);
+      alert('사용자 정보를 가져오는데 실패했습니다.');
+    }
+  };
+
+  const createCyInstance = (isEditingPermitted) => {
     if (!cyRef.current) {
       // cytoscape 기본 인스턴스 생성
       const cy = cytoscape({
@@ -89,10 +111,16 @@ export const DiagramField = ({ projectId }) => {
         layout: {
           name: 'preset',
         },
-        autoungrabify: false,
-        boxSelectionEnabled: true,
-        zoomingEnabled: true,
-        userZoomingEnabled: true,
+
+        //항상 활성화
+        zoomingEnabled: true, // 노드 줌 활성화
+        userZoomingEnabled: true, // 스크롤 줌 활성화
+
+        //조건부 활성 or 비활성
+        boxSelectionEnabled: isEditingPermitted, // 노드 선택 활성화
+        autoungrabify: !isEditingPermitted, // 노드 드래그 비활성화
+        autolock: !isEditingPermitted, // 노드 이동 비활성화
+        autounselectify: !isEditingPermitted, // 노드 선택 비활성화
       });
 
       // cytoscape-node-html-label 적용
@@ -159,6 +187,7 @@ export const DiagramField = ({ projectId }) => {
           },
         },
       ]);
+
       cy.on('dragfree', 'node', async (event) => {
         const target = event.target;
         const updatedNode = target.json();
@@ -239,9 +268,11 @@ export const DiagramField = ({ projectId }) => {
 
   // cytoscape-navigator 등록 및 언마운트 기능
   useEffect(() => {
+    fetchUserAuthority();
+
     if (!!curProjectId) {
       if (!cyRef.current) {
-        cyRef.current = createCyInstance();
+        cyRef.current = createCyInstance(isEditingPermitted);
         fetchMapData();
       }
 
@@ -259,7 +290,7 @@ export const DiagramField = ({ projectId }) => {
         }
       };
     }
-  }, [curProjectId]);
+  }, [curProjectId, isEditingPermitted]);
 
   // 배경 이미지 수정 기능
   useEffect(() => {
@@ -438,6 +469,8 @@ export const DiagramField = ({ projectId }) => {
       };
     }
   }, [isObjectDelete, cyRef, deleteObject]);
+
+  // 편집 권한에 따른 Cytoscape 설정 업데이트
 
   return (
     <div className="diagram-field">
