@@ -6,15 +6,23 @@
   z-index: 2;
 }
 
-.user-management{
+.user-management, .projects-management{
   margin: 20px;
+  margin-left: 10%;
+  margin-right: 10%;
 }
 
 .my-users {
+  font-size: 1.5rem;
   font-weight: 800;
-  color: #fff;
+  color: var(--text-color);
   margin: 0;
   margin-right: 10px;
+}
+
+.users-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #fff;
 }
 
 .projects-header {
@@ -22,6 +30,10 @@
   justify-content: space-between;
   align-items: center;
   margin: 20px;
+  margin-left: 10%;
+  margin-right: 10%;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #fff;
 }
 
 .title-and-add {
@@ -30,17 +42,18 @@
 }
 
 .my-project {
+  font-size: 1.5rem;
   font-weight: 800;
-  color: #fff;
+  color: var(--text-color);
   margin: 0;
   margin-right: 10px;
 }
 
 .add-button {
   margin-left: 10px;
-  background-color: #a5d3ec;
+  background-color: var(--button-background-color);
   border: none;
-  color: #fff;
+  color: var(--button-text-color);
   font-size: 16px;
   font-weight: 400;
   padding: 5px 10px;
@@ -49,7 +62,7 @@
 }
 
 .add-button:hover {
-  background-color: #93c2db;
+  background-color: var(--button-hover-background-color);
 }
 
 .search-container {
@@ -66,10 +79,11 @@
   outline: none;
 }
 
-.my-pjt-hr {
+/* .my-pjt-hr {
   border-color: #fff;
-  margin: 20px;
-}
+  margin: 5px;
+  margin-bottom: 20px;
+} */
 
 .projects-wrapper {
   display: flex;

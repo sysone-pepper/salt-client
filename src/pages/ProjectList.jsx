@@ -1,35 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import './ProjectDashboard.css';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import ProjectContent from '../components/ProjectDashboardPage/ProjectContent';
-import UserContent from '../components/ProjectDashboardPage/UserContent';
-import {
-  getProjects,
-  createProjectAPI,
-  deleteProjectAPI,
-} from '../api/Projects';
-import { addUserAPI, getUsers, deleteUserAPI } from '../api/User';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import defaultImage from '../assets/images/default_Image.webp';
+import Header from '../layout/Header';
+import UserContent from '../components/ProjectDashboardPage/UserContent';
 import { Modal } from '../components/common/Modal';
 import AddUserModalContent from '../components/ProjectDashboardPage/ModalContents/AddUserModalContent';
 import ViewAllUsersModalContent from '../components/ProjectDashboardPage/ModalContents/ViewAllUsersModalContent';
+import ProjectContent from '../components/ProjectDashboardPage/ProjectContent';
 import AddProjectModalContent from '../components/ProjectDashboardPage/ModalContents/AddProjectModalContent';
 import ProjectSummaryModalContent from '../components/ProjectDashboardPage/ModalContents/ProjectSummaryModalContent';
-import Header from '../layout/Header';
 import FooterDark from '../layout/Footer';
+import './ProjectDashboard.css';
+import { useAuth } from '../contexts/AuthContext';
+import * as userApi from '../api/User';
+import * as projectApi from '../api/Projects';
 
-const ProjectDashboard = () => {
-  const { currentUser, isAuthenticated } = useAuth();
-  const { username } = useParams();
+const ProjectList = () => {
+  const { isAuthenticated, currentUser } = useAuth();
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [projectsData, setProjectsData] = useState([]);
   const [showAddProjectModal, setShowAddProjectModal] = useState(false);
   const [showProjectSummaryModal, setShowProjectSummaryModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
-  const [currentRole, setCurrentRole] = useState('');
-
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [showViewAllModal, setShowViewAllModal] = useState(false);
   const [usersData, setUsersData] = useState([
     {
       id: 'view-all',
@@ -38,76 +33,50 @@ const ProjectDashboard = () => {
     },
   ]);
 
-  const [showAddUserModal, setShowAddUserModal] = useState(false);
-  const [showViewAllModal, setShowViewAllModal] = useState(false);
+  const fetchUsers = async () => {
+    try {
+      const res = await userApi.getUsers();
+      if (res.success) {
+        const { users } = res.data;
+        const formattedUsers = users.map((user) => ({
+          id: user.id,
+          username: user.id,
+          name: user.name,
+          authority: user.authority,
+          role: user.role,
+        }));
+
+        const newUsersData = [...usersData, ...formattedUsers];
+        setUsersData(newUsersData);
+      }
+    } catch (e) {
+      alert('사용자 목록을 가져오는데 실패했습니다.');
+    }
+  };
 
   const getValidImageUrl = (tnImgUrl) => {
     return tnImgUrl && tnImgUrl.trim() !== '' ? tnImgUrl : defaultImage;
   };
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await getUsers();
-        if (response.data.success) {
-          const { users, currentRole } = response.data.data;
-          const formattedUsers = users.map((user) => ({
-            id: user.id,
-            username: user.id,
-            name: user.name,
-            authority: user.authority,
-            role: user.role,
-          }));
-          setUsersData([
-            {
-              id: 'view-all',
-              name: '전체보기',
-              isViewAll: true,
-            },
-            ...formattedUsers,
-          ]);
+  const fetchProjects = async () => {
+    try {
+      const data = await projectApi.getProjects();
 
-          setCurrentRole(currentRole);
-        }
-      } catch (error) {
-        alert('사용자 목록을 가져오는데 실패했습니다.');
+      if (data.success) {
+        const formattedProjects = data.data.map((project) => ({
+          id: project.id,
+          imageSrc: getValidImageUrl(project.tnImgUrl),
+          projectName: project.title,
+          author: project.username,
+          description: project.summary,
+        }));
+
+        setProjectsData(formattedProjects);
       }
-    };
-
-    fetchUsers();
-  }, []);
-
-  useEffect(() => {
-    if (!isAuthenticated || !currentUser || currentUser.username !== username) {
-      alert('올바르지 않은 접근입니다. 다시 로그인해주세요.');
-      navigate('/');
-      return;
+    } catch (e) {
+      alert('프로젝트 데이터를 가져오는데 실패했습니다.');
     }
-
-    const fetchProjects = async () => {
-      try {
-        const data = await getProjects();
-
-        if (data.success) {
-          const formattedProjects = data.data.map((project) => ({
-            id: project.id,
-            imageSrc: getValidImageUrl(project.tnImgUrl),
-            projectName: project.title,
-            author: project.username,
-            description: project.summary,
-          }));
-
-          setProjectsData(formattedProjects);
-        } else {
-          throw new Error('프로젝트 데이터를 가져오는데 실패했습니다.');
-        }
-      } catch (error) {
-        alert('프로젝트 데이터를 가져오는데 실패했습니다.');
-      }
-    };
-
-    fetchProjects();
-  }, [currentUser, username, navigate, isAuthenticated]);
+  };
 
   const addUser = async (userData) => {
     try {
@@ -121,8 +90,6 @@ const ProjectDashboard = () => {
         };
         setUsersData((prev) => [...prev, newUser]);
         setShowAddUserModal(false);
-      } else {
-        alert('사용자 생성에 실패했습니다.');
       }
     } catch (error) {
       alert('사용자 생성에 실패했습니다.');
@@ -131,7 +98,7 @@ const ProjectDashboard = () => {
 
   const deleteUser = async (username) => {
     try {
-      await deleteUserAPI(username);
+      await userApi.deleteUserAPI(username);
       setUsersData((prevUsers) =>
         prevUsers.filter((user) => user.username !== username),
       );
@@ -150,7 +117,7 @@ const ProjectDashboard = () => {
 
   const deleteProject = async (id) => {
     try {
-      await deleteProjectAPI(id);
+      await projectApi.deleteProjectAPI(id);
       setProjectsData(projectsData.filter((project) => project.id !== id));
     } catch (error) {
       alert('프로젝트 삭제에 실패했습니다.');
@@ -159,30 +126,26 @@ const ProjectDashboard = () => {
 
   const createProject = async (projectName, projectDescription) => {
     try {
-      const data = await createProjectAPI({
+      const data = await projectApi.createProjectAPI({
         title: projectName,
         summary: projectDescription,
       });
 
       if (data) {
         const newProject = {
-          id: data.id,
-          imageSrc: getValidImageUrl(data.tnImgUrl),
-          projectName: data.title,
-          author: data.username,
-          description: data.summary,
+          id: data.data,
+          imageSrc: getValidImageUrl(''),
+          projectName,
+          author: currentUser.username,
+          description: projectDescription,
         };
 
+        console.log(newProject);
         setProjectsData([...projectsData, newProject]);
         setShowAddProjectModal(false);
 
         // 프로젝트 상세 구현 페이지로 이동
-        navigate('/project-detail', {
-          //실제 구성도 페이지 url은 무엇?
-          state: { projectName, projectDescription },
-        });
-      } else {
-        throw new Error('프로젝트 생성에 실패했습니다.');
+        navigate(`/project/${data.data}`);
       }
     } catch (error) {
       alert('프로젝트 생성에 실패했습니다.');
@@ -193,6 +156,13 @@ const ProjectDashboard = () => {
     setSelectedProject(project);
     setShowProjectSummaryModal(true);
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchUsers();
+      fetchProjects();
+    }
+  }, [isAuthenticated]);
 
   return (
     <div className="projects-page">
@@ -209,7 +179,7 @@ const ProjectDashboard = () => {
             </button>
           </div>
         </div>
-        <hr className="my-users-hr" />
+        {/* <hr className="my-users-hr" /> */}
         <div className="users-wrapper">
           <div className="users-container">
             {usersData.map((user) => (
@@ -239,7 +209,7 @@ const ProjectDashboard = () => {
                 users={usersData.filter((user) => !user.isViewAll)}
                 closeModal={() => setShowViewAllModal(false)}
                 deleteUser={deleteUser}
-                currentRole={currentRole}
+                currentRole={currentUser.role}
               />
             }
             closeModal={() => setShowViewAllModal(false)}
@@ -265,7 +235,7 @@ const ProjectDashboard = () => {
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
-      <hr className="my-pjt-hr"></hr>
+      {/* <hr className="my-pjt-hr"></hr> */}
       <div className="projects-wrapper">
         <div className="projects-container">
           {filteredProjects.map((project) => (
@@ -300,4 +270,4 @@ const ProjectDashboard = () => {
   );
 };
 
-export default ProjectDashboard;
+export default ProjectList;

@@ -3,14 +3,21 @@
   top: 0;
   left: 0;
   width: 100%;
-  /* min-height: 100vh; 차후 애니메이션 백그라운드 테스트를 위한 주석 */
   height: 100vh;
-  background-image: url("../assets/images/space.jpg");
+  /* background-image: url("../assets/images/space.jpg"); */
   background-size: cover;
   background-position: center center;
   background-attachment: fixed;
   overflow: auto;
-  z-index: 1;
+  z-index: 0;
+}
+
+body.theme-dark .large-header {
+  background-image: url("../assets/images/space.jpg");
+}
+
+body.theme-light .large-header {
+  background-image: url("../assets/images/white_cloud.jpg");
 }
 
 .main-title {

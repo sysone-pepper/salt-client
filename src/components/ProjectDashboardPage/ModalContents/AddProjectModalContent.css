@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap");
-
 .ap-wrapper *,
 .ap-wrapper :before,
 .ap-wrapper :after {
@@ -12,16 +10,15 @@
 }
 
 .ap-title {
-  font-family: "Nanum Gothic", sans-serif;
   font-weight: 800;
   font-size: 2em;
   text-align: center;
-  color: #a5d3ec;
+  color: #fff;
   margin-top: 0;
 }
 
 .ap-sep {
-  background: #a5d3ec;
+  background: var(--primary-color);
   box-shadow: none;
   border: none;
   height: 2px;
@@ -30,7 +27,6 @@
 }
 
 .ap-group {
-  font-family: "Nanum Gothic", sans-serif;
   position: relative;
   margin: 45px 0;
 }
@@ -42,14 +38,14 @@
 .ap-input,
 .ap-textarea {
   background: none;
-  color: #c6c6c6;
+  color: var(--input-text-color);
   font-size: 18px;
   padding: 10px 10px 10px 5px;
   display: block;
   width: 320px;
   border: none;
   border-radius: 0;
-  border-bottom: 1px solid #c6c6c6;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .ap-input:focus,
@@ -63,7 +59,7 @@
 .ap-textarea:valid ~ .ap-label {
   top: -14px;
   font-size: 12px;
-  color: #a5d3ec;
+  color: var(--primary-color);
 }
 
 .ap-input:focus ~ .ap-bar:before,
@@ -72,7 +68,7 @@
 }
 
 .ap-label {
-  color: #c6c6c6;
+  color: var(--input-text-color);
   font-size: 16px;
   font-weight: normal;
   position: absolute;
@@ -94,13 +90,12 @@
   width: 0;
   bottom: 0px;
   position: absolute;
-  background: #a5d3ec;
+  background: var(--primary-color);
   transition: 300ms ease all;
   left: 0%;
 }
 
 .ap-btn {
-  font-family: "Nanum Gothic", sans-serif;
   font-weight: 700;
   background: #fff;
   color: #959595;
@@ -123,12 +118,12 @@
 }
 
 .ap-btn-submit {
-  background: #a5d3ec;
-  color: #bce0fb;
+  background: var(--primary-color);
+  color: var(--button-text-color);
 }
 
 .ap-btn-submit:hover {
-  background: #93c2db;
+  background: var(--button-hover-background-color);
   color: #deeffd;
 }
 
@@ -151,14 +146,14 @@
 }
 
 .ap-textarea::-webkit-scrollbar-track {
-  background: #424242;
+  background: var(--border-color);
 }
 
 .ap-textarea::-webkit-scrollbar-thumb {
-  background: #a5d3ec;
+  background: var(--primary-color);
   border-radius: 4px;
 }
 
 .ap-textarea::-webkit-scrollbar-thumb:hover {
-  background: #93c2db;
+  background: var(--secondary-color);
 }
