@@ -76,20 +76,25 @@
   font-size: .7rem;
 }
 
-
-
 .table-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-align: left;
   font-size: .6rem;
-  border-bottom: 1px solid #878f9b;
+  border-bottom: 1px solid;
+}
+
+.sidebar .table-header {
+  border-color: #878f9b;
 }
 
 .table-header .table-field {
-  background-color: #1f2937;
   height: 1rem;
+}
+
+.sidebar .table-header .table-field {
+  background-color: #1f2937;
 }
 
 .table-header th:first-child {
@@ -111,8 +116,11 @@
   align-content: center;
   width: 25%;
   margin: 0;
-  background-color: #1f2937;
   text-align: left;
+}
+
+.sidebar .table-field{
+  background-color: #1f2937;
 }
 
 .table-field span:hover {

@@ -11,6 +11,19 @@ import { tableCategory } from './data.js';
 import './Sidebar.css';
 import { Modal } from '../../common/Modal.jsx';
 import { CreateNodeContent } from '../ModalContents/CreateNodeContent.jsx';
+import ChooseDeviceContent from '../ModalContents/ChooseDeviceContent.jsx';
+
+const sidebarModals = {
+  deviceStatus: (onModalClose) => (
+    <CreateNodeContent closeModal={() => onModalClose()} />
+  ),
+  topTrafficUsage: (onModalClose) => (
+    <CreateNodeContent closeModal={() => onModalClose()} />
+  ),
+  deviceTraffic: (onModalClose) => (
+    <ChooseDeviceContent closeModal={() => onModalClose()} />
+  ),
+};
 
 const Sidebar = () => {
   const { isSidebarPanned } = useContext(NetworkContext);
@@ -23,18 +36,6 @@ const Sidebar = () => {
   ]);
 
   const dragIndexRef = useRef(null);
-
-  const sidebarModals = {
-    deviceStatus: (onModalClose) => (
-      <CreateNodeContent closeModal={() => onModalClose()} />
-    ),
-    topTrafficUsage: (onModalClose) => (
-      <CreateNodeContent closeModal={() => onModalClose()} />
-    ),
-    deviceTraffic: (onModalClose) => (
-      <CreateNodeContent closeModal={() => onModalClose()} />
-    ),
-  };
 
   useEffect(() => {
     tables.forEach((_, index) => {
@@ -112,7 +113,7 @@ const Sidebar = () => {
                           handleDeviceFilteringModalOpen(tableSource)
                         }
                       >
-                        <i class="bi bi-gear" />
+                        <i className="bi bi-gear" />
                       </button>
                     )}
                   </div>
