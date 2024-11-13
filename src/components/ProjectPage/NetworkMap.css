@@ -1,6 +1,6 @@
 #cy {
   width: 100%;
-  height: 90vh; /* 이 높이는 적당히 조정 */
+  height: 100%;
   background-color: #1f2937;
   border-radius: .3rem;
  }
@@ -14,6 +14,72 @@
   transition: max-width 0.3s ease; /* 사이드바 상태에 따라 동적으로 변화하도록 설정 */
 }
 
+.navigator-container{
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 20vw;
+  height: 20vh;
+  z-index: 500;
+  border: 4px solid #1f2937;
+  transition: height 0.3s ease, bottom 0.3s ease, border 0.3s ease;
+  overflow: hidden;
+}
+
+.navigator-container.collapsed {
+  height: 0;
+  bottom: 4px; /* border width (4px) 만큼 올려주기 */
+  /* border는 기본 상태에서 제거되지 않고 유지됩니다 */
+}
+
+.navigator-container.collapsed .toggle-navigator-btn {
+  bottom: 13px;
+  width: 30px; 
+  height: 15px;
+  border-radius: 15px 15px 0 0;
+  background-color: #1f2937;
+  opacity: 1;
+}
+
+.toggle-navigator-btn {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: calc(20vh - 10px); /* 처음 위치 설정 */
+  right: 16px;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+  background-color: #1f2937;
+  opacity: 0.2;
+  z-index: 501;
+  border-radius: 50%; /* 버튼을 원형으로 만들기 */
+  transition: opacity 0.3s ease, 0.3s ease, border-radius 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+
+.toggle-navigator-icon{
+  width: 50%;
+  height: 50%;
+  rotate: 45deg;
+  object-fit: cover;
+}
+
+.navigator-container.collapsed .toggle-navigator-icon{
+  width: 50%;
+  height: 100%;
+  rotate: 0deg;
+}
+
+.toggle-navigator-btn:hover {
+  opacity: 0.8;
+}
+
+/* collapsed 상태에서 호버 시 색상 변경 */
+.navigator-container.collapsed .toggle-navigator-btn:hover {
+  background-color: white;
+}
+
 .cytoscape-navigatorView,
 .cytoscape-navigator .cytoscape-navigatorOverlay {
   position: relative;
@@ -24,13 +90,13 @@
 
 /* 뷰의 스타일 */
 .cytoscape-navigator .cytoscape-navigatorView {
-  border: 2px solid #124191;
+  border: 2px solid #1f2937;
   background: transparent;
 }
 
 /* 오버레이 스타일 */
 .cytoscape-navigator .cytoscape-navigatorOverlay {
-  border: 2px solid #124191;
+  border: 2px solid #1f2937;
 }
 
 /* 마우스 오버 시 오버레이 스타일 */

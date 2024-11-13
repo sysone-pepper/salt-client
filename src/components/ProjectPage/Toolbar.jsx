@@ -211,13 +211,13 @@ const Toolbar = () => {
         {/* <button className="toolbar-button" onClick={handlePannigButtonClick}>
           사이드바 {isSidebarPanned ? '접기' : '펼치기'}
         </button> */}
-        <AddButton
+        {/* <AddButton
           fileName={'navigator-icon.png'}
           onClickEvent={toggeleNavigator}
           needCancel={!isNavigatorToggled}
         >
           네비게이터 {isNavigatorToggled ? '숨기기' : '호출'}
-        </AddButton>
+        </AddButton> */}
       </div>
       <div className="diagram-editing-tools">
         <AddButton
