@@ -178,6 +178,7 @@ const ProjectDashboard = () => {
 
         // 프로젝트 상세 구현 페이지로 이동
         navigate('/project-detail', {
+          //실제 구성도 페이지 url은 무엇?
           state: { projectName, projectDescription },
         });
       } else {
@@ -208,7 +209,7 @@ const ProjectDashboard = () => {
             </button>
           </div>
         </div>
-
+        <hr className="my-users-hr" />
         <div className="users-wrapper">
           <div className="users-container">
             {usersData.map((user) => (
@@ -245,6 +246,7 @@ const ProjectDashboard = () => {
           />
         )}
       </div>
+
       <div className="projects-header">
         <div className="title-and-add">
           <h1 className="my-project">내 프로젝트</h1>
@@ -263,6 +265,7 @@ const ProjectDashboard = () => {
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
+      <hr className="my-pjt-hr"></hr>
       <div className="projects-wrapper">
         <div className="projects-container">
           {filteredProjects.map((project) => (

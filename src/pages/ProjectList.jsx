@@ -179,7 +179,7 @@ const ProjectList = () => {
             </button>
           </div>
         </div>
-        <hr className="my-users-hr" />
+        {/* <hr className="my-users-hr" /> */}
         <div className="users-wrapper">
           <div className="users-container">
             {usersData.map((user) => (
@@ -235,7 +235,7 @@ const ProjectList = () => {
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
-      <hr className="my-pjt-hr"></hr>
+      {/* <hr className="my-pjt-hr"></hr> */}
       <div className="projects-wrapper">
         <div className="projects-container">
           {filteredProjects.map((project) => (

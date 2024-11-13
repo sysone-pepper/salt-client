@@ -38,7 +38,7 @@
   /* 라이트 테마 스타일 */
   body.theme-light {
     --background-color: #80B6F3;
-    --text-color: #000000;
+    --text-color: #212830;
     --primary-color: #80B6F3;
     --secondary-color: #80B6F3;
     --border-color: #212830;

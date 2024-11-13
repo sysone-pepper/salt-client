@@ -9,7 +9,7 @@
 .user-management, .projects-management{
   margin: 20px;
   margin-left: 10%;
-  margin-right: 10%;;
+  margin-right: 10%;
 }
 
 .my-users {
@@ -20,6 +20,11 @@
   margin-right: 10px;
 }
 
+.users-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #fff;
+}
+
 .projects-header {
   display: flex;
   justify-content: space-between;
@@ -27,6 +32,8 @@
   margin: 20px;
   margin-left: 10%;
   margin-right: 10%;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #fff;
 }
 
 .title-and-add {
