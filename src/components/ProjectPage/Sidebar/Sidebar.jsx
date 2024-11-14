@@ -150,8 +150,6 @@ const Sidebar = () => {
       }
       return table;
     });
-
-    console.log(newTables);
     setTables(newTables);
   };
 

@@ -266,13 +266,11 @@ export const DiagramField = ({ projectId }) => {
   };
 
   const toggleNavigator = () => {
-    console.log(!isNavigatorToggled);
     setIsNavigatorToggled((prevState) => !prevState);
   };
 
   // 초기화(프로젝트 아이디 컨텍스트 등록)
   useEffect(() => {
-    console.log(currentUser);
     setCurProjectId(projectId);
     registerCytoscapeExtensions();
   }, []);

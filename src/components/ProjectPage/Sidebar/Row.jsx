@@ -58,8 +58,6 @@ const iconLookup = {
 };
 const Row = ({ rowData, needChart }) => {
   const createChart = (chartData) => {
-    // 실제 차트 생성 로직을 추가할 수 있습니다.
-    console.log(chartData);
     return '차트 데이터 로드됨'; // 실제 차트 또는 데이터 내용
   };
 
