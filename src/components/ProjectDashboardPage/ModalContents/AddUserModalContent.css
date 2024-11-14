@@ -13,16 +13,17 @@
   font-weight: 800;
   font-size: 2em;
   text-align: center;
-  color: #fff;
+  color: var(--text-color);
 }
 
 .au-sep {
-  background: var(--primary-color);
+  background: var(--secondary-color);
   box-shadow: none;
   border: none;
   height: 2px;
-  width: 25%;
-  margin: 0px auto 45px auto;
+  width: 40%;
+  margin: 0px auto 10px auto;
+  margin-top: 10px;
 }
 
 .au-group {

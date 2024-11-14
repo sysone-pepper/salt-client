@@ -107,6 +107,7 @@ const ServerDashboard = ({ closeModal }) => {
 
     let chartData = [];
     let yAxisTitle = '';
+    let series = [];
 
     if (tab === 'CPU') {
       chartData = usageData.map((item) => [
@@ -114,51 +115,7 @@ const ServerDashboard = ({ closeModal }) => {
         item.cpuProcessor,
       ]);
       yAxisTitle = 'CPU %';
-    } else if (tab === 'Memory') {
-      chartData = usageData.map((item) => [
-        new Date(item.generateTime).getTime(),
-        item.usedMemoryPercentage,
-      ]);
-      yAxisTitle = 'Memory %';
-    } else if (tab === 'DISK') {
-      chartData = usageData.map((item) => [
-        new Date(item.generateTime).getTime(),
-        item.usedDiskPercentage,
-      ]);
-      yAxisTitle = 'Disk %';
-    } else {
-      return {};
-    }
-
-    return {
-      chart: {
-        type: 'area',
-        zoomType: 'x',
-        backgroundColor: 'transparent',
-        height: 400,
-      },
-      title: {
-        text: '',
-      },
-      xAxis: {
-        type: 'datetime',
-        labels: { style: { color: '#9ca3af' } },
-      },
-      yAxis: {
-        max: 100,
-        title: {
-          text: yAxisTitle,
-          style: { color: '#9ca3af' },
-        },
-        labels: { style: { color: '#9ca3af' } },
-      },
-      legend: {
-        enabled: false,
-      },
-      credits: {
-        enabled: false,
-      },
-      series: [
+      series = [
         {
           name: yAxisTitle,
           data: chartData,
@@ -180,7 +137,146 @@ const ServerDashboard = ({ closeModal }) => {
           },
           threshold: null,
         },
-      ],
+      ];
+    } else if (tab === 'Memory') {
+      chartData = usageData.map((item) => [
+        new Date(item.generateTime).getTime(),
+        item.usedMemoryPercentage,
+      ]);
+      yAxisTitle = 'Memory %';
+      series = [
+        {
+          name: yAxisTitle,
+          data: chartData,
+          color: {
+            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+            stops: [
+              [0, 'rgb(199, 113, 243)'],
+              [1, 'rgb(76, 175, 254)'],
+            ],
+          },
+          marker: {
+            radius: 2,
+          },
+          lineWidth: 1,
+          states: {
+            hover: {
+              lineWidth: 1,
+            },
+          },
+          threshold: null,
+        },
+      ];
+    } else if (tab === 'DISK') {
+      chartData = usageData.map((item) => [
+        new Date(item.generateTime).getTime(),
+        item.usedDiskPercentage,
+      ]);
+      yAxisTitle = 'Disk %';
+      series = [
+        {
+          name: yAxisTitle,
+          data: chartData,
+          color: {
+            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+            stops: [
+              [0, 'rgb(199, 113, 243)'],
+              [1, 'rgb(76, 175, 254)'],
+            ],
+          },
+          marker: {
+            radius: 2,
+          },
+          lineWidth: 1,
+          states: {
+            hover: {
+              lineWidth: 1,
+            },
+          },
+          threshold: null,
+        },
+      ];
+    } else if (tab === 'NIC') {
+      const chartDataIn = usageData.map((item) => [
+        new Date(item.generateTime).getTime(),
+        item.nicInBytesPerSec,
+      ]);
+      const chartDataOut = usageData.map((item) => [
+        new Date(item.generateTime).getTime(),
+        item.nicOutBytesPerSec,
+      ]);
+      yAxisTitle = 'Bytes per Second';
+      series = [
+        {
+          name: 'NIC In',
+          data: chartDataIn,
+          color: 'rgba(76, 175, 254, 0.6)',
+          marker: {
+            radius: 2,
+          },
+          lineWidth: 1,
+          fillOpacity: 0.6,
+        },
+        {
+          name: 'NIC Out',
+          data: chartDataOut,
+          color: 'rgba(199, 113, 243, 0.6)',
+          marker: {
+            radius: 2,
+          },
+          lineWidth: 1,
+          fillOpacity: 0.6,
+        },
+      ];
+    } else {
+      return {};
+    }
+
+    return {
+      chart: {
+        type: 'area',
+        zoomType: 'x',
+        backgroundColor: 'transparent',
+        height: 400,
+      },
+      title: {
+        text: '',
+      },
+      xAxis: {
+        type: 'datetime',
+        labels: { style: { color: '#9ca3af' } },
+      },
+      yAxis: {
+        max: tab !== 'NIC' ? 100 : null,
+        title: {
+          text: yAxisTitle,
+          style: { color: '#9ca3af' },
+        },
+        labels: {
+          style: { color: '#9ca3af' },
+          formatter:
+            tab === 'NIC'
+              ? function () {
+                  return (this.value / 1024).toFixed(2) + ' KB/s';
+                }
+              : undefined,
+        },
+      },
+      plotOptions: {
+        area: {
+          stacking: tab === 'NIC' ? 'normal' : null,
+        },
+      },
+      legend: {
+        enabled: tab === 'NIC',
+        itemStyle: {
+          color: '#e5e7eb',
+        },
+      },
+      credits: {
+        enabled: false,
+      },
+      series: series,
     };
   };
 
@@ -228,7 +324,7 @@ const ServerDashboard = ({ closeModal }) => {
           <div className="cards-grid">
             {activeTab === '요약' ? (
               <>
-                {Array.from({ length: 3 }).map((_, index) => {
+                {Array.from({ length: 8 }).map((_, index) => {
                   const latestData =
                     usageData && usageData[usageData.length - 1];
                   let latestUsage = null;
