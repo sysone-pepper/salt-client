@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import ServerIcon from '../../../assets/images/Server-icon2.png';
 import NetworkIcon from '../../../assets/images/Network-icon2.png';
 import L3SwitchIcon from '../../../assets/images/L3Switch-icon.png';
@@ -5,7 +6,7 @@ import L4SwitchIcon from '../../../assets/images/L4Switch-icon.png';
 import L7SwitchIcon from '../../../assets/images/L7Switch-icon.png';
 import FirewallIcon from '../../../assets/images/Firewall-icon2.png';
 import UPSIcon from '../../../assets/images/UPS-icon2.png';
-import { useEffect, useState } from 'react';
+import Sparkline from './SparkLine';
 
 const iconLookup = {
   Server: (
@@ -58,14 +59,21 @@ const iconLookup = {
 };
 const Row = ({ rowData, needChart }) => {
   const createChart = (chartData) => {
-    return '차트 데이터 로드됨'; // 실제 차트 또는 데이터 내용
+    const data = chartData.map((data) => {
+      return data.nicInBytesPerSec + data.nicOutBytesPerSec;
+    });
+    return <Sparkline data={data.reverse()} />;
   };
 
   return (
     <tr className="table-row">
       {Object.entries(rowData).map(([key, value], idx) => {
         if (needChart && idx === Object.entries(rowData).length - 1) {
-          return <td>{createChart(value)}</td>;
+          return (
+            <td key={`${key} field`} className="table-field">
+              {createChart(value)}
+            </td>
+          );
         } else {
           return (
             <td key={`${key} field`} className="table-field">
