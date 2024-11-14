@@ -1,5 +1,7 @@
 .flex-div {
   display: flex;
+  height: 80vh;
+  align-items: stretch;
   background-color: #111827;
   color: #878f9b;
   padding: 0 .3rem;
