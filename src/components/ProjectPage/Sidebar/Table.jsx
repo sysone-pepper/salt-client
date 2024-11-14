@@ -13,9 +13,13 @@ const Table = ({ source }) => {
         </tr>
       </thead>
       <tbody>
-        {source.data.map((rowData, index) => (
-          <Row key={index} rowData={rowData} />
-        ))}
+        {source.source === 'deviceTraffic'
+          ? source.toDisplayData.map((rowData, index) => (
+              <Row key={index} rowData={rowData} needChart={true} />
+            ))
+          : source.toDisplayData.map((rowData, index) => (
+              <Row key={index} rowData={rowData} />
+            ))}
       </tbody>
     </table>
   );
