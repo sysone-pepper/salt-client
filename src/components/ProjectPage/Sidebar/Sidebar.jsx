@@ -12,6 +12,7 @@ import Table from './Table';
 import './Sidebar.css';
 import { Modal } from '../../common/Modal.jsx';
 import { getDeviceData } from '../../../api/Dashboard.js';
+import { useTimeout } from '../../../hooks/useTimeout.jsx';
 
 const sidebarModals = {
   deviceStatus: (onModalClose) => <div />,
@@ -59,6 +60,8 @@ const Sidebar = () => {
   const dragIndexRef = useRef(null);
 
   const createSideBarTables = async () => {
+    console.log('update data');
+
     const filteredNode = nodes.filter(
       (node) => node.data.nodeType === 'EXIST_DEVICE',
     );
@@ -77,7 +80,7 @@ const Sidebar = () => {
 
       const res = await getDeviceData(node.data.id, 30);
       if (res.success) {
-        const devicdInfo = res.data[res.data.length - 1];
+        const devicdInfo = res.data[0];
         const monitorLimit = 30;
         const hasTrouble =
           devicdInfo.usedDiskPercentage > monitorLimit ||
@@ -152,6 +155,10 @@ const Sidebar = () => {
     });
     setTables(newTables);
   };
+
+  useTimeout(() => {
+    createSideBarTables();
+  }, 60000);
 
   useEffect(() => {
     if (dataReady) {
