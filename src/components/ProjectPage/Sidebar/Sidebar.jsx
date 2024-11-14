@@ -9,35 +9,155 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import sidebarToggleIcon from '../../../assets/images/sidebar-toggle-icon.png';
 import { NetworkContext } from '../../../contexts/NetworkContext.jsx';
 import Table from './Table';
-import { tableCategory } from './data.js';
 import './Sidebar.css';
 import { Modal } from '../../common/Modal.jsx';
-import { CreateNodeContent } from '../ModalContents/CreateNodeContent.jsx';
-import ChooseDeviceContent from '../ModalContents/ChooseDeviceContent.jsx';
+import { getDeviceData } from '../../../api/Dashboard.js';
 
 const sidebarModals = {
-  deviceStatus: (onModalClose) => (
-    <CreateNodeContent closeModal={() => onModalClose()} />
-  ),
-  topTrafficUsage: (onModalClose) => (
-    <CreateNodeContent closeModal={() => onModalClose()} />
-  ),
-  deviceTraffic: (onModalClose) => (
-    <ChooseDeviceContent closeModal={() => onModalClose()} />
-  ),
+  deviceStatus: (onModalClose) => <div />,
+  topTrafficUsage: (onModalClose) => <div />,
+  deviceTraffic: (onModalClose) => <div />,
+};
+const deviceCategory = {
+  1: 'Server',
+  2: 'Network',
+  3: 'L2Switch',
+  4: 'L3Switch',
+  5: 'L4Switch',
+  6: 'L7Switch',
+  7: 'FW',
+  8: 'UPS',
 };
 
 const Sidebar = () => {
+  const { nodes, dataReady, isSidebarPanned, setIsSidebarPanned } =
+    useContext(NetworkContext);
   const [modalContentName, setModalContentName] = useState(null);
-  const { isSidebarPanned, setIsSidebarPanned } = useContext(NetworkContext);
-
   const [tables, setTables] = useState([
-    { source: 'deviceStatus' },
-    { source: 'topTrafficUsage' },
-    { source: 'deviceTraffic' },
+    {
+      source: 'deviceStatus',
+      title: '장비 현황',
+      data: [],
+      toDisplayData: [],
+      columnAliases: ['', '등록', '장애'],
+    },
+    {
+      source: 'topTrafficUsage',
+      title: '장비 Traffic 사용량 TOP 5',
+      data: [],
+      toDisplayData: [],
+      columnAliases: ['서버 명', 'Traffic', 'CPU(%)', 'MEM(%)', 'DISK(%)'],
+    },
+    {
+      source: 'deviceTraffic',
+      title: '장비 Traffic',
+      data: [],
+      toDisplayData: [],
+      columnAliases: ['서버 명', 'Traffic', '차트'],
+    },
   ]);
-
   const dragIndexRef = useRef(null);
+
+  const createSideBarTables = async () => {
+    const filteredNode = nodes.filter(
+      (node) => node.data.nodeType === 'EXIST_DEVICE',
+    );
+
+    let deviceStatusObject = {};
+    let deviceTrafficData = [];
+
+    // 비동기 작업을 배열에 저장
+    const fetchPromises = filteredNode.map(async (node) => {
+      const deviceType = deviceCategory[node.data.deviceType];
+      if (deviceStatusObject[deviceType]) {
+        deviceStatusObject[deviceType].total += 1;
+      } else {
+        deviceStatusObject[deviceType] = { total: 1, warning: 0 };
+      }
+
+      const res = await getDeviceData(node.data.id, 30);
+      if (res.success) {
+        const devicdInfo = res.data[res.data.length - 1];
+        const monitorLimit = 30;
+        const hasTrouble =
+          devicdInfo.usedDiskPercentage > monitorLimit ||
+          devicdInfo.usedMemoryPercentage > monitorLimit
+            ? true
+            : false;
+
+        if (hasTrouble) {
+          deviceStatusObject[deviceType].warning += 1;
+        }
+
+        deviceTrafficData.push({
+          devicdInfo,
+          serverName: node.data.deviceAlias,
+          trafficAmount:
+            devicdInfo.nicInBytesPerSec + devicdInfo.nicOutBytesPerSec,
+          chartData: res.data,
+        });
+      }
+    });
+
+    await Promise.all(fetchPromises);
+
+    const deviceStatusData = Object.entries(deviceStatusObject).map(
+      ([category, { total, warning }]) => ({
+        category,
+        total,
+        warning,
+      }),
+    );
+
+    const dataSortByTraffic = deviceTrafficData
+      .sort((a, b) => b.trafficAmount - a.trafficAmount)
+      .slice(0, 5);
+
+    const topTrafficUsageData = dataSortByTraffic.map((data) => {
+      return {
+        serverName: data.serverName,
+        traffic: data.trafficAmount,
+        cpuUsagePercent: data.devicdInfo.cpuProcessor || '-',
+        memUsagePercent: data.devicdInfo.usedMemoryPercentage || '-',
+        diskUsagePercent: data.devicdInfo.usedDiskPercentage || '-',
+      };
+    });
+
+    const newTables = tables.map((table) => {
+      if (table.source === 'deviceStatus') {
+        table.data = deviceStatusData;
+        table.toDisplayData = deviceStatusData;
+      } else if (table.source === 'deviceTraffic') {
+        table.data = deviceTrafficData;
+        table.toDisplayData = deviceTrafficData.map((data) => {
+          return {
+            serverName: data.serverName,
+            trafficAmount: data.trafficAmount,
+            chartData: data.chartData,
+          };
+        });
+      } else if (table.source === 'topTrafficUsage') {
+        table.data = topTrafficUsageData;
+        table.toDisplayData = topTrafficUsageData.map((data) => {
+          return {
+            serverName: data.serverName,
+            traffic: data.traffic,
+            cpuUsagePercent: data.cpuUsagePercent,
+            memUsagePercent: data.memUsagePercent,
+            diskUsagePercent: data.diskUsagePercent,
+          };
+        });
+      }
+      return table;
+    });
+    setTables(newTables);
+  };
+
+  useEffect(() => {
+    if (dataReady) {
+      createSideBarTables();
+    }
+  }, [dataReady]);
 
   useEffect(() => {
     tables.forEach((_, index) => {
@@ -100,8 +220,9 @@ const Sidebar = () => {
           <ul className="table-list">
             {tables.map((table, index) => {
               const tableSource = table.source;
-              const dataSource = tableCategory[tableSource];
+              const dataSource = table;
               const dataSourceTitle = dataSource.title;
+
               return (
                 <li key={index} id={`table-${index}`}>
                   <div
