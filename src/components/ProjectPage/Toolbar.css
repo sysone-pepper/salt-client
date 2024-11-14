@@ -1,7 +1,7 @@
 .toolbar {
   display: flex;
   background-color: #111827;
-  padding: .5rem 0;
+  padding: .5rem .4rem;
 }
 
 .toolbar > div {
@@ -11,12 +11,6 @@
   font-size: 1rem;
   line-height: 1.8rem;
   align-items: center;
-  margin-right: 1.5rem;
-}
-
-.diagram-editing-tools {
-  border-left: 1px dashed rgb(100, 100, 100);
-  padding-left: 1.5rem;
 }
 
 .toolbar-button {

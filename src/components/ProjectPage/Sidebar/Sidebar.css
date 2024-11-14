@@ -65,6 +65,16 @@
   color: #fff;
   gap: .3rem;
   cursor: move;
+  justify-content: space-between;
+}
+
+.table-title .filter-toggling-btn{
+  height: calc(100% + 1px);
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  color: #fff;
+  font-size: .7rem;
 }
 
 .table-header {
@@ -73,12 +83,19 @@
   align-items: center;
   text-align: left;
   font-size: .6rem;
-  border-bottom: 1px solid #878f9b;
+  border-bottom: 1px solid;
+}
+
+.sidebar .table-header {
+  border-color: #878f9b;
 }
 
 .table-header .table-field {
-  background-color: #1f2937;
   height: 1rem;
+}
+
+.sidebar .table-header .table-field {
+  background-color: #1f2937;
 }
 
 .table-header th:first-child {
@@ -100,8 +117,11 @@
   align-content: center;
   width: 25%;
   margin: 0;
-  background-color: #1f2937;
   text-align: left;
+}
+
+.sidebar .table-field{
+  background-color: #1f2937;
 }
 
 .table-field span:hover {

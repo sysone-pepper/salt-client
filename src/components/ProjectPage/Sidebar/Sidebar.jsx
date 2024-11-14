@@ -4,14 +4,31 @@ import {
   dropTargetForElements,
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import invariant from 'tiny-invariant';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import sidebarToggleIcon from '../../../assets/images/sidebar-toggle-icon.png';
 import { NetworkContext } from '../../../contexts/NetworkContext.jsx';
 import Table from './Table';
 import { tableCategory } from './data.js';
 import './Sidebar.css';
+import { Modal } from '../../common/Modal.jsx';
+import { CreateNodeContent } from '../ModalContents/CreateNodeContent.jsx';
+import ChooseDeviceContent from '../ModalContents/ChooseDeviceContent.jsx';
+
+const sidebarModals = {
+  deviceStatus: (onModalClose) => (
+    <CreateNodeContent closeModal={() => onModalClose()} />
+  ),
+  topTrafficUsage: (onModalClose) => (
+    <CreateNodeContent closeModal={() => onModalClose()} />
+  ),
+  deviceTraffic: (onModalClose) => (
+    <ChooseDeviceContent closeModal={() => onModalClose()} />
+  ),
+};
 
 const Sidebar = () => {
+  const [modalContentName, setModalContentName] = useState(null);
   const { isSidebarPanned, setIsSidebarPanned } = useContext(NetworkContext);
 
   const [tables, setTables] = useState([
@@ -21,6 +38,7 @@ const Sidebar = () => {
   ]);
 
   const dragIndexRef = useRef(null);
+
   useEffect(() => {
     tables.forEach((_, index) => {
       const element = document.getElementById(`table-${index}`);
@@ -63,6 +81,10 @@ const Sidebar = () => {
     dragIndexRef.current = null;
   };
 
+  // 모달 여는 함수
+  const handleDeviceFilteringModalOpen = (tableSource) => {
+    setModalContentName(tableSource);
+  };
   const toggleSidebar = () => {
     setIsSidebarPanned((prevState) => !prevState);
   };
@@ -76,23 +98,47 @@ const Sidebar = () => {
       >
         <aside className="sidebar">
           <ul className="table-list">
-            {tables.map((table, index) => (
-              <li key={index} id={`table-${index}`}>
-                <div
-                  id={`drag-handle-${index}`}
-                  className="drag-handle table-title"
-                >
-                  <p>{'\u22EE\u22EE'}</p>
-                  <p>{tableCategory[table.source].title}</p>
-                </div>
-                <div className="sidebar-element">
-                  <Table source={tableCategory[table.source]} key={index} />
-                </div>
-              </li>
-            ))}
+            {tables.map((table, index) => {
+              const tableSource = table.source;
+              const dataSource = tableCategory[tableSource];
+              const dataSourceTitle = dataSource.title;
+              return (
+                <li key={index} id={`table-${index}`}>
+                  <div
+                    id={`drag-handle-${index}`}
+                    className="drag-handle table-title"
+                  >
+                    <span>
+                      {'\u22EE\u22EE'} {dataSourceTitle}
+                    </span>
+                    {dataSourceTitle === '장비 현황' ? null : (
+                      <button
+                        className="filter-toggling-btn"
+                        onClick={() =>
+                          handleDeviceFilteringModalOpen(tableSource)
+                        }
+                      >
+                        <i className="bi bi-gear" />
+                      </button>
+                    )}
+                  </div>
+                  <div className="sidebar-element">
+                    <Table source={dataSource} key={index} />
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </aside>
       </div>
+      {modalContentName && (
+        <Modal
+          child={sidebarModals[modalContentName](() =>
+            setModalContentName(null),
+          )}
+          closeModal={() => setModalContentName(null)}
+        />
+      )}
       <div className="sb-pan-btn" onClick={toggleSidebar}>
         <img className="sb-pan-icon" src={sidebarToggleIcon} />
       </div>

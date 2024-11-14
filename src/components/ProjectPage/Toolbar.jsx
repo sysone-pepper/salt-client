@@ -195,7 +195,7 @@ const Toolbar = () => {
 
   return (
     <div className="toolbar">
-      <div className="diagram-browsing-tools">
+      <div className="hidden-elements">
         <input
           type="file"
           ref={fileInputRef}
