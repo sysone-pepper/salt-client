@@ -22,9 +22,10 @@
     --text-color: #ffffff;
     --primary-color: #1f2937;
     --secondary-color: #3a78b5;
-    --border-color: #212830;
+    --border-color: #fff;
     --link-color: #8ab4f8;
     --link-hover-color: #b366ff;
+    --modal-background-color: #1f2937;
     --button-background-color: #212830;
     --header-button-background-color: #1f2937; 
     --button-text-color: #ffffff;
@@ -44,6 +45,7 @@
     --border-color: #212830;
     --link-color: #1a0dab;
     --link-hover-color: #d22780;
+    --modal-background-color: #fff;
     --button-background-color: #80B6F3;
     --button-text-color: #ffffff;
     --button-hover-background-color: #93c2db;
