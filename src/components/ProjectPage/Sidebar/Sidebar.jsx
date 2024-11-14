@@ -5,6 +5,8 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import invariant from 'tiny-invariant';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+
+import sidebarToggleIcon from '../../../assets/images/sidebar-toggle-icon.png';
 import { NetworkContext } from '../../../contexts/NetworkContext.jsx';
 import Table from './Table';
 import { tableCategory } from './data.js';
@@ -26,8 +28,8 @@ const sidebarModals = {
 };
 
 const Sidebar = () => {
-  const { isSidebarPanned } = useContext(NetworkContext);
   const [modalContentName, setModalContentName] = useState(null);
+  const { isSidebarPanned, setIsSidebarPanned } = useContext(NetworkContext);
 
   const [tables, setTables] = useState([
     { source: 'deviceStatus' },
@@ -83,6 +85,9 @@ const Sidebar = () => {
   const handleDeviceFilteringModalOpen = (tableSource) => {
     setModalContentName(tableSource);
   };
+  const toggleSidebar = () => {
+    setIsSidebarPanned((prevState) => !prevState);
+  };
 
   return (
     <>
@@ -134,6 +139,9 @@ const Sidebar = () => {
           closeModal={() => setModalContentName(null)}
         />
       )}
+      <div className="sb-pan-btn" onClick={toggleSidebar}>
+        <img className="sb-pan-icon" src={sidebarToggleIcon} />
+      </div>
     </>
   );
 };

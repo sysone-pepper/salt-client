@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { ToolBox } from './ToolBox';
 import { NetworkContext } from '../../contexts/NetworkContext';
 import cytoscape from 'cytoscape';
-import dagre from 'cytoscape-dagre';
 import nodeHtmlLabel from 'cytoscape-node-html-label';
 import cytoscapePopper from 'cytoscape-popper';
 import tippy from 'tippy.js';
@@ -15,6 +13,11 @@ import ehConfig from '../../constants/EdgeHandleOptions';
 import { CustomDeviceNode } from './CustomDeviceNode';
 import { CustomIconNode } from './CustomIconNode';
 import { CustomTextNode } from './CustomTextNode';
+import { getUsers } from '../../api/User';
+import { useAuth } from '../../contexts/AuthContext';
+import closeIcon from '../../assets/images/add-icon.png';
+import openIcon from '../../assets/images/open-navigator-icon.png';
+
 import './NetworkMap.css';
 
 export const DiagramField = ({ projectId }) => {
@@ -35,7 +38,14 @@ export const DiagramField = ({ projectId }) => {
     setEdges,
     isLinking,
     isObjectDelete,
+    isNavigatorToggled,
+    setIsNavigatorToggled,
+
+    isEditingPermitted,
+    setIsEditingPermitted,
   } = useContext(NetworkContext);
+
+  const { currentUser } = useAuth();
 
   const [navigatorInitialized, setNavigatorInitialized] = useState(false); // 네비게이터 초기화 상태
 
@@ -59,7 +69,24 @@ export const DiagramField = ({ projectId }) => {
     cyNavigator(cytoscape);
   };
 
-  const createCyInstance = () => {
+  const fetchUserAuthority = async () => {
+    // TODO: Authority 나중에 토큰에서 넘겨줄 예정
+    try {
+      const response = await getUsers(); //
+      if (response.success) {
+        const { users, _ } = response.data;
+        const userAuthority = users.filter(
+          (user) => user.id === currentUser.username,
+        )[0].authority;
+        setIsEditingPermitted(userAuthority === 'ALL');
+      }
+    } catch (error) {
+      console.log(error);
+      alert('사용자 정보를 가져오는데 실패했습니다.');
+    }
+  };
+
+  const createCyInstance = (isEditingPermitted) => {
     if (!cyRef.current) {
       // cytoscape 기본 인스턴스 생성
       const cy = cytoscape({
@@ -89,10 +116,16 @@ export const DiagramField = ({ projectId }) => {
         layout: {
           name: 'preset',
         },
-        autoungrabify: false,
-        boxSelectionEnabled: true,
-        zoomingEnabled: true,
-        userZoomingEnabled: true,
+
+        //항상 활성화
+        zoomingEnabled: true, // 노드 줌 활성화
+        userZoomingEnabled: true, // 스크롤 줌 활성화
+
+        //조건부 활성 or 비활성
+        boxSelectionEnabled: isEditingPermitted, // 노드 선택 활성화
+        autoungrabify: !isEditingPermitted, // 노드 드래그 비활성화
+        autolock: !isEditingPermitted, // 노드 이동 비활성화
+        autounselectify: !isEditingPermitted, // 노드 선택 비활성화
       });
 
       // cytoscape-node-html-label 적용
@@ -159,6 +192,7 @@ export const DiagramField = ({ projectId }) => {
           },
         },
       ]);
+
       cy.on('dragfree', 'node', async (event) => {
         const target = event.target;
         const updatedNode = target.json();
@@ -231,17 +265,25 @@ export const DiagramField = ({ projectId }) => {
     }
   };
 
+  const toggleNavigator = () => {
+    console.log(!isNavigatorToggled);
+    setIsNavigatorToggled((prevState) => !prevState);
+  };
+
   // 초기화(프로젝트 아이디 컨텍스트 등록)
   useEffect(() => {
+    console.log(currentUser);
     setCurProjectId(projectId);
     registerCytoscapeExtensions();
   }, []);
 
   // cytoscape-navigator 등록 및 언마운트 기능
   useEffect(() => {
+    // fetchUserAuthority();
+
     if (!!curProjectId) {
       if (!cyRef.current) {
-        cyRef.current = createCyInstance();
+        cyRef.current = createCyInstance(isEditingPermitted);
         fetchMapData();
       }
 
@@ -259,7 +301,7 @@ export const DiagramField = ({ projectId }) => {
         }
       };
     }
-  }, [curProjectId]);
+  }, [curProjectId, isEditingPermitted]);
 
   // 배경 이미지 수정 기능
   useEffect(() => {
@@ -439,9 +481,10 @@ export const DiagramField = ({ projectId }) => {
     }
   }, [isObjectDelete, cyRef, deleteObject]);
 
+  // 편집 권한에 따른 Cytoscape 설정 업데이트
+
   return (
     <div className="diagram-field">
-      <ToolBox />
       <div
         id="cy"
         style={{
@@ -449,19 +492,32 @@ export const DiagramField = ({ projectId }) => {
         }}
       />
       <div
-        className="cytoscape-navigator"
-        style={{
-          position: 'absolute',
-          bottom: '10px',
-          right: '10px',
-          width: '20vw',
-          height: '20vh',
-          backgroundColor: '#f4f4f4',
-          border: '1px solid #ddd',
-          overflow: 'hidden',
-          zIndex: 500,
-        }}
-      />
+        className={`navigator-container ${
+          isNavigatorToggled ? '' : 'collapsed'
+        }`}
+      >
+        <div
+          className="cytoscape-navigator"
+          // cytoscape-navigator를 커스터마이징 하여 div에 직접 적용할 경우 해당 스타일이 미리 정의되어야합니다.
+          // 추후 해당 사안을 개선하겠습니다.
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            bottom: 0,
+            backgroundColor: '#f4f4f4',
+            overflow: 'hidden',
+            zIndex: 500,
+          }}
+        />
+        <div className="toggle-navigator-btn" onClick={toggleNavigator}>
+          {isNavigatorToggled ? (
+            <img className="close-navigator-icon" src={closeIcon} />
+          ) : (
+            <img className="open-navigator-icon" src={openIcon} />
+          )}
+        </div>
+      </div>
     </div>
   );
 };

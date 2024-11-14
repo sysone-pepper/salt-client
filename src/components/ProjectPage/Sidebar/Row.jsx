@@ -8,27 +8,52 @@ import UPSIcon from '../../../assets/images/UPS-icon2.png';
 
 const iconLookup = {
   Server: (
-    <img className="icon-image" key="ServerImg" src={ServerIcon} alt="" />
+    <img className="sb-icon-image" key="ServerImg" src={ServerIcon} alt="" />
   ),
   Network: (
-    <img className="icon-image" key="NetworkImg" src={NetworkIcon} alt="" />
+    <img className="sb-icon-image" key="NetworkImg" src={NetworkIcon} alt="" />
   ),
   L2Switch: (
-    <img className="icon-image" key="L2SwitchImg" src={L3SwitchIcon} alt="" />
+    <img
+      className="sb-icon-image"
+      key="L2SwitchImg"
+      src={L3SwitchIcon}
+      alt=""
+    />
   ),
   L3Switch: (
-    <img className="icon-image" key="L3SwitchImg" src={L3SwitchIcon} alt="" />
+    <img
+      className="sb-icon-image"
+      key="L3SwitchImg"
+      src={L3SwitchIcon}
+      alt=""
+    />
   ),
   L4Switch: (
-    <img className="icon-image" key="L4SwitchImg" src={L4SwitchIcon} alt="" />
+    <img
+      className="sb-icon-image"
+      key="L4SwitchImg"
+      src={L4SwitchIcon}
+      alt=""
+    />
   ),
   L7Switch: (
-    <img className="icon-image" key="L7SwitchImg" src={L7SwitchIcon} alt="" />
+    <img
+      className="sb-icon-image"
+      key="L7SwitchImg"
+      src={L7SwitchIcon}
+      alt=""
+    />
   ),
   FW: (
-    <img className="icon-image" key="FirewallImg" src={FirewallIcon} alt="" />
+    <img
+      className="sb-icon-image"
+      key="FirewallImg"
+      src={FirewallIcon}
+      alt=""
+    />
   ),
-  UPS: <img className="icon-image" key="UPSImg" src={UPSIcon} alt="" />,
+  UPS: <img className="sb-icon-image" key="UPSImg" src={UPSIcon} alt="" />,
 };
 const Row = ({ rowData }) => {
   return (
