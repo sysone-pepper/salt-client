@@ -31,7 +31,11 @@ export const AuthProvider = ({ children }) => {
       // 로그인 시 입력한 id를 currentUser로 설정
       // 토큰 내 유저 권한 추가로 필요
       const decodedToken = decodeToken(token);
-      const user = { username: credentials.id, role: decodedToken.role };
+      const user = {
+        username: credentials.id,
+        role: decodedToken.role,
+        authority: decodeToken.authority || 'ALL', // 임시로 권한 추가
+      };
       setCurrentUser(user);
 
       localStorage.setItem('currentUser', JSON.stringify(user));
