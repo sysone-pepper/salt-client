@@ -298,7 +298,7 @@ export const DiagramField = ({ projectId }) => {
     window.history.pushState(
       null,
       '',
-      `${basePath}/${isEditing ? 'read' : 'edit'}`,
+      `${basePath}/${!isEditing ? 'read' : 'edit'}`,
     );
 
     if (!!curProjectId) {
