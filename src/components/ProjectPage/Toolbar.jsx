@@ -4,14 +4,13 @@ import { useContext, useEffect, useState, useRef } from 'react';
 import './Toolbar.css';
 import { Modal } from '../common/Modal';
 import { CreateNodeContent } from './ModalContents/CreateNodeContent';
+import { useAuth } from '../../contexts/AuthContext';
 
 const HIDDEN_CLASSNAME = 'hidden';
 const NO_AUTHORITY_MESSAGE = '권한이 없습니다. 관리자에게 권한을 요청하세요';
 
 const Toolbar = () => {
   const {
-    isSidebarPanned,
-    setIsSidebarPanned,
     selectedSize,
     setSelectedSize,
     cyRef,
@@ -24,34 +23,33 @@ const Toolbar = () => {
     setIsLinking,
     isObjectDelete,
     setIsObjectDelete,
-    isNavigatorToggled,
-    setIsNavigatorToggled,
     updateBgImg,
     isEditingPermitted,
+    isEditing,
+    setIsEditing,
   } = useContext(NetworkContext);
+  const { currentUser } = useAuth();
 
+  const [isEditingDisabled, setIsEditingDisabled] = useState(false);
   const [inputSize, setInputSize] = useState(20);
   const [modalOpen, setModalOpen] = useState(false);
   const fileInputRef = useRef(null);
 
-  // 구성도 조회 - read-only권한용 기능모음
-  const handlePannigButtonClick = () => {
-    setIsSidebarPanned((prevState) => !prevState);
-  };
-
-  const toggeleNavigator = () => {
-    const navigator = document.getElementsByClassName('cytoscape-navigator')[0];
-    setIsNavigatorToggled((prevState) => {
-      if (prevState) {
-        navigator.classList.add(HIDDEN_CLASSNAME);
-      } else {
-        navigator.classList.remove(HIDDEN_CLASSNAME);
-      }
-      return !prevState;
-    });
-  };
-
   // 구성도 편집 - ALL권한용 기능모음
+
+  const toggleEditing = () => {
+    if (isEditingDisabled) return; // 비활성화 중이면 클릭 무시
+
+    // 버튼 클릭 이벤트 처리
+    if (currentUser.authority === 'ALL') {
+      setIsEditing((prevState) => !prevState);
+
+      // 0.5초 동안 버튼 비활성화
+      setIsEditingDisabled(true);
+      setTimeout(() => setIsEditingDisabled(false), 1000);
+    }
+  };
+
   useEffect(() => {
     if (cyRef.current && curProjectId && selectedSize) {
       if (nodes.length > 1 && nodes[1].data.nodeSize !== selectedSize) {
@@ -208,92 +206,94 @@ const Toolbar = () => {
             closeModal={() => setModalOpen(false)}
           />
         )}
-        {/* <button className="toolbar-button" onClick={handlePannigButtonClick}>
-          사이드바 {isSidebarPanned ? '접기' : '펼치기'}
-        </button> */}
-        {/* <AddButton
-          fileName={'navigator-icon.png'}
-          onClickEvent={toggeleNavigator}
-          needCancel={!isNavigatorToggled}
-        >
-          네비게이터 {isNavigatorToggled ? '숨기기' : '호출'}
-        </AddButton> */}
       </div>
-      <div className="diagram-editing-tools">
-        <AddButton
-          fileName={'object-icon.png'}
-          onClickEvent={toggleAddNode}
-          disabled={isLinking || isObjectDelete || modalOpen}
+      {isEditing && (
+        <div
+          className={`diagram-editing-tools ${isEditing ? '' : 'tool-hidden'}`}
         >
-          요소 추가
-        </AddButton>
-        {isLinking ? (
           <AddButton
-            fileName={'link-icon.png'}
-            onClickEvent={inactiveAddLink}
-            needCancel={true}
+            fileName={'object-icon.png'}
+            onClickEvent={toggleAddNode}
+            disabled={!isEditing || isLinking || isObjectDelete || modalOpen}
           >
-            링크추가모드 끄기
+            요소 추가
           </AddButton>
-        ) : (
-          <AddButton
-            fileName={'link-icon.png'}
-            onClickEvent={activeAddLink}
-            disabled={isObjectDelete || modalOpen}
-          >
-            링크추가모드 켜기
-          </AddButton>
-        )}
+          {isLinking ? (
+            <AddButton
+              fileName={'link-icon.png'}
+              onClickEvent={inactiveAddLink}
+              needCancel={true}
+              disabled={!isEditing}
+            >
+              링크추가모드 끄기
+            </AddButton>
+          ) : (
+            <AddButton
+              fileName={'link-icon.png'}
+              onClickEvent={activeAddLink}
+              disabled={!isEditing || isObjectDelete || modalOpen}
+            >
+              링크추가모드 켜기
+            </AddButton>
+          )}
 
-        {isObjectDelete ? (
+          {isObjectDelete ? (
+            <AddButton
+              fileName={'object-delete-icon.png'}
+              onClickEvent={inactiveDeleteObject}
+              needCancel={true}
+              disabled={!isEditing}
+            >
+              구성도 제거모드 끄기
+            </AddButton>
+          ) : (
+            <AddButton
+              fileName={'object-delete-icon.png'}
+              onClickEvent={activeDeleteObject}
+              needCancel={false}
+              disabled={!isEditing || isLinking || modalOpen}
+            >
+              구성도 제거모드 켜기
+            </AddButton>
+          )}
+
           <AddButton
-            fileName={'object-delete-icon.png'}
-            onClickEvent={inactiveDeleteObject}
-            needCancel={true}
-          >
-            구성도 제거모드 끄기
-          </AddButton>
-        ) : (
-          <AddButton
-            fileName={'object-delete-icon.png'}
-            onClickEvent={activeDeleteObject}
+            fileName={'background-icon.png'}
+            onClickEvent={onBgImgBtnClick}
             needCancel={false}
-            disabled={isLinking || modalOpen}
+            for="bgImgInput"
+            disabled={!isEditing || isLinking || isObjectDelete || modalOpen}
           >
-            구성도 제거모드 켜기
+            배경 이미지 수정
           </AddButton>
-        )}
 
-        <AddButton
-          fileName={'background-icon.png'}
-          onClickEvent={onBgImgBtnClick}
-          needCancel={false}
-          for="bgImgInput"
-          disabled={isLinking || isObjectDelete || modalOpen}
-        >
-          배경 이미지 수정
-        </AddButton>
-
-        {/* <AddButton fileName={'group.png'} onClickEvent={group}>
-          그룹화
-        </AddButton>
-        <AddButton fileName={'ungroup.png'} onClickEvent={ungroup}>
-          그룹 해제
-        </AddButton> */}
-        <label htmlFor="sizeInput">노드 크기 조절</label>
-        <input
-          id="sizeInput"
-          type="number"
-          min="20"
-          max="100"
-          value={inputSize}
-          onChange={handleSizeInputChange}
-          placeholder="20 - 100"
-        />
-        <button className="toolbar-button" onClick={handleSizeButtonClick}>
-          확인
-        </button>
-      </div>
+          <label htmlFor="sizeInput">노드 크기 조절</label>
+          <input
+            id="sizeInput"
+            type="number"
+            min="20"
+            max="100"
+            value={inputSize}
+            onChange={handleSizeInputChange}
+            placeholder="20 - 100"
+            disabled={!isEditing}
+          />
+          <button
+            disabled={!isEditing}
+            className="toolbar-button"
+            onClick={handleSizeButtonClick}
+          >
+            확인
+          </button>
+        </div>
+      )}
+      <button
+        disabled={!isEditingPermitted}
+        className="toolbar-button toolbar-edit-button"
+        onClick={toggleEditing}
+      >
+        편집{isEditing ? '비활성' : '활성'}
+      </button>
     </div>
   );
 };
