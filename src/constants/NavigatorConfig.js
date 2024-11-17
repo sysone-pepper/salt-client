@@ -1,6 +1,6 @@
 let defaults = {
   // container: document.getElementById('navigator-container'),
-  container: '.cytoscape-navigator', // string | false | undefined. Supported strings: an element id selector (like "#someId"), or a className selector (like ".someClassName"). Otherwise an element will be created by the library.
+  container: '#cytoscape-navigator', // string | false | undefined. Supported strings: an element id selector (like "#someId"), or a className selector (like ".someClassName"). Otherwise an element will be created by the library.
   viewLiveFramerate: 0,
   thumbnailEventFramerate: 30,
   thumbnailLiveFramerate: false,

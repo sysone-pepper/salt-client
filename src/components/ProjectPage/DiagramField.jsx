@@ -15,10 +15,11 @@ import { CustomIconNode } from './CustomIconNode';
 import { CustomTextNode } from './CustomTextNode';
 import { getUsers } from '../../api/User';
 import { useAuth } from '../../contexts/AuthContext';
+
 import closeIcon from '../../assets/images/add-icon.png';
 import openIcon from '../../assets/images/open-navigator-icon.png';
-
 import './NetworkMap.css';
+import { Modal } from '../common/Modal';
 
 export const DiagramField = ({ projectId }) => {
   const {
@@ -40,14 +41,15 @@ export const DiagramField = ({ projectId }) => {
     isObjectDelete,
     isNavigatorToggled,
     setIsNavigatorToggled,
-
-    isEditingPermitted,
     setIsEditingPermitted,
+    isEditing,
   } = useContext(NetworkContext);
 
   const { currentUser } = useAuth();
 
   const [navigatorInitialized, setNavigatorInitialized] = useState(false); // 네비게이터 초기화 상태
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedDevice, setSelectedDevice] = useState({});
 
   const tippyFactory = (ref, content) => {
     let dummyDomEle = document.createElement('div');
@@ -86,7 +88,7 @@ export const DiagramField = ({ projectId }) => {
     }
   };
 
-  const createCyInstance = (isEditingPermitted) => {
+  const createCyInstance = (isEditing) => {
     if (!cyRef.current) {
       // cytoscape 기본 인스턴스 생성
       const cy = cytoscape({
@@ -122,10 +124,10 @@ export const DiagramField = ({ projectId }) => {
         userZoomingEnabled: true, // 스크롤 줌 활성화
 
         //조건부 활성 or 비활성
-        boxSelectionEnabled: isEditingPermitted, // 노드 선택 활성화
-        autoungrabify: !isEditingPermitted, // 노드 드래그 비활성화
-        autolock: !isEditingPermitted, // 노드 이동 비활성화
-        autounselectify: !isEditingPermitted, // 노드 선택 비활성화
+        boxSelectionEnabled: isEditing, // 노드 선택 활성화
+        autoungrabify: !isEditing, // 노드 드래그 비활성화
+        autolock: !isEditing, // 노드 이동 비활성화
+        autounselectify: !isEditing, // 노드 선택 비활성화
       });
 
       // cytoscape-node-html-label 적용
@@ -200,17 +202,18 @@ export const DiagramField = ({ projectId }) => {
       });
 
       // cytoscape tip popper 적용
-      cy.on('mouseover', 'node[id != "background"]', (event) => {
-        const node = event.target;
+      if (!isEditing) {
+        cy.on('mouseover', 'node[id != "background"]', (event) => {
+          const node = event.target;
 
-        // 팝업 콘텐츠 생성
-        const tip = node.popper({
-          content: () => {
-            let content = document.createElement('div');
+          // 팝업 콘텐츠 생성
+          const tip = node.popper({
+            content: () => {
+              let content = document.createElement('div');
 
-            switch (node.data('nodeType')) {
-              case 'EXIST_DEVICE':
-                content.innerHTML = `
+              switch (node.data('nodeType')) {
+                case 'EXIST_DEVICE':
+                  content.innerHTML = `
                   <div>
                     ID : 기존장비-${node.id()} <br>
                     장비명 : ${node.data('deviceAlias')} <br>
@@ -220,9 +223,9 @@ export const DiagramField = ({ projectId }) => {
                     OS : ${node.data('osType')} <br>
                     제조사 : ${node.data('vendor')} <br>
                   </div>`;
-                break;
-              case 'NEW_DEVICE':
-                content.innerHTML = `
+                  break;
+                case 'NEW_DEVICE':
+                  content.innerHTML = `
                   <div>
                     ID : 신규장비-${node.id()} <br>
                     장비명 : ${node.data('newDeviceAlias')} <br>
@@ -231,35 +234,42 @@ export const DiagramField = ({ projectId }) => {
                     OS : ${node.data('newDeviceOs')} <br>
                     제조사 : ${node.data('newDeviceVendor')} <br>
                   </div>`;
-                break;
-              case 'ICON':
-                content.innerHTML = `
+                  break;
+                case 'ICON':
+                  content.innerHTML = `
                   <div>
                     ID : 아이콘-${node.id()} <br>
                   </div>`;
-                break;
-              case 'TEXT':
-                content.innerHTML = `
+                  break;
+                case 'TEXT':
+                  content.innerHTML = `
                   <div>
-                    ID : 아이콘-${node.id()} <br>
+                    ID : 텍스트-${node.id()} <br>
                   </div>`;
-                break;
-              default:
-                content.innerHTML = `<div>알 수 없음<br></div>`;
-            }
+                  break;
+                default:
+                  content.innerHTML = `<div>알 수 없음<br></div>`;
+              }
 
-            return content;
-          },
+              return content;
+            },
+          });
+
+          // 팝업 표시
+          tip.show();
+
+          // 마우스를 벗어나면 팝업 숨김
+          node.on('mouseout', () => {
+            tip.hide();
+          });
         });
 
-        // 팝업 표시
-        tip.show();
-
-        // 마우스를 벗어나면 팝업 숨김
-        node.on('mouseout', () => {
-          tip.hide();
+        cy.on('click', 'node.EXIST_DEVICE', (event) => {
+          console.log(event.target.json());
+          setSelectedDevice(event.target.json());
+          setModalOpen(true);
         });
-      });
+      }
 
       return cy;
     }
@@ -271,45 +281,64 @@ export const DiagramField = ({ projectId }) => {
 
   // 초기화(프로젝트 아이디 컨텍스트 등록)
   useEffect(() => {
-    setCurProjectId(projectId);
-    registerCytoscapeExtensions();
+    if (curProjectId !== projectId) {
+      setCurProjectId(projectId);
+      registerCytoscapeExtensions();
+      if (currentUser.authority === 'ALL') {
+        setIsEditingPermitted(true);
+      }
+    }
   }, []);
 
   // cytoscape-navigator 등록 및 언마운트 기능
   useEffect(() => {
-    // fetchUserAuthority();
+    const currentPath = window.location.pathname; // 예: "/project/1/read"
+    const basePath = currentPath.split('/').slice(0, 3).join('/'); // "/project/1"
+
+    window.history.pushState(
+      null,
+      '',
+      `${basePath}/${isEditing ? 'read' : 'edit'}`,
+    );
 
     if (!!curProjectId) {
       if (!cyRef.current) {
-        cyRef.current = createCyInstance(isEditingPermitted);
+        cyRef.current = createCyInstance(isEditing);
         fetchMapData();
       }
 
-      let nav;
-      if (!navigatorInitialized) {
-        nav = cyRef.current.navigator(navConfig);
+      if (!navigatorInitialized && cyRef.current) {
+        console.log('flag');
+        const navElem = document.getElementById('cytoscape-navigator');
+        console.log('flag');
+        while (navElem.firstChild) {
+          navElem.firstChild.remove();
+        }
+        console.log('flag');
+        cyRef.current.navigator(navConfig);
+        console.log('flag');
         setNavigatorInitialized(true);
       }
       return () => {
-        if (cyRef.current) {
-          cyRef.current.destroy();
-          cyRef.current = null;
-          nav?.destroy();
-          setNavigatorInitialized(false);
-        }
+        cyRef.current?.destroy();
+        cyRef.current = null;
+        // setNavigatorInitialized(false);
       };
     }
-  }, [curProjectId, isEditingPermitted]);
+  }, [curProjectId, isEditing]);
 
-  // 배경 이미지 수정 기능
+  // 배경 이미지 수정
+  // TODO: 수정 현재 어느 시점에서 배경이미지를 못읽어와 에러가 발생함
   useEffect(() => {
     if (bgImgInfo && cyRef.current && dataReady) {
       const cy = cyRef.current;
       const bgNode = cy.getElementById('background');
-      if (bgNode.data('src') !== bgImgInfo.src) {
+
+      if (bgNode && bgNode.data('src') !== bgImgInfo.src) {
         const newNodes = [...nodes].map((node, idx) => {
           if (idx === 0) {
             const newBgNode = { ...bgNode.json() };
+            console.log(newBgNode);
 
             newBgNode.data.src = bgImgInfo.src;
             newBgNode.data.size = bgImgInfo.size;
@@ -377,9 +406,11 @@ export const DiagramField = ({ projectId }) => {
         cy.maxZoom(zoomLevel * 2);
       }
 
+      setNavigatorInitialized(false);
+      console.log('flag2');
       setDataReady(false);
     }
-  }, [dataReady, bgImgInfo]);
+  }, [bgImgInfo, dataReady]);
 
   // 노드, 엣지 변동(추가, 수정, 삭제) 기능
   useEffect(() => {
@@ -483,6 +514,24 @@ export const DiagramField = ({ projectId }) => {
 
   return (
     <div className="diagram-field">
+      {!isEditing && modalOpen && (
+        // TODO: 실장비 데이터 차트 붙일 것. (sohottoday)
+        <Modal
+          child={
+            <>
+              <>
+                {`선택된 장비는 ${selectedDevice?.data.deviceAlias}입니다.`}
+                <br />
+              </>
+              <>{`참고로 실제 장비 아이디는 ${selectedDevice?.data.deviceId}입니다.`}</>
+            </>
+          }
+          closeModal={() => {
+            setModalOpen(false);
+            setSelectedDevice({});
+          }}
+        />
+      )}
       <div
         id="cy"
         style={{
@@ -495,7 +544,7 @@ export const DiagramField = ({ projectId }) => {
         }`}
       >
         <div
-          className="cytoscape-navigator"
+          id="cytoscape-navigator"
           // cytoscape-navigator를 커스터마이징 하여 div에 직접 적용할 경우 해당 스타일이 미리 정의되어야합니다.
           // 추후 해당 사안을 개선하겠습니다.
           style={{
