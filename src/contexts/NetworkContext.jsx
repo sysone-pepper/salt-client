@@ -1,7 +1,8 @@
-import React, { createContext, useState, useRef } from 'react';
+import React, { createContext, useState, useRef, useContext } from 'react';
 import * as api from '../api/Diagram';
+import defaultBG from '../assets/images/space.jpg';
 
-export const NetworkContext = createContext();
+export const NetworkContext = createContext(null);
 
 export function NetworkProvider({ children }) {
   const cyRef = useRef(null);
@@ -10,7 +11,7 @@ export function NetworkProvider({ children }) {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const [existDevices, setExistDevices] = useState([]);
-  const [bgImgInfo, setBgImgInfo] = useState(null);
+  const [bgImgInfo, setBgImgInfo] = useState({});
   const [dataReady, setDataReady] = useState(false);
   const [isLinking, setIsLinking] = useState(false);
   const [isObjectDelete, setIsObjectDelete] = useState(false);
@@ -18,6 +19,7 @@ export function NetworkProvider({ children }) {
   const [isNavigatorToggled, setIsNavigatorToggled] = useState(true);
   const [isSidebarPanned, setIsSidebarPanned] = useState(true);
   const [isEditingPermitted, setIsEditingPermitted] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const getImageSizeFromUrl = async (url) => {
     return new Promise((resolve, reject) => {
@@ -41,6 +43,9 @@ export function NetworkProvider({ children }) {
     if (backgroundSource) {
       const size = await getImageSizeFromUrl(backgroundSource);
       setBgImgInfo({ src: backgroundSource, size });
+    } else {
+      const size = await getImageSizeFromUrl(defaultBG);
+      setBgImgInfo({ src: defaultBG, size });
     }
     const newNodes = [
       {
@@ -226,6 +231,8 @@ export function NetworkProvider({ children }) {
         setIsSidebarPanned,
         isEditingPermitted,
         setIsEditingPermitted,
+        isEditing,
+        setIsEditing,
       }}
     >
       {children}

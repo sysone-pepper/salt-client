@@ -1,5 +1,5 @@
-import React from 'react';
-import { NetworkProvider } from '../contexts/NetworkContext';
+import React, { useContext } from 'react';
+import { NetworkContext } from '../contexts/NetworkContext';
 import './ProjectPage.css';
 import { useParams } from 'react-router-dom';
 import Sidebar from '../components/ProjectPage/Sidebar/Sidebar';
@@ -9,15 +9,17 @@ import Toolbar from '../components/ProjectPage/Toolbar';
 
 const ProjectPage = () => {
   const { projectId } = useParams();
+  const { isEditing } = useContext(NetworkContext);
+
   return (
-    <NetworkProvider>
+    <>
       <Header />
       <Toolbar />
       <div className="flex-div">
-        <Sidebar />
+        {!isEditing && <Sidebar />}
         <DiagramField projectId={Number(projectId)} />
       </div>
-    </NetworkProvider>
+    </>
   );
 };
 

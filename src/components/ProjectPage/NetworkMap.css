@@ -28,7 +28,7 @@
 
 .navigator-container.collapsed {
   height: 0;
-  bottom: 4px;
+  bottom: -10px;
 }
 
 .navigator-container.collapsed .toggle-navigator-btn {
@@ -46,7 +46,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  bottom: calc(20vh - 10px);
+  bottom: calc(20vh + 5px);
   right: 16px;
   height: 20px;
   width: 20px;
@@ -81,7 +81,7 @@
 }
 
 .cytoscape-navigatorView,
-.cytoscape-navigator .cytoscape-navigatorOverlay {
+#cytoscape-navigator .cytoscape-navigatorOverlay {
   position: relative;
   width: 100%;
   height: 100%;
@@ -91,23 +91,23 @@
 /* 네비게이터 내부 영역 커스텀 스타일 */
 
 /* 뷰의 스타일 */
-.cytoscape-navigator .cytoscape-navigatorView {
+#cytoscape-navigator .cytoscape-navigatorView {
   border: 2px solid #1f2937;
   background: transparent;
 }
 
 /* 오버레이 스타일 */
-.cytoscape-navigator .cytoscape-navigatorOverlay {
+#cytoscape-navigator .cytoscape-navigatorOverlay {
   border: 2px solid #1f2937;
 }
 
 /* 마우스 오버 시 오버레이 스타일 */
-.cytoscape-navigator:hover .cytoscape-navigatorOverlay {
+#cytoscape-navigator:hover .cytoscape-navigatorOverlay {
   background: transparent;
 }
 
 /* 뷰 내부에 마우스 오버 시 스타일 */
-.cytoscape-navigator.mouseover-view .cytoscape-navigatorView {
+#cytoscape-navigator.mouseover-view .cytoscape-navigatorView {
   background-color: rgba(18, 65, 145, 0.1);
 }
 

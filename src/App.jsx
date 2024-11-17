@@ -10,6 +10,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import AnimatedBackground from './layout/AnimatedBackground';
 import PrivateRoute from './components/common/PrivateRoute';
 import ServerDashboard from './pages/ServerDashboard';
+import { NetworkProvider } from './contexts/NetworkContext';
 
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const ProjectListPage = lazy(() => import('./pages/ProjectList'));
@@ -38,7 +39,9 @@ function App() {
                   path="project/:projectId"
                   element={
                     <PrivateRoute>
-                      <ProjectPage />
+                      <NetworkProvider>
+                        <ProjectPage />
+                      </NetworkProvider>
                     </PrivateRoute>
                   }
                 />
