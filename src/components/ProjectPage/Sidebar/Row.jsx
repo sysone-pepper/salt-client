@@ -59,10 +59,7 @@ const iconLookup = {
 };
 const Row = ({ rowData, needChart }) => {
   const createChart = (chartData) => {
-    const data = chartData.map((data) => {
-      return data.nicInBytesPerSec + data.nicOutBytesPerSec;
-    });
-    return <Sparkline data={data.reverse()} />;
+    return <Sparkline data={chartData.reverse()} />;
   };
 
   return (

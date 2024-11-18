@@ -10,9 +10,11 @@ import sidebarToggleIcon from '../../../assets/images/sidebar-toggle-icon.png';
 import { NetworkContext } from '../../../contexts/NetworkContext.jsx';
 import Table from './Table';
 import './Sidebar.css';
+import '../../../constants/MonitoringOptions.js';
 import { Modal } from '../../common/Modal.jsx';
 import { getDeviceData } from '../../../api/Dashboard.js';
 import { useTimeout } from '../../../hooks/useTimeout.jsx';
+import { MonitoringOptions } from '../../../constants/MonitoringOptions.js';
 
 const deviceCategory = {
   1: 'Server',
@@ -38,20 +40,25 @@ const Sidebar = () => {
       columnAliases: ['', '등록', '장애'],
     },
     {
-      source: 'topTrafficUsage',
+      source: 'topUsage',
       title: '장비 Traffic 사용량 TOP 5',
       data: [],
       toDisplayData: [],
       columnAliases: ['서버 명', 'Traffic', 'CPU(%)', 'MEM(%)', 'DISK(%)'],
     },
     {
-      source: 'deviceTraffic',
+      source: 'monitorDevice',
       title: '장비 Traffic',
       data: [],
       toDisplayData: [],
       columnAliases: ['서버 명', 'Traffic', '차트'],
     },
   ]);
+
+  const [topUsageOption, setTopUsageOption] = useState('MEM');
+  const [monitorDevices, setMonitorDevices] = useState([]);
+  const [monitorDeviceOption, setMonitorDeviceOption] = useState('DISK');
+
   const dragIndexRef = useRef(null);
 
   const createSideBarTables = async () => {
@@ -60,7 +67,7 @@ const Sidebar = () => {
     );
 
     let deviceStatusObject = {};
-    let deviceTrafficData = [];
+    let deviceData = [];
 
     // 비동기 작업을 배열에 저장
     const fetchPromises = filteredNode.map(async (node) => {
@@ -71,13 +78,13 @@ const Sidebar = () => {
         deviceStatusObject[deviceType] = { total: 1, warning: 0 };
       }
 
-      const res = await getDeviceData(node.data.id, 30);
-      if (res.success) {
-        const devicdInfo = res.data[0];
+      const res = await getDeviceData(node.data.deviceId, 30);
+      if (res.success && res.data.length > 0) {
+        const deviceInfo = res.data[0];
         const monitorLimit = 30;
         const hasTrouble =
-          devicdInfo.usedDiskPercentage > monitorLimit ||
-          devicdInfo.usedMemoryPercentage > monitorLimit
+          deviceInfo?.usedDiskPercentage > monitorLimit ||
+          deviceInfo?.usedMemoryPercentage > monitorLimit
             ? true
             : false;
 
@@ -85,13 +92,14 @@ const Sidebar = () => {
           deviceStatusObject[deviceType].warning += 1;
         }
 
-        deviceTrafficData.push({
-          devicdInfo,
+        const newDeviceData = {
+          deviceInfo,
           serverName: node.data.deviceAlias,
-          trafficAmount:
-            devicdInfo.nicInBytesPerSec + devicdInfo.nicOutBytesPerSec,
           chartData: res.data,
-        });
+        };
+        (newDeviceData.deviceInfo.trafficAmount =
+          deviceInfo.nicInBytesPerSec + deviceInfo.nicOutBytesPerSec),
+          deviceData.push(newDeviceData);
       }
     });
 
@@ -105,17 +113,24 @@ const Sidebar = () => {
       }),
     );
 
-    const dataSortByTraffic = deviceTrafficData
-      .sort((a, b) => b.trafficAmount - a.trafficAmount)
-      .slice(0, 5);
+    const sortingTopUsageData = () => {
+      deviceData;
+      return deviceData
+        .sort(
+          (a, b) =>
+            b.deviceInfo[MonitoringOptions[topUsageOption]] -
+            a.deviceInfo[MonitoringOptions[topUsageOption]],
+        )
+        .slice(0, 5);
+    };
 
-    const topTrafficUsageData = dataSortByTraffic.map((data) => {
+    const topUsageData = sortingTopUsageData().map((data) => {
       return {
         serverName: data.serverName,
-        traffic: data.trafficAmount,
-        cpuUsagePercent: data.devicdInfo.cpuProcessor || '-',
-        memUsagePercent: data.devicdInfo.usedMemoryPercentage || '-',
-        diskUsagePercent: data.devicdInfo.usedDiskPercentage || '-',
+        traffic: data.deviceInfo.trafficAmount || '-',
+        cpuUsagePercent: data.deviceInfo.cpuProcessor || '-',
+        memUsagePercent: data.deviceInfo.usedMemoryPercentage || '-',
+        diskUsagePercent: data.deviceInfo.usedDiskPercentage || '-',
       };
     });
 
@@ -123,18 +138,23 @@ const Sidebar = () => {
       if (table.source === 'deviceStatus') {
         table.data = deviceStatusData;
         table.toDisplayData = deviceStatusData;
-      } else if (table.source === 'deviceTraffic') {
-        table.data = deviceTrafficData;
-        table.toDisplayData = deviceTrafficData.map((data) => {
-          return {
-            serverName: data.serverName,
-            trafficAmount: data.trafficAmount,
-            chartData: data.chartData,
-          };
+      } else if (table.source === 'monitorDevice') {
+        table.data = deviceData;
+        table.columnAliases = ['서버 명', monitorDeviceOption, '차트'];
+        table.toDisplayData = deviceData.map((data) => {
+          if (monitorDevices.includes(data.serverName)) {
+            return {
+              serverName: data.serverName,
+              amount: data.deviceInfo[[MonitoringOptions[monitorDeviceOption]]],
+              chartData: data.chartData.map(
+                (data) => data[[MonitoringOptions[monitorDeviceOption]]],
+              ),
+            };
+          }
         });
-      } else if (table.source === 'topTrafficUsage') {
-        table.data = topTrafficUsageData;
-        table.toDisplayData = topTrafficUsageData.map((data) => {
+      } else if (table.source === 'topUsage') {
+        table.data = topUsageData;
+        table.toDisplayData = topUsageData.map((data) => {
           return {
             serverName: data.serverName,
             traffic: data.traffic,
@@ -154,10 +174,18 @@ const Sidebar = () => {
   }, 60000);
 
   useEffect(() => {
+    const filteredNode = nodes.filter(
+      (node) => node.data.nodeType === 'EXIST_DEVICE',
+    );
+    const newMonitorDevices = filteredNode.map((node) => node.data.deviceAlias);
+    setMonitorDevices(newMonitorDevices);
+  }, [nodes]);
+
+  useEffect(() => {
     if (dataReady) {
       createSideBarTables();
     }
-  }, [dataReady]);
+  }, [topUsageOption, monitorDevices, monitorDeviceOption]);
 
   useEffect(() => {
     tables.forEach((_, index) => {
@@ -201,10 +229,6 @@ const Sidebar = () => {
     dragIndexRef.current = null;
   };
 
-  // 모달 여는 함수
-  const handleDeviceFilteringModalOpen = (tableSource) => {
-    setModalContentName(tableSource);
-  };
   const toggleSidebar = () => {
     setIsSidebarPanned((prevState) => !prevState);
   };
@@ -224,7 +248,12 @@ const Sidebar = () => {
             {tables.map((table, index) => {
               const tableSource = table.source;
               const dataSource = table;
-              const dataSourceTitle = dataSource.title;
+              const dataSourceTitle =
+                index === 0
+                  ? '장비 현황'
+                  : index === 1
+                  ? `장비 ${topUsageOption} Top5`
+                  : `장비 ${monitorDeviceOption} 모니터링`;
 
               return (
                 <li key={index} id={`table-${index}`}>
@@ -239,7 +268,6 @@ const Sidebar = () => {
                       <button
                         className="filter-toggling-btn"
                         onClick={() => {
-                          console.log('toggled');
                           setModalOpen(true);
                         }}
                       >
