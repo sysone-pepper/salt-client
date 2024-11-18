@@ -9,7 +9,7 @@ export const IconInput = ({ iconType, setIconType }) => {
     <>
       <div className="form-group">
         <label htmlFor="icon-types">색상</label>
-        <div className="icon-types" id="icon-types">
+        <div className="icon-types node-modal-content" id="icon-types">
           <CustomIconNode
             id="icon-preview"
             data={{ nodeSize: '50%', iconType }}
@@ -22,7 +22,9 @@ export const IconInput = ({ iconType, setIconType }) => {
           />
         </div>
       </div>
-      <button type="submit">적용</button>
+      <div className="form-actions">
+        <button type="submit">적용</button>
+      </div>
     </>
   );
 };

@@ -1,41 +1,40 @@
 .create-object-form {
-  position: relative;
-  left: 10%;
-  width: 80%;
-  top: 10%;
-  height: 80%;
   overflow-y: scroll;
 }
 
 .form-group {
-  width: 100%;
-  margin-bottom: 20px;
+  margin: 0 auto;
+  margin-bottom: 8px;
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
 }
 
 .form-group label {
-  width: 40%;
   margin-bottom: 0;
-  margin-right: 10px;
-  font-weight: bold;
+  width: 50%;
+  flex-grow: 1;
+  color: #a0aec0;
+}
+
+.form-group input,
+.form-group select,.device-icons {
+  border: 1px solid rgb(100, 100, 100);
 }
 
 .form-group input,
 .form-group select {
-  width: 60%;
-  margin-left: auto;
+  background-color:  #212830;
+  color: #a0aec0;
   padding: 10px;
-  border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
 }
 
 .device-icons {
-  border: 1px solid;
-  width: calc(60% - 17px);
-  margin-left: auto;
+  border-radius: .3rem;
+  width: calc(100% - 21px);
   overflow-x: auto;
   display: flex;
   white-space: nowrap;
@@ -52,20 +51,18 @@
 }
 
 .icon-input {
-  width: 15% !important;
+  width: .7rem !important;
   margin-left: 8px; /* Radio 버튼과 이미지 사이의 간격을 설정 */
 }
-.device-category-text {
-  margin-right: 8px; /* 이미지와 텍스트 사이의 간격 설정 */
-}
+
 
 .device-icon-image-container {
-  width: 100px;
-  height: 100px;
-  margin-bottom: 10px;
+  width: 3rem;
+  height: 3rem;
 }
 
 .device-icon-image-container img {
   height: 100%;
   object-fit: cover;
 }
+

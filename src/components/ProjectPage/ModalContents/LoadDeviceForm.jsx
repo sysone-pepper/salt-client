@@ -11,7 +11,7 @@ import { NetworkContext } from '../../../contexts/NetworkContext';
 
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-quartz.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 const rowSelection = {
   mode: 'singleRow',
@@ -112,15 +112,15 @@ export const LoadDeviceForm = ({ closeModal }) => {
 
   return (
     <>
-      <div className="ag-theme-quartz" style={{ height: 400 }}>
+      <div className="ag-theme-alpine-dark" style={{ height: 400 }}>
         <AgGridReact
           rowData={existDevices}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
           rowSelection={rowSelection}
           pagination={true}
-          paginationPageSize={10}
-          paginationPageSizeSelector={[10, 25, 50]}
+          paginationPageSize={5}
+          paginationPageSizeSelector={[5, 10, 25, 50]}
           onSelectionChanged={onSelectionChanged}
           ref={gridRef}
         />

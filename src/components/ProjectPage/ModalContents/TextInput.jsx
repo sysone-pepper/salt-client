@@ -19,7 +19,7 @@ export const TextInput = ({
     <>
       <div className="form-group">
         <label htmlFor="text-content">텍스트 내용</label>
-        <div className="text-content" id="text-content">
+        <div className="text-content node-modal-content" id="text-content">
           <input
             id="text-content-input"
             type="text"
@@ -30,7 +30,7 @@ export const TextInput = ({
       </div>
       <div className="form-group">
         <label htmlFor="text-color">텍스트 색상</label>
-        <div className="text-color" id="text-color">
+        <div className="text-color node-modal-content" id="text-color">
           <input
             id="text-color-input"
             type="color"
@@ -42,14 +42,16 @@ export const TextInput = ({
       <div className="form-group">
         <label htmlFor="text-preview">텍스트 미리보기</label>
         <div
-          className="text-preview"
+          className="text-preview node-modal-content"
           id="text-preview"
           style={{ color: textColor, fontSize: selectedSize }}
         >
           {textContent}
         </div>
       </div>
-      <button type="submit">적용</button>
+      <div className="form-actions">
+        <button type="submit">적용</button>
+      </div>
     </>
   );
 };
