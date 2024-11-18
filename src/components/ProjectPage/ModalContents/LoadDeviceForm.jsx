@@ -1,7 +1,22 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+  useRef,
+} from 'react';
 import './LoadDeviceForm.css';
 import { NetworkContext } from '../../../contexts/NetworkContext';
-import { ExistDeviceCard } from './ExistDeviceCard';
+
+import { AgGridReact } from 'ag-grid-react';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-quartz.css';
+
+const rowSelection = {
+  mode: 'singleRow',
+  headerCheckbox: false,
+};
 
 export const LoadDeviceForm = ({ closeModal }) => {
   const {
@@ -14,8 +29,19 @@ export const LoadDeviceForm = ({ closeModal }) => {
     selectedSize,
   } = useContext(NetworkContext);
   const [dataReady, setDataReady] = useState(false);
+  const gridRef = useRef();
   const [selectedDevice, setSelectedDevice] = useState(null);
-  const [search, setSearch] = useState('');
+  const [columnDefs, setColumnDefs] = useState([
+    { headerName: 'ID', valueGetter: (p) => p.data.id, flex: 1 },
+    { headerName: '장비명', valueGetter: (p) => p.data.deviceName, flex: 2 },
+    {
+      headerName: '장비 별칭',
+      valueGetter: (p) => p.data.deviceAlias,
+      flex: 1,
+    },
+    { headerName: '장비 타입', valueGetter: (p) => p.data.deviceType, flex: 1 },
+    { headerName: 'IP', valueGetter: (p) => p.data.publicIp, flex: 1 },
+  ]);
 
   // 실장비 데이터 로드
   useEffect(() => {
@@ -25,7 +51,20 @@ export const LoadDeviceForm = ({ closeModal }) => {
   // 실장비 데이터 로드 이후, 장비 카드 생성
   useEffect(() => {
     setDataReady(true);
+    console.log(existDevices);
   }, [existDevices]);
+
+  const onSelectionChanged = useCallback(() => {
+    const seletedRows = gridRef.current.api.getSelectedRows();
+    setSelectedDevice(seletedRows[0]);
+  });
+
+  const defaultColDef = useMemo(() => {
+    return {
+      filter: 'agTextColumnFilter',
+      floatingFilter: true,
+    };
+  }, []);
 
   const handleLoadDeviceSubmit = async (e) => {
     e.preventDefault();
@@ -67,38 +106,26 @@ export const LoadDeviceForm = ({ closeModal }) => {
     closeModal();
   };
 
-  const filteredDevices = existDevices.filter((deviceData) => {
-    const lowerCaseQuery = search.toLowerCase();
-    return (
-      deviceData.deviceName.toLowerCase().includes(lowerCaseQuery) ||
-      deviceData.deviceAlias.toLowerCase().includes(lowerCaseQuery) ||
-      deviceData.publicIp.toLowerCase().includes(lowerCaseQuery)
-    );
-  });
-
   return (
-    <form className="load-device-form" onSubmit={handleLoadDeviceSubmit}>
-      <input
-        className="search-device-info"
-        type="text"
-        placeholder="장비 이름, 별칭 또는 아이피 검색 "
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-      <div className="loaded-devices">
-        {dataReady &&
-          filteredDevices.map((deviceData) => (
-            <ExistDeviceCard
-              key={deviceData.id}
-              deviceData={deviceData}
-              isSelected={selectedDevice?.id === deviceData.id}
-              onSelect={() => setSelectedDevice(deviceData)}
-            />
-          ))}
+    <>
+      <div className="ag-theme-quartz" style={{ height: 500 }}>
+        <AgGridReact
+          rowData={existDevices}
+          columnDefs={columnDefs}
+          defaultColDef={defaultColDef}
+          rowSelection={rowSelection}
+          pagination={true}
+          paginationPageSize={10}
+          paginationPageSizeSelector={[10, 25, 50]}
+          ref={gridRef}
+          onSelectionChanged={onSelectionChanged}
+        />
       </div>
-      <div className="form-actions">
-        <button type="submit">적용</button>
-      </div>
-    </form>
+      <form className="load-device-form" onSubmit={handleLoadDeviceSubmit}>
+        <div className="form-actions">
+          <button type="submit">적용</button>
+        </div>
+      </form>
+    </>
   );
 };
