@@ -31,7 +31,10 @@ export const LoadDeviceForm = ({ closeModal }) => {
   const [dataReady, setDataReady] = useState(false);
   const gridRef = useRef();
   const [selectedDevice, setSelectedDevice] = useState(null);
+
+  // AGgrid 라이브러리 설정
   const [columnDefs, setColumnDefs] = useState([
+    // 칼럼명 정의 및 데이터 설정
     { headerName: 'ID', valueGetter: (p) => p.data.id, flex: 1 },
     { headerName: '장비명', valueGetter: (p) => p.data.deviceName, flex: 2 },
     {
@@ -43,18 +46,8 @@ export const LoadDeviceForm = ({ closeModal }) => {
     { headerName: 'IP', valueGetter: (p) => p.data.publicIp, flex: 1 },
   ]);
 
-  // 실장비 데이터 로드
-  useEffect(() => {
-    fetchExistDeviceInfo();
-  }, []);
-
-  // 실장비 데이터 로드 이후, 장비 카드 생성
-  useEffect(() => {
-    setDataReady(true);
-    console.log(existDevices);
-  }, [existDevices]);
-
   const onSelectionChanged = useCallback(() => {
+    // 체크박스를 선택할 경우의 작업 설정
     const seletedRows = gridRef.current.api.getSelectedRows();
     setSelectedDevice(seletedRows[0]);
   });
@@ -65,6 +58,17 @@ export const LoadDeviceForm = ({ closeModal }) => {
       floatingFilter: true,
     };
   }, []);
+
+  // 실장비 데이터 로드
+  useEffect(() => {
+    fetchExistDeviceInfo();
+  }, []);
+
+  // 실장비 데이터 로드 이후, 장비 카드 생성
+  useEffect(() => {
+    setDataReady(true);
+    console.log(existDevices);
+  }, [existDevices]);
 
   const handleLoadDeviceSubmit = async (e) => {
     e.preventDefault();
@@ -108,7 +112,7 @@ export const LoadDeviceForm = ({ closeModal }) => {
 
   return (
     <>
-      <div className="ag-theme-quartz" style={{ height: 500 }}>
+      <div className="ag-theme-quartz" style={{ height: 400 }}>
         <AgGridReact
           rowData={existDevices}
           columnDefs={columnDefs}
@@ -117,8 +121,8 @@ export const LoadDeviceForm = ({ closeModal }) => {
           pagination={true}
           paginationPageSize={10}
           paginationPageSizeSelector={[10, 25, 50]}
-          ref={gridRef}
           onSelectionChanged={onSelectionChanged}
+          ref={gridRef}
         />
       </div>
       <form className="load-device-form" onSubmit={handleLoadDeviceSubmit}>

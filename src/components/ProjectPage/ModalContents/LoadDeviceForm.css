@@ -29,3 +29,7 @@
   justify-content: center;
   margin-top: 16px;
 }
+
+.ag-theme-loaddevice {
+  --ag-grid-size: 20px;
+}

@@ -6,7 +6,7 @@ import { LoadDeviceForm } from './LoadDeviceForm';
 export const CreateNodeContent = ({ closeModal }) => {
   const [isCreateForm, setIsCreateForm] = useState(true);
   return (
-    <>
+    <div className="create-node-content">
       <span className="create-option-container">
         <div
           className={`option load-option ${
@@ -29,6 +29,6 @@ export const CreateNodeContent = ({ closeModal }) => {
         {!isCreateForm && <LoadDeviceForm closeModal={closeModal} />}
         {isCreateForm && <CreateObjectForm closeModal={closeModal} />}
       </div>
-    </>
+    </div>
   );
 };
