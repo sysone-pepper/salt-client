@@ -33,9 +33,9 @@ const Sidebar = () => {
   const { nodes, isSidebarPanned, setIsSidebarPanned } =
     useContext(NetworkContext);
 
-  const [topUsageOption, setTopUsageOption] = useState('MEM');
+  const [topUsageOption, setTopUsageOption] = useState('Traffic');
   const [monitorDevices, setMonitorDevices] = useState([]);
-  const [monitorDeviceOption, setMonitorDeviceOption] = useState('DISK');
+  const [monitorDeviceOption, setMonitorDeviceOption] = useState('CPU');
   const [modalOpen, setModalOpen] = useState(false);
   const [modalOption, setModalOption] = useState(null);
   const [tables, setTables] = useState([
@@ -64,6 +64,34 @@ const Sidebar = () => {
 
   const dragIndexRef = useRef(null);
 
+  const modalChilds = {
+    monitorDevice: (
+      <MonitoringStatusContent
+        existDevices={nodes
+          .filter((node) => node.data.nodeType === 'EXIST_DEVICE')
+          .map((node) => node.data.deviceAlias)}
+        monitorDevices={monitorDevices}
+        setMonitorDevices={setMonitorDevices}
+        monitorDeviceOption={monitorDeviceOption}
+        setMonitorDeviceOption={setMonitorDeviceOption}
+        closeModal={() => {
+          setModalOpen(false);
+          setModalOption(null);
+        }}
+      />
+    ),
+    topUsage: (
+      <TopUsageOptioningContent
+        topUsageOption={topUsageOption}
+        setTopUsageOption={setTopUsageOption}
+        closeModal={() => {
+          setModalOpen(false);
+          setModalOption(null);
+        }}
+      />
+    ),
+  };
+
   const createSideBarTables = async () => {
     const filteredNode = nodes.filter(
       (node) => node.data.nodeType === 'EXIST_DEVICE',
@@ -83,6 +111,9 @@ const Sidebar = () => {
 
       const res = await getDeviceData(node.data.deviceId, 30);
       if (res.success && res.data.length > 0) {
+        res.data.map((data) => {
+          data.trafficAmount = data.nicInBytesPerSec + data.nicOutBytesPerSec;
+        });
         const deviceInfo = res.data[0];
         const monitorLimit = 30;
         const hasTrouble =
@@ -100,9 +131,10 @@ const Sidebar = () => {
           serverName: node.data.deviceAlias,
           chartData: res.data,
         };
-        (newDeviceData.deviceInfo.trafficAmount =
-          deviceInfo.nicInBytesPerSec + deviceInfo.nicOutBytesPerSec),
-          deviceData.push(newDeviceData);
+        newDeviceData.deviceInfo.trafficAmount =
+          deviceInfo.nicInBytesPerSec + deviceInfo.nicOutBytesPerSec;
+
+        deviceData.push(newDeviceData);
       }
     });
 
@@ -143,10 +175,17 @@ const Sidebar = () => {
         table.toDisplayData = deviceStatusData;
       } else if (table.source === 'monitorDevice') {
         table.data = deviceData;
-        table.columnAliases = ['서버 명', monitorDeviceOption, '차트'];
+        table.columnAliases = [
+          '서버 명',
+          `${monitorDeviceOption} (${
+            monitorDeviceOption === 'Traffic' ? '' : '%'
+          })`,
+          '차트',
+        ];
         table.toDisplayData = deviceData
           .filter((data) => monitorDevices.includes(data.serverName))
           .map((data) => {
+            if (monitorDeviceOption === 'Traffic') console.log(data);
             return {
               serverName: data.serverName,
               amount: data.deviceInfo[[MonitoringOptions[monitorDeviceOption]]],
@@ -239,32 +278,7 @@ const Sidebar = () => {
     <>
       {modalOpen && (
         <Modal
-          child={
-            modalOption === 1 ? (
-              <MonitoringStatusContent
-                existDevices={nodes
-                  .filter((node) => node.data.nodeType === 'EXIST_DEVICE')
-                  .map((node) => node.data.deviceAlias)}
-                monitorDevices={monitorDevices}
-                setMonitorDevices={setMonitorDevices}
-                monitorDeviceOption={monitorDeviceOption}
-                setMonitorDeviceOption={setMonitorDeviceOption}
-                closeModal={() => {
-                  setModalOpen(false);
-                  setModalOption(null);
-                }}
-              />
-            ) : (
-              <TopUsageOptioningContent
-                topUsageOption={topUsageOption}
-                setTopUsageOption={setTopUsageOption}
-                closeModal={() => {
-                  setModalOpen(false);
-                  setModalOption(null);
-                }}
-              />
-            )
-          }
+          child={modalChilds[modalOption]}
           closeModal={() => {
             setModalOpen(false);
             setModalOption(null);
@@ -279,12 +293,11 @@ const Sidebar = () => {
         <aside className="sidebar">
           <ul className="table-list">
             {tables.map((table, index) => {
-              const tableSource = table.source;
               const dataSource = table;
               const dataSourceTitle =
-                index === 0
+                table.source === 'deviceStatus'
                   ? '장비 현황'
-                  : index === 1
+                  : table.source === 'topUsage'
                   ? `장비 ${topUsageOption} Top5`
                   : `장비 ${monitorDeviceOption} 모니터링`;
 
@@ -302,9 +315,7 @@ const Sidebar = () => {
                         className="filter-toggling-btn"
                         onClick={() => {
                           setModalOpen(true);
-                          setModalOption(
-                            dataSourceTitle.endsWith('Top5') ? 2 : 1,
-                          );
+                          setModalOption(table.source);
                         }}
                       >
                         <i className="bi bi-gear" />
