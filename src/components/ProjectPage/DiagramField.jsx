@@ -15,6 +15,7 @@ import { CustomIconNode } from './CustomIconNode';
 import { CustomTextNode } from './CustomTextNode';
 import { getUsers } from '../../api/User';
 import { useAuth } from '../../contexts/AuthContext';
+import ServerDashboard from '../../pages/ServerDashboard';
 
 import closeIcon from '../../assets/images/add-icon.png';
 import openIcon from '../../assets/images/open-navigator-icon.png';
@@ -510,21 +511,27 @@ export const DiagramField = ({ projectId }) => {
     }
   }, [isObjectDelete, cyRef, deleteObject]);
 
+  useEffect(() => {
+    if (cyRef.current && !isEditing) {
+      cyRef.current.on('click', 'node.EXIST_DEVICE', (event) => {
+        setSelectedDevice(event.target.json());
+        setModalOpen(true);
+      });
+    }
+  }, [cyRef.current, isEditing]);
+
   // 편집 권한에 따른 Cytoscape 설정 업데이트
 
   return (
     <div className="diagram-field">
       {!isEditing && modalOpen && (
-        // TODO: 실장비 데이터 차트 붙일 것. (sohottoday)
         <Modal
+          className="modal-large"
           child={
-            <>
-              <>
-                {`선택된 장비는 ${selectedDevice?.data.deviceAlias}입니다.`}
-                <br />
-              </>
-              <>{`참고로 실제 장비 아이디는 ${selectedDevice?.data.deviceId}입니다.`}</>
-            </>
+            <ServerDashboard
+              deviceId={selectedDevice.data.deviceId}
+              deviceAlias={selectedDevice.data.deviceAlias}
+            />
           }
           closeModal={() => {
             setModalOpen(false);

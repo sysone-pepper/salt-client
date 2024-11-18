@@ -1,7 +1,7 @@
 import React from 'react';
 import './Modal.css';
 
-export const Modal = ({ child, closeModal }) => {
+export const Modal = ({ child, closeModal, className }) => {
   return (
     <div
       className="modal-overlay"
@@ -11,7 +11,7 @@ export const Modal = ({ child, closeModal }) => {
         }
       }}
     >
-      <div className="modal-content">
+      <div className={`modal-content ${className || ''}`}>
         <button className="modal-close-button" onClick={closeModal}>
           &times;
         </button>
