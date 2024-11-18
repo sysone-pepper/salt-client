@@ -207,6 +207,11 @@ const Toolbar = () => {
           />
         )}
       </div>
+      {!isEditing && (
+        <div className="tb-alert-message-container">
+          경고 메세지가 올라올겁니다.
+        </div>
+      )}
       {isEditing && (
         <div
           className={`diagram-editing-tools ${isEditing ? '' : 'tool-hidden'}`}
