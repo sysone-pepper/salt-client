@@ -1,6 +1,7 @@
 import Row from './Row';
 
 const Table = ({ source }) => {
+  if (source.source === 'monitorDevice') console.log(source.toDisplayData);
   return (
     <table className="table-container">
       <thead>

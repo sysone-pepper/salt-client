@@ -15,6 +15,8 @@ import { Modal } from '../../common/Modal.jsx';
 import { getDeviceData } from '../../../api/Dashboard.js';
 import { useTimeout } from '../../../hooks/useTimeout.jsx';
 import { MonitoringOptions } from '../../../constants/MonitoringOptions.js';
+import { MonitoringStatusContent } from '../ModalContents/MonitoringStatusContent.jsx';
+import { TopUsageOptioningContent } from '../ModalContents/TopUsageOptioningContent.jsx';
 
 const deviceCategory = {
   1: 'Server',
@@ -28,9 +30,14 @@ const deviceCategory = {
 };
 
 const Sidebar = () => {
-  const { nodes, dataReady, isSidebarPanned, setIsSidebarPanned } =
+  const { nodes, isSidebarPanned, setIsSidebarPanned } =
     useContext(NetworkContext);
+
+  const [topUsageOption, setTopUsageOption] = useState('MEM');
+  const [monitorDevices, setMonitorDevices] = useState([]);
+  const [monitorDeviceOption, setMonitorDeviceOption] = useState('DISK');
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalOption, setModalOption] = useState(null);
   const [tables, setTables] = useState([
     {
       source: 'deviceStatus',
@@ -54,10 +61,6 @@ const Sidebar = () => {
       columnAliases: ['서버 명', 'Traffic', '차트'],
     },
   ]);
-
-  const [topUsageOption, setTopUsageOption] = useState('MEM');
-  const [monitorDevices, setMonitorDevices] = useState([]);
-  const [monitorDeviceOption, setMonitorDeviceOption] = useState('DISK');
 
   const dragIndexRef = useRef(null);
 
@@ -141,8 +144,9 @@ const Sidebar = () => {
       } else if (table.source === 'monitorDevice') {
         table.data = deviceData;
         table.columnAliases = ['서버 명', monitorDeviceOption, '차트'];
-        table.toDisplayData = deviceData.map((data) => {
-          if (monitorDevices.includes(data.serverName)) {
+        table.toDisplayData = deviceData
+          .filter((data) => monitorDevices.includes(data.serverName))
+          .map((data) => {
             return {
               serverName: data.serverName,
               amount: data.deviceInfo[[MonitoringOptions[monitorDeviceOption]]],
@@ -150,8 +154,7 @@ const Sidebar = () => {
                 (data) => data[[MonitoringOptions[monitorDeviceOption]]],
               ),
             };
-          }
-        });
+          });
       } else if (table.source === 'topUsage') {
         table.data = topUsageData;
         table.toDisplayData = topUsageData.map((data) => {
@@ -166,6 +169,7 @@ const Sidebar = () => {
       }
       return table;
     });
+
     setTables(newTables);
   };
 
@@ -178,13 +182,13 @@ const Sidebar = () => {
       (node) => node.data.nodeType === 'EXIST_DEVICE',
     );
     const newMonitorDevices = filteredNode.map((node) => node.data.deviceAlias);
+    console.log(newMonitorDevices);
     setMonitorDevices(newMonitorDevices);
   }, [nodes]);
 
   useEffect(() => {
-    if (dataReady) {
-      createSideBarTables();
-    }
+    console.log('detected');
+    createSideBarTables();
   }, [topUsageOption, monitorDevices, monitorDeviceOption]);
 
   useEffect(() => {
@@ -236,7 +240,38 @@ const Sidebar = () => {
   return (
     <>
       {modalOpen && (
-        <Modal child={<></>} closeModal={() => setModalOpen(false)} />
+        <Modal
+          child={
+            modalOption === 1 ? (
+              <MonitoringStatusContent
+                existDevices={nodes
+                  .filter((node) => node.data.nodeType === 'EXIST_DEVICE')
+                  .map((node) => node.data.deviceAlias)}
+                monitorDevices={monitorDevices}
+                setMonitorDevices={setMonitorDevices}
+                monitorDeviceOption={monitorDeviceOption}
+                setMonitorDeviceOption={setMonitorDeviceOption}
+                closeModal={() => {
+                  setModalOpen(false);
+                  setModalOption(null);
+                }}
+              />
+            ) : (
+              <TopUsageOptioningContent
+                topUsageOption={topUsageOption}
+                setTopUsageOption={setTopUsageOption}
+                closeModal={() => {
+                  setModalOpen(false);
+                  setModalOption(null);
+                }}
+              />
+            )
+          }
+          closeModal={() => {
+            setModalOpen(false);
+            setModalOption(null);
+          }}
+        />
       )}
       <div
         className={`sidebar-wrapper${
@@ -269,6 +304,9 @@ const Sidebar = () => {
                         className="filter-toggling-btn"
                         onClick={() => {
                           setModalOpen(true);
+                          setModalOption(
+                            dataSourceTitle.endsWith('Top5') ? 2 : 1,
+                          );
                         }}
                       >
                         <i className="bi bi-gear" />
