@@ -32,37 +32,8 @@
   margin-top: 16px;
 }
 
-/* Apply custom styles to match the form's dark theme */
-.ag-theme-alpine-dark {
-  --ag-background-color: #2a3b4c; /* Match form background color */
-  --ag-header-background-color: #3b4f63; /* Darker header background */
-  --ag-border-color: #4a637b; /* Border color matching form elements */
-  --ag-odd-row-background-color: #2e3e50; /* Slightly different color for odd rows */
-  --ag-even-row-background-color: #2a3b4c; /* Even rows matching form background */
-  --ag-row-hover-color: #4a637b; /* Row hover color */
-  --ag-header-foreground-color: #e0f7fa; /* Header text color */
-  --ag-foreground-color: #e0f7fa; /* General text color */
-}
-
-/* Customize header cells for better readability */
-.ag-theme-alpine-dark .ag-header-cell {
-  font-weight: bold;
-  font-size: 1rem;
-}
-
-/* Customize grid rows for better spacing and readability */
-.ag-theme-alpine-dark .ag-row {
-  font-size: 0.9rem;
-  padding: 0.5rem;
-}
-
-/* Customize pagination controls */
-.ag-theme-alpine-dark .ag-paging-panel {
-  background-color: #2a3b4c;
-  color: #e0f7fa;
-}
-
-/* Customize selected row styling */
-.ag-theme-alpine-dark .ag-row-selected {
-  background-color: #4a637b !important;
+.ag-theme-quartz-dark {
+  --ag-header-height: 2rem !important;
+  --ag-row-height: 2rem !important;
+  --ag-odd-row-background-color: rgb(0, 0, 0, 0.03) !important;
 }

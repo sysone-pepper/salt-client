@@ -23,18 +23,21 @@
   border: 1px solid rgb(100, 100, 100);
 }
 
+
+
 .form-group input,
 .form-group select {
-  background-color:  #212830;
+  background-color: #28313e;
   color: #a0aec0;
   padding: 10px;
   border-radius: 4px;
   box-sizing: border-box;
+  outline: none;
 }
 
 .device-icons {
   border-radius: .3rem;
-  width: calc(100% - 21px);
+  width: calc(100% - 22px);
   overflow-x: auto;
   display: flex;
   white-space: nowrap;

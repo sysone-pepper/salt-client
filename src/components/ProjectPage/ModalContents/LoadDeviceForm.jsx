@@ -11,7 +11,7 @@ import { NetworkContext } from '../../../contexts/NetworkContext';
 
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
+import 'ag-grid-community/styles/ag-theme-quartz.css';
 
 const rowSelection = {
   mode: 'singleRow',
@@ -35,19 +35,23 @@ export const LoadDeviceForm = ({ closeModal }) => {
   // AGgrid 라이브러리 설정
   const [columnDefs, setColumnDefs] = useState([
     // 칼럼명 정의 및 데이터 설정
-    { headerName: 'ID', valueGetter: (p) => p.data.id, flex: 1 },
-    { headerName: '장비명', valueGetter: (p) => p.data.deviceName, flex: 2 },
+    { headerName: 'ID', valueGetter: (p) => p.data.id, flex: 0.5 },
+    { headerName: '장비명', valueGetter: (p) => p.data.deviceName, flex: 1 },
     {
       headerName: '장비 별칭',
       valueGetter: (p) => p.data.deviceAlias,
       flex: 1,
     },
-    { headerName: '장비 타입', valueGetter: (p) => p.data.deviceType, flex: 1 },
-    { headerName: 'IP', valueGetter: (p) => p.data.publicIp, flex: 1 },
+    {
+      headerName: '장비 타입',
+      valueGetter: (p) => p.data.deviceType,
+      flex: 0.8,
+    },
+    { headerName: 'IP', valueGetter: (p) => p.data.publicIp, flex: 0.7 },
   ]);
 
   const onSelectionChanged = useCallback(() => {
-    // 체크박스를 선택할 경우의 작업 설정
+    // 체크박스를 선택할 경우 selectedDevice변경
     const seletedRows = gridRef.current.api.getSelectedRows();
     setSelectedDevice(seletedRows[0]);
   });
@@ -55,7 +59,6 @@ export const LoadDeviceForm = ({ closeModal }) => {
   const defaultColDef = useMemo(() => {
     return {
       filter: 'agTextColumnFilter',
-      floatingFilter: true,
     };
   }, []);
 
@@ -112,7 +115,10 @@ export const LoadDeviceForm = ({ closeModal }) => {
 
   return (
     <>
-      <div className="ag-theme-alpine-dark" style={{ height: 400 }}>
+      <div
+        className="ag-theme-quartz-dark ag-theme-load-device"
+        style={{ height: 400 }}
+      >
         <AgGridReact
           rowData={existDevices}
           columnDefs={columnDefs}
