@@ -108,7 +108,6 @@ export const CreateObjectForm = ({ closeModal }) => {
             calculatedWidth += avgWidth.english;
           }
         }
-        console.log(calculatedWidth);
 
         newNodeData = {
           nodeType: 'TEXT',

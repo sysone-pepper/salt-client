@@ -182,12 +182,10 @@ const Sidebar = () => {
       (node) => node.data.nodeType === 'EXIST_DEVICE',
     );
     const newMonitorDevices = filteredNode.map((node) => node.data.deviceAlias);
-    console.log(newMonitorDevices);
     setMonitorDevices(newMonitorDevices);
   }, [nodes]);
 
   useEffect(() => {
-    console.log('detected');
     createSideBarTables();
   }, [topUsageOption, monitorDevices, monitorDeviceOption]);
 
