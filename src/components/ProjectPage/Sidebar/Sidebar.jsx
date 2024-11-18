@@ -14,11 +14,6 @@ import { Modal } from '../../common/Modal.jsx';
 import { getDeviceData } from '../../../api/Dashboard.js';
 import { useTimeout } from '../../../hooks/useTimeout.jsx';
 
-const sidebarModals = {
-  deviceStatus: (onModalClose) => <div />,
-  topTrafficUsage: (onModalClose) => <div />,
-  deviceTraffic: (onModalClose) => <div />,
-};
 const deviceCategory = {
   1: 'Server',
   2: 'Network',
@@ -33,7 +28,7 @@ const deviceCategory = {
 const Sidebar = () => {
   const { nodes, dataReady, isSidebarPanned, setIsSidebarPanned } =
     useContext(NetworkContext);
-  const [modalContentName, setModalContentName] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const [tables, setTables] = useState([
     {
       source: 'deviceStatus',
@@ -60,8 +55,6 @@ const Sidebar = () => {
   const dragIndexRef = useRef(null);
 
   const createSideBarTables = async () => {
-    console.log('update data');
-
     const filteredNode = nodes.filter(
       (node) => node.data.nodeType === 'EXIST_DEVICE',
     );
@@ -218,6 +211,9 @@ const Sidebar = () => {
 
   return (
     <>
+      {modalOpen && (
+        <Modal child={<></>} closeModal={() => setModalOpen(false)} />
+      )}
       <div
         className={`sidebar-wrapper${
           isSidebarPanned ? ' expanded' : ' collapsed'
@@ -242,9 +238,10 @@ const Sidebar = () => {
                     {dataSourceTitle === '장비 현황' ? null : (
                       <button
                         className="filter-toggling-btn"
-                        onClick={() =>
-                          handleDeviceFilteringModalOpen(tableSource)
-                        }
+                        onClick={() => {
+                          console.log('toggled');
+                          setModalOpen(true);
+                        }}
                       >
                         <i className="bi bi-gear" />
                       </button>
@@ -259,14 +256,6 @@ const Sidebar = () => {
           </ul>
         </aside>
       </div>
-      {modalContentName && (
-        <Modal
-          child={sidebarModals[modalContentName](() =>
-            setModalContentName(null),
-          )}
-          closeModal={() => setModalContentName(null)}
-        />
-      )}
       <div className="sb-pan-btn" onClick={toggleSidebar}>
         <img className="sb-pan-icon" src={sidebarToggleIcon} />
       </div>
