@@ -36,17 +36,14 @@ export const MonitoringStatusContent = ({
         onChange={(event) => {
           setSelectedOption(event.target.value);
         }}
+        defaultValue={monitorDeviceOption}
       >
-        {Object.keys(MonitoringOptions).map((item) => {
-          if (item === selectedOption) {
-            return (
-              <option value={item} selected>
-                {item}
-              </option>
-            );
-          } else {
-            return <option value={item}>{item}</option>;
-          }
+        {Object.keys(MonitoringOptions).map((item, idx) => {
+          return (
+            <option value={item} key={idx}>
+              {item}
+            </option>
+          );
         })}
       </select>
       <h3>장비 선택</h3>

@@ -22,17 +22,14 @@ export const TopUsageOptioningContent = ({
         onChange={(event) => {
           setSelectedOption(event.target.value);
         }}
+        defaultValue={topUsageOption}
       >
-        {Object.keys(MonitoringOptions).map((item) => {
-          if (item === selectedOption) {
-            return (
-              <option value={item} selected>
-                {item}
-              </option>
-            );
-          } else {
-            return <option value={item}>{item}</option>;
-          }
+        {Object.keys(MonitoringOptions).map((item, idx) => {
+          return (
+            <option value={item} key={idx}>
+              {item}
+            </option>
+          );
         })}
       </select>
       <button type="submit">확인</button>
