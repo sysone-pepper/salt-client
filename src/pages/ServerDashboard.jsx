@@ -11,10 +11,9 @@ import { useParams } from 'react-router-dom';
 HighchartsMore(Highcharts);
 SolidGauge(Highcharts);
 
-const ServerDashboard = ({ closeModal }) => {
+const ServerDashboard = ({ deviceId, deviceAlias }) => {
   const [activeTab, setActiveTab] = useState('요약');
   const [usageData, setUsageData] = useState(null);
-  const { deviceId } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -281,112 +280,96 @@ const ServerDashboard = ({ closeModal }) => {
   };
 
   return (
-    <div className="sd-modal-overlay">
-      <div className="sd-modal-content">
-        <button className="sb-close-button" onClick={closeModal}>
-          ×
-        </button>
-        <div className="dashboard-container">
-          <div className="modal-header">
-            <div className="header-content">
-              <div className="logo-placeholder">
-                <img
-                  src={saltLogo}
-                  alt="Salt Team Logo"
-                  className="salt-logo"
-                />
-              </div>
-              <nav className="navigation">
-                {['요약', 'CPU', 'Memory', 'DISK', 'NIC'].map((item) => (
-                  <button
-                    key={item}
-                    className={`nav-button ${
-                      activeTab === item ? 'active' : ''
-                    }`}
-                    onClick={() => setActiveTab(item)}
-                  >
-                    {item}
-                  </button>
-                ))}
-              </nav>
-            </div>
-            <div className="user-section">
-              <div>현재 사용자 정보</div>
-              <div>님 환영합니다.</div>
-            </div>
+    <div className="dashboard-container">
+      <div className="modal-header">
+        <div className="header-content">
+          <div className="logo-placeholder">
+            <img src={saltLogo} alt="Salt Team Logo" className="salt-logo" />
           </div>
-          <div className="welcome-section">
-            <h1 className="welcome-text">
-              <span>서버이름</span>
-              <span>장비 상세</span>
-            </h1>
-          </div>
-          <div className="cards-grid">
-            {activeTab === '요약' ? (
-              <>
-                {Array.from({ length: 8 }).map((_, index) => {
-                  const latestData =
-                    usageData && usageData[usageData.length - 1];
-                  let latestUsage = null;
-                  let itemType = '';
-
-                  if (index === 0) {
-                    itemType = 'CPU';
-                    latestUsage = latestData ? latestData.cpuProcessor : null;
-                  } else if (index === 1) {
-                    itemType = 'Memory';
-                    latestUsage = latestData
-                      ? latestData.usedMemoryPercentage
-                      : null;
-                  } else if (index === 2) {
-                    itemType = 'Disk';
-                    latestUsage = latestData
-                      ? latestData.usedDiskPercentage
-                      : null;
-                  }
-
-                  return (
-                    <div key={index} className="card">
-                      <div className="card-value">
-                        {latestUsage !== null ? (
-                          <HighchartsReact
-                            highcharts={Highcharts}
-                            options={getDonutOptions(
-                              `${itemType} 사용률`,
-                              latestUsage,
-                            )}
-                          />
-                        ) : (
-                          <div>Loading...</div>
-                        )}
-                        <div className="donut-label">
-                          <div className="donut-title">{itemType}</div>
-                          <div className="donut-percentage">{latestUsage}%</div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </>
-            ) : (
-              <div className="card-large">
-                <div className="card-header">
-                  <div className="card-title">{activeTab} 사용률 추이</div>
-                </div>
-                <div className="card-value">
-                  {usageData ? (
-                    <HighchartsReact
-                      highcharts={Highcharts}
-                      options={getChartOptions(activeTab)}
-                    />
-                  ) : (
-                    <div>Loading...</div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+          <nav className="navigation">
+            {['요약', 'CPU', 'Memory', 'DISK', 'NIC'].map((item) => (
+              <button
+                key={item}
+                className={`nav-button ${activeTab === item ? 'active' : ''}`}
+                onClick={() => setActiveTab(item)}
+              >
+                {item}
+              </button>
+            ))}
+          </nav>
         </div>
+        <div className="user-section">
+          <div>현재 사용자 정보</div>
+          <div>님 환영합니다.</div>
+        </div>
+      </div>
+      <div className="welcome-section">
+        <h1 className="welcome-text">
+          <span>서버이름 : </span>
+          <span>{deviceAlias}</span>
+        </h1>
+      </div>
+      <div className="cards-grid">
+        {activeTab === '요약' ? (
+          <>
+            {Array.from({ length: 8 }).map((_, index) => {
+              const latestData = usageData && usageData[usageData.length - 1];
+              let latestUsage = null;
+              let itemType = '';
+
+              if (index === 0) {
+                itemType = 'CPU';
+                latestUsage = latestData ? latestData.cpuProcessor : null;
+              } else if (index === 1) {
+                itemType = 'Memory';
+                latestUsage = latestData
+                  ? latestData.usedMemoryPercentage
+                  : null;
+              } else if (index === 2) {
+                itemType = 'Disk';
+                latestUsage = latestData ? latestData.usedDiskPercentage : null;
+              }
+
+              return (
+                <div key={index} className="card">
+                  <div className="card-value">
+                    {latestUsage !== null ? (
+                      <HighchartsReact
+                        highcharts={Highcharts}
+                        options={getDonutOptions(
+                          `${itemType} 사용률`,
+                          latestUsage,
+                        )}
+                      />
+                    ) : (
+                      <div>Loading...</div>
+                    )}
+                    <div className="donut-label">
+                      <div className="donut-title">{itemType}</div>
+                      <div className="donut-percentage">{latestUsage}%</div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </>
+        ) : (
+          <div className="card-large">
+            <div className="card-header">
+              <div className="card-title">{activeTab} 사용률 추이</div>
+            </div>
+            <div className="card-value">
+              {usageData ? (
+                <HighchartsReact
+                  highcharts={Highcharts}
+                  options={getChartOptions(activeTab)}
+                />
+              ) : (
+                <div>Loading...</div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

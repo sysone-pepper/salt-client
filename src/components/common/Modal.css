@@ -33,6 +33,14 @@
   overflow-y: auto;
 }
 
+.modal-content.modal-large {
+  width: 80%;
+  max-width: 1200px;
+  height: auto;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
 .modal-close-button {
   position: absolute;
   top: 15px;
@@ -53,5 +61,11 @@
   .modal-content {
     width: 95%;
     padding: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .modal-content.modal-large {
+    width: 95%;
   }
 }
