@@ -24,8 +24,14 @@
   border: none;
   cursor: pointer;
   z-index: 10;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: auto;
+}
+
+.delete-icon {
+  width: 80%;
+  object-fit: contain;
+  object-position: center;
 }
 
 .delete-button:hover {
