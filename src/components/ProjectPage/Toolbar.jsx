@@ -5,6 +5,7 @@ import './Toolbar.css';
 import { Modal } from '../common/Modal';
 import { CreateNodeContent } from './ModalContents/CreateNodeContent';
 import { useAuth } from '../../contexts/AuthContext';
+import RotatingText from './RotatingText';
 
 const HIDDEN_CLASSNAME = 'hidden';
 const NO_AUTHORITY_MESSAGE = '권한이 없습니다. 관리자에게 권한을 요청하세요';
@@ -34,6 +35,13 @@ const Toolbar = () => {
   const [inputSize, setInputSize] = useState(20);
   const [modalOpen, setModalOpen] = useState(false);
   const fileInputRef = useRef(null);
+
+  const sentences = [
+    '안녕하세요! 환영합니다.',
+    '이 문장은 일정 시간마다 바뀝니다.',
+    'React와 setInterval을 활용해 구현되었습니다.',
+    '다양한 문장을 추가해 보세요!',
+  ];
 
   // 구성도 편집 - ALL권한용 기능모음
 
@@ -209,7 +217,7 @@ const Toolbar = () => {
       </div>
       {!isEditing && (
         <div className="tb-alert-message-container">
-          경고 메세지가 올라올겁니다.
+          <RotatingText sentences={sentences} interval={5000} />
         </div>
       )}
       {isEditing && (
