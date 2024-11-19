@@ -193,20 +193,6 @@ const Toolbar = () => {
 
   return (
     <div className="toolbar">
-      <div className="hidden-elements">
-        <input
-          type="file"
-          ref={fileInputRef}
-          style={{ display: 'none' }}
-          onChange={handleFileChange}
-        />
-        {modalOpen && (
-          <Modal
-            child={<CreateNodeContent closeModal={() => setModalOpen(false)} />}
-            closeModal={() => setModalOpen(false)}
-          />
-        )}
-      </div>
       {isEditing && (
         <div
           className={`diagram-editing-tools ${isEditing ? '' : 'tool-hidden'}`}
@@ -287,13 +273,29 @@ const Toolbar = () => {
           </button>
         </div>
       )}
-      <button
-        disabled={!isEditingPermitted}
-        className="toolbar-button toolbar-edit-button"
-        onClick={toggleEditing}
-      >
-        편집{isEditing ? '비활성' : '활성'}
-      </button>
+      <div className="hidden-elements">
+        <input
+          type="file"
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+          onChange={handleFileChange}
+        />
+        {modalOpen && (
+          <Modal
+            child={<CreateNodeContent closeModal={() => setModalOpen(false)} />}
+            closeModal={() => setModalOpen(false)}
+          />
+        )}
+      </div>
+      <div className="toolbar-edit-button">
+        <button
+          disabled={!isEditingPermitted}
+          className="toolbar-button toolbar-edit-button"
+          onClick={toggleEditing}
+        >
+          편집{isEditing ? '비활성' : '활성'}
+        </button>
+      </div>
     </div>
   );
 };

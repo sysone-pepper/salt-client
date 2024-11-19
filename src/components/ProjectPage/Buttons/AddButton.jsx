@@ -47,7 +47,7 @@ export const AddButton = ({
           className="add-button-content"
         />
       </div>
-      <div
+      {/* <div
         className={`add-button-symbol-container ${needCancel ? 'cancel' : ''}`}
       >
         <img
@@ -55,7 +55,7 @@ export const AddButton = ({
           alt="더하기 기호"
           className={`add-button-symbol ${needCancel ? 'rotate' : ''}`}
         />
-      </div>
+      </div> */}
       {children}
     </button>
   );
