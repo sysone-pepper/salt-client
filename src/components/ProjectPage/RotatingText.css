@@ -1,0 +1,38 @@
+.text-container {
+    text-align: center;
+    position: relative;
+    display: inline-block;
+    height: 30px; /* 고정 높이 설정 */
+    overflow: hidden; /* 영역 밖의 텍스트 숨김 */
+  }
+  
+  .fade-in-up {
+    animation: fadeInUp 1s forwards;
+  }
+  
+  .fade-out-up {
+    animation: fadeOutUp 1s forwards;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeOutUp {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+  }
+  

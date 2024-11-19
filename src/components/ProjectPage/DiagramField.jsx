@@ -266,7 +266,6 @@ export const DiagramField = ({ projectId }) => {
         });
 
         cy.on('click', 'node.EXIST_DEVICE', (event) => {
-          console.log(event.target.json());
           setSelectedDevice(event.target.json());
           setModalOpen(true);
         });
@@ -309,15 +308,11 @@ export const DiagramField = ({ projectId }) => {
       }
 
       if (!navigatorInitialized && cyRef.current) {
-        console.log('flag');
         const navElem = document.getElementById('cytoscape-navigator');
-        console.log('flag');
         while (navElem.firstChild) {
           navElem.firstChild.remove();
         }
-        console.log('flag');
         cyRef.current.navigator(navConfig);
-        console.log('flag');
         setNavigatorInitialized(true);
       }
       return () => {
@@ -339,7 +334,6 @@ export const DiagramField = ({ projectId }) => {
         const newNodes = [...nodes].map((node, idx) => {
           if (idx === 0) {
             const newBgNode = { ...bgNode.json() };
-            console.log(newBgNode);
 
             newBgNode.data.src = bgImgInfo.src;
             newBgNode.data.size = bgImgInfo.size;
@@ -408,7 +402,6 @@ export const DiagramField = ({ projectId }) => {
       }
 
       setNavigatorInitialized(false);
-      console.log('flag2');
       setDataReady(false);
     }
   }, [bgImgInfo, dataReady]);

@@ -5,6 +5,7 @@ import './Toolbar.css';
 import { Modal } from '../common/Modal';
 import { CreateNodeContent } from './ModalContents/CreateNodeContent';
 import { useAuth } from '../../contexts/AuthContext';
+import RotatingText from './RotatingText';
 import { updateDiagramThumbnail } from '../../api/Diagram';
 
 const HIDDEN_CLASSNAME = 'hidden';
@@ -36,6 +37,13 @@ const Toolbar = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const fileInputRef = useRef(null);
   const thumbnailInputRef = useRef(null);
+
+  const sentences = [
+    '안녕하세요! 환영합니다.',
+    '이 문장은 일정 시간마다 바뀝니다.',
+    'React와 setInterval을 활용해 구현되었습니다.',
+    '다양한 문장을 추가해 보세요!',
+  ];
 
   // 구성도 편집 - ALL권한용 기능모음
 
@@ -239,6 +247,11 @@ const Toolbar = () => {
           />
         )}
       </div>
+      {!isEditing && (
+        <div className="tb-alert-message-container">
+          <RotatingText sentences={sentences} interval={5000} />
+        </div>
+      )}
       {isEditing && (
         <div
           className={`diagram-editing-tools ${isEditing ? '' : 'tool-hidden'}`}

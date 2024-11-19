@@ -71,7 +71,19 @@ export function NetworkProvider({ children }) {
 
   const fetchExistDeviceInfo = async () => {
     const data = await api.fetchExistDevices(curProjectId);
-    setExistDevices(data);
+    const nodeIps = [];
+    nodes.map((node, idx) => {
+      if (idx > 0 && node.data.nodeType.endsWith('EXIST_DEVICE')) {
+        nodeIps.push(node.data.publicIp);
+      } else if (idx > 0 && node.data.nodeType.endsWith('NEW_DEVICE')) {
+        nodeIps.push(node.data.newDevicePublicIp);
+      }
+    });
+
+    const filteredData = data.filter(
+      (device) => !nodeIps.includes(device.publicIp),
+    );
+    setExistDevices(filteredData);
   };
 
   const createNodeId = async (nodeData) => {

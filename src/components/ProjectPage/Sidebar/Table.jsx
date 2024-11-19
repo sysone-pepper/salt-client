@@ -13,7 +13,7 @@ const Table = ({ source }) => {
         </tr>
       </thead>
       <tbody>
-        {source.source === 'deviceTraffic'
+        {source.source === 'monitorDevice'
           ? source.toDisplayData.map((rowData, index) => (
               <Row key={index} rowData={rowData} needChart={true} />
             ))
