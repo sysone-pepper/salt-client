@@ -151,92 +151,104 @@ export const CreateObjectForm = ({ closeModal }) => {
           <>
             <div className="form-group">
               <label htmlFor="device-name">장비 명</label>
-              <input
-                type="text"
-                id="device-name"
-                placeholder="장비 명"
-                onChange={(e) => setDeviceName(e.target.value)}
-                required
-              />
+              <div className="node-modal-content">
+                <input
+                  type="text"
+                  id="device-name"
+                  placeholder="장비 명"
+                  onChange={(e) => setDeviceName(e.target.value)}
+                  required
+                />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="managementType">타입</label>
-              <select
-                id="managementType"
-                onChange={(e) => setDeviceManagementType(e.target.value)}
-                required
-              >
-                {deviceManagementTypes.map((managementType) => {
-                  return (
-                    <option key={managementType} value={managementType}>
-                      {managementType}
-                    </option>
-                  );
-                })}
-              </select>
+              <div className="node-modal-content">
+                <select
+                  id="managementType"
+                  onChange={(e) => setDeviceManagementType(e.target.value)}
+                  required
+                >
+                  {deviceManagementTypes.map((managementType) => {
+                    return (
+                      <option key={managementType} value={managementType}>
+                        {managementType}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="ip">IP</label>
-              <input
-                type="text"
-                id="ip"
-                placeholder="IP"
-                onChange={(e) => setDeviceIP(e.target.value)}
-                required
-              />
+              <div className="node-modal-content">
+                <input
+                  type="text"
+                  id="ip"
+                  placeholder="IP"
+                  onChange={(e) => setDeviceIP(e.target.value)}
+                  required
+                />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="device-icons">유형</label>
-              <div className="device-icons" id="device-icons">
-                {deviceCategories.map((cat, idx) => {
-                  return (
-                    <label
-                      htmlFor={`device-category-${cat}`}
-                      key={cat}
-                      className="device-category-label"
-                      onClick={() => {
-                        setDeviceType(cat);
-                      }}
-                      required={idx === 0}
-                    >
-                      <div className="device-icon-image-container">
-                        <img src={deviceIcons[cat]} alt={cat} />
-                      </div>
+              <div className="node-modal-content">
+                <div className="device-icons" id="device-icons">
+                  {deviceCategories.map((cat, idx) => {
+                    return (
+                      <label
+                        htmlFor={`device-category-${cat}`}
+                        key={cat}
+                        className="device-category-label"
+                        onClick={() => {
+                          setDeviceType(cat);
+                        }}
+                        required={idx === 0}
+                      >
+                        <div className="device-icon-image-container">
+                          <img src={deviceIcons[cat]} alt={cat} />
+                        </div>
 
-                      <div className="device-icon-input-text">
-                        <input
-                          type="radio"
-                          name="device-category"
-                          value={cat}
-                          id={`device-category-${cat}`}
-                          className="icon-input"
-                        />
-                        <span className="device-category-text">{cat}</span>
-                      </div>
-                    </label>
-                  );
-                })}
+                        <div className="device-icon-input-text">
+                          <input
+                            type="radio"
+                            name="device-category"
+                            value={cat}
+                            id={`device-category-${cat}`}
+                            className="icon-input"
+                          />
+                          <span className="device-category-text">{cat}</span>
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
             </div>
             <div className="form-group">
               <label htmlFor="os">OS</label>
-              <input
-                type="text"
-                id="os"
-                placeholder="OS"
-                onChange={(e) => setDeviceOS(e.target.value)}
-                required
-              />
+              <div className="node-modal-content">
+                <input
+                  type="text"
+                  id="os"
+                  placeholder="OS"
+                  onChange={(e) => setDeviceOS(e.target.value)}
+                  required
+                />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="manufacturer">제조사</label>
-              <input
-                type="text"
-                id="manufacturer"
-                placeholder="제조사"
-                onChange={(e) => setManufacturedAt(e.target.value)}
-                required
-              />
+              <div className="node-modal-content">
+                <input
+                  type="text"
+                  id="manufacturer"
+                  placeholder="제조사"
+                  onChange={(e) => setManufacturedAt(e.target.value)}
+                  required
+                />
+              </div>
             </div>
             <div className="form-actions">
               <button type="submit">적용</button>
@@ -272,16 +284,18 @@ export const CreateObjectForm = ({ closeModal }) => {
     <form className="create-object-form" onSubmit={handleSubmit}>
       <div className="form-group">
         <label htmlFor="category">카테고리</label>
-        <select
-          id="category"
-          onChange={(event) => {
-            setCategory(event.target.value);
-          }}
-        >
-          <option value="device">장비</option>
-          <option value="icon">아이콘</option>
-          <option value="text">텍스트</option>
-        </select>
+        <div className="node-modal-content">
+          <select
+            id="category"
+            onChange={(event) => {
+              setCategory(event.target.value);
+            }}
+          >
+            <option value="device">장비</option>
+            <option value="icon">아이콘</option>
+            <option value="text">텍스트</option>
+          </select>
+        </div>
       </div>
       {formByCategory()}
     </form>

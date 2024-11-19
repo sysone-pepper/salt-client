@@ -31,7 +31,7 @@ const ProjectContent = ({
         </h2>
         {/* <p>{description}</p> */}
         <Link to={`/project/${id}`} className="follow">
-          구성도 구성
+          구성도 조회
         </Link>
         <a
           href="#"

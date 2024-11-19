@@ -6,6 +6,7 @@ import { Modal } from '../common/Modal';
 import { CreateNodeContent } from './ModalContents/CreateNodeContent';
 import { useAuth } from '../../contexts/AuthContext';
 import RotatingText from './RotatingText';
+import { updateDiagramThumbnail } from '../../api/Diagram';
 
 const HIDDEN_CLASSNAME = 'hidden';
 const NO_AUTHORITY_MESSAGE = '권한이 없습니다. 관리자에게 권한을 요청하세요';
@@ -35,6 +36,7 @@ const Toolbar = () => {
   const [inputSize, setInputSize] = useState(20);
   const [modalOpen, setModalOpen] = useState(false);
   const fileInputRef = useRef(null);
+  const thumbnailInputRef = useRef(null);
 
   const sentences = [
     '안녕하세요! 환영합니다.',
@@ -142,6 +144,36 @@ const Toolbar = () => {
         setDataReady(true);
       }
     }
+  };
+
+  const handleThumbnailFileChange = async (event) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      const confirmUpload = confirm(
+        `${file.name}을 썸네일 이미지로 등록하시겠습니까?`,
+      );
+      if (confirmUpload) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+          await updateDiagramThumbnail(curProjectId, formData);
+          alert('썸네일 이미지가 성공적으로 업데이트되었습니다.');
+        } catch (error) {
+          alert('썸네일 이미지 업데이트에 실패했습니다.');
+        }
+      }
+    }
+  };
+
+  const onThumbnailBtnClick = () => {
+    if (!isEditingPermitted) {
+      alert(NO_AUTHORITY_MESSAGE);
+      return;
+    }
+
+    thumbnailInputRef.current.click();
   };
 
   function getChildNodes(parentId) {
@@ -280,6 +312,15 @@ const Toolbar = () => {
             배경 이미지 수정
           </AddButton>
 
+          <AddButton
+            fileName={'thumbnail-icon.png'}
+            onClickEvent={onThumbnailBtnClick}
+            needCancel={false}
+            disabled={!isEditing || isLinking || isObjectDelete || modalOpen}
+          >
+            썸네일 이미지 수정
+          </AddButton>
+
           <label htmlFor="sizeInput">노드 크기 조절</label>
           <input
             id="sizeInput"
@@ -307,6 +348,12 @@ const Toolbar = () => {
       >
         편집{isEditing ? '비활성' : '활성'}
       </button>
+      <input
+        type="file"
+        ref={thumbnailInputRef}
+        style={{ display: 'none' }}
+        onChange={handleThumbnailFileChange}
+      />
     </div>
   );
 };

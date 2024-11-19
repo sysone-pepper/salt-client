@@ -144,6 +144,19 @@ export const updateBgImg = async (projectId, file) => {
   return response.data;
 };
 
+export const updateDiagramThumbnail = async (projectId, formData) => {
+  const response = await api.put(
+    `/api/v1/projects/${projectId}/tnImg`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    },
+  );
+  return response.data;
+};
+
 export const deleteNode = async (nodeId) => {
   const response = await api.delete(`/api/v1/diagrams/node/${nodeId}`);
   return response.data;

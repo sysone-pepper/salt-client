@@ -1,16 +1,4 @@
-.load-device-form {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  align-items: center;
-  padding: 16px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  width: calc(100% - 32px);
-  top: 10%;
-  height: 80%;
-  overflow-y: auto; /* 모달 내부에서 세로 스크롤 허용 */
-}
+
 
 .search-device-info {
   width: 90%;
@@ -40,6 +28,12 @@
 
 .form-actions {
   display: flex;
-  justify-content: center;
+  justify-content: right;
   margin-top: 16px;
+}
+
+.ag-theme-quartz-dark {
+  --ag-header-height: 2rem !important;
+  --ag-row-height: 2rem !important;
+  --ag-odd-row-background-color: rgb(0, 0, 0, 0.03) !important;
 }
