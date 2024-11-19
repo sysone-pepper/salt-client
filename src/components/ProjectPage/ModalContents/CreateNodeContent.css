@@ -1,36 +1,66 @@
+.create-node-content {
+  margin: 1rem 2rem;
+}
+
 .create-option-container {
   display: flex;
-  flex-direction: row;
-  position: absolute;
-  top: 20px;
-  left: 10%;
-  width: 50%;
-  height: 30px;
   z-index: 1000;
   align-items: center;
   text-align: center;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #3b4f63;
 }
+
 .option {
-  border-radius: 10px;
-  background-color: #9ddcec;
-  width: 47%;
-  height: 100%;
-  font-size: 15px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
+  flex-grow: 1;
+  color: #e0f7fa;
+  cursor: pointer;
+  padding: .5rem 1rem;
+  border: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
-.load-option {
-  margin-right: 3%;
+
+.option:hover, .selected-option {
+  background-color: #3b4f63; 
+  border: 2px 2px 2px 0 solid #3b4f63;
 }
-.create-option {
-  margin-left: 3%;
+
+.form-actions button {
+  background-color: #3b4f63; /* Bluish-gray background to match the interface */
+  color: #e0f7fa; /* Light cyan text for contrast */
+  border: none; /* Remove default border */
+  border-radius: 0.5rem; /* Rounded corners for a softer look */
+  padding: 0.7rem 1.5rem; /* Increase padding for a more substantial feel */
+  font-size: 1rem; /* Slightly larger font size for readability */
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
 }
-.selected-option {
-  background-color: #2ed1fa;
+
+.form-actions button:hover {
+  background-color: #4a637b; /* Lighter shade on hover */
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
 }
-.content-form-container {
-  width: 100%;
-  height: 100%;
+
+.form-actions button:active {
+  background-color: #2a3b4c; /* Darker shade when clicked */
+  transform: scale(0.98); /* Slight shrink effect on click */
 }
+
+.form-actions button:disabled {
+  background-color: #2a3b4c; /* Grayed-out look when disabled */
+  color: #7a8a99; /* Dimmed text color when disabled */
+  cursor: not-allowed;
+}
+
+.modal-content {
+  max-width: 700px;
+}
+
+.node-modal-content {
+  width: 50%;
+ }
+
+.node-modal-content > * {
+ width: 100%;
+}
+

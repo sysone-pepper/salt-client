@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@atlaskit/pragmatic-drag-and-drop": "^1.4.0",
+    "ag-grid-react": "^32.3.3",
     "axios": "^1.7.7",
     "bootstrap-icons": "^1.11.3",
     "cytoscape": "^3.30.2",
