@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { MonitoringOptions } from '../../../constants/MonitoringOptions';
-import './TopUsageOptioningContent.css';
 
 export const TopUsageOptioningContent = ({
   topUsageOption,
