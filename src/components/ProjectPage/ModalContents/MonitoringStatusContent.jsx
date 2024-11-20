@@ -1,8 +1,16 @@
-import React, { useState, useCallback, useMemo, useRef } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+  useContext,
+} from 'react';
 import { MonitoringOptions } from '../../../constants/MonitoringOptions';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
+
+import { ThemeContext } from '../../..//contexts/ThemeContext';
 
 export const MonitoringStatusContent = ({
   existDevices,
@@ -13,6 +21,7 @@ export const MonitoringStatusContent = ({
   closeModal,
 }) => {
   console.log(existDevices);
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const [selectedDevices, setSelectedDevices] = useState(monitorDevices);
   const [selectedOption, setSelectedOption] = useState(monitorDeviceOption);
   const gridRef = useRef();
@@ -80,7 +89,9 @@ export const MonitoringStatusContent = ({
       </div>
       <h3 className="monitoring-option-title">장비 선택</h3>
       <div
-        className="ag-theme-quartz-dark ag-theme-load-device"
+        className={`ag-theme-quartz${
+          theme === 'dark' ? '-dark' : ''
+        } ag-theme-load-device`}
         style={{ height: 400 }}
       >
         <AgGridReact

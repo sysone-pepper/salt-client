@@ -2,10 +2,8 @@
   display: flex;
   height: 80vh;
   align-items: stretch;
-  background-color: var( --diagram-background-color);
+  background-color: var( --flex-div-background-color);
   color: #878f9b;
   padding: 0 .3rem;
   overflow-y: hidden;
 }
-
-

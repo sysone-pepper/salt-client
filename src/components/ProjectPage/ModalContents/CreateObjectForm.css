@@ -14,10 +14,11 @@
   margin-bottom: 0;
   width: 50%;
   flex-grow: 1;
-  color: #a0aec0;
+  color: var(--text-color);
 }
 
 .monitoring-option-title {
+  color: var(--text-color);
   margin-bottom: .5rem;
   display: block;
 }
@@ -29,8 +30,8 @@
 
 .form-group input,
 .form-group select {
-  background-color: #28313e;
-  color: #a0aec0;
+  background-color: var(--form-input-background-color);
+  color: var(--form-input-text-color);
   padding: 10px;
   border: 1px solid rgb(100, 100, 100);
   border-radius: 4px;
