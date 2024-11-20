@@ -108,6 +108,23 @@
 
 .card-header {
   margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.max-value-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.max-value-toggle label {
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+.max-value-toggle input {
+  margin-right: 0.5rem;
 }
 
 .card-title {

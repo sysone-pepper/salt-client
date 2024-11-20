@@ -322,7 +322,7 @@ const Sidebar = () => {
                       </button>
                     )}
                   </div>
-                  <div className="sidebar-element">
+                  <div className={`sidebar-element ${table.source}`}>
                     <Table source={dataSource} key={index} />
                   </div>
                 </li>

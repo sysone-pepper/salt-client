@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
 import { MonitoringOptions } from '../../../constants/MonitoringOptions';
+import { AgGridReact } from 'ag-grid-react';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-quartz.css';
 
 export const MonitoringStatusContent = ({
   existDevices,
@@ -9,17 +12,44 @@ export const MonitoringStatusContent = ({
   setMonitorDeviceOption,
   closeModal,
 }) => {
+  console.log(existDevices);
   const [selectedDevices, setSelectedDevices] = useState(monitorDevices);
   const [selectedOption, setSelectedOption] = useState(monitorDeviceOption);
+  const gridRef = useRef();
 
-  const toggleDevice = (device) => {
-    const isSelected = selectedDevices.includes(device);
-    const updatedDevices = isSelected
-      ? selectedDevices.filter((d) => d !== device) // 선택 해제
-      : [...selectedDevices, device]; // 선택 추가
+  const [columnDefs, setColumnDefs] = useState([
+    { headerName: '장비명', valueGetter: (p) => p.data, flex: 1 },
+  ]);
 
-    setSelectedDevices(updatedDevices);
+  const onSelectionChanged = useCallback(() => {
+    const seletedRows = gridRef.current.api.getSelectedRows();
+    setSelectedDevices(seletedRows);
+  });
+
+  const onFirstDataRendered = (params) => {
+    const nodesToSelect = [];
+    params.api.forEachNode((node) => {
+      if (selectedDevices.includes(node.data)) {
+        nodesToSelect.push(node);
+      }
+    });
+    params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
   };
+
+  const rowSelection = useMemo(() => {
+    return {
+      mode: 'multiRow',
+      selectAll: 'filtered',
+      headerCheckbox: true,
+    };
+  }, []);
+
+  const defaultColDef = useMemo(() => {
+    return {
+      filter: 'agTextColumnFilter',
+      enableClickSelection: true,
+    };
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,39 +59,46 @@ export const MonitoringStatusContent = ({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>모니터링 옵션</h3>
-      <select
-        id="monitoring-status-option-select"
-        onChange={(event) => {
-          setSelectedOption(event.target.value);
-        }}
-        defaultValue={monitorDeviceOption}
+    <form className="form-in-sidebar" onSubmit={handleSubmit}>
+      <h3 className="monitoring-option-title">모니터링 옵션</h3>
+      <div className="form-group">
+        <select
+          id="monitoring-status-option-select"
+          onChange={(event) => {
+            setSelectedOption(event.target.value);
+          }}
+          defaultValue={monitorDeviceOption}
+        >
+          {Object.keys(MonitoringOptions).map((item, idx) => {
+            return (
+              <option value={item} key={idx}>
+                {item}
+              </option>
+            );
+          })}
+        </select>
+      </div>
+      <h3 className="monitoring-option-title">장비 선택</h3>
+      <div
+        className="ag-theme-quartz-dark ag-theme-load-device"
+        style={{ height: 400 }}
       >
-        {Object.keys(MonitoringOptions).map((item, idx) => {
-          return (
-            <option value={item} key={idx}>
-              {item}
-            </option>
-          );
-        })}
-      </select>
-      <h3>장비 선택</h3>
-      <ul>
-        {existDevices.map((device) => (
-          <li key={device}>
-            <label>
-              <input
-                type="checkbox"
-                checked={selectedDevices.includes(device)}
-                onChange={() => toggleDevice(device)}
-              />
-              {device}
-            </label>
-          </li>
-        ))}
-      </ul>
-      <button type="submit">확인</button>
+        <AgGridReact
+          rowData={existDevices}
+          columnDefs={columnDefs}
+          defaultColDef={defaultColDef}
+          rowSelection={rowSelection}
+          pagination={true}
+          paginationPageSize={5}
+          paginationPageSizeSelector={[5, 10, 25, 50]}
+          onSelectionChanged={onSelectionChanged}
+          onFirstDataRendered={onFirstDataRendered}
+          ref={gridRef}
+        />
+      </div>
+      <div className="form-actions">
+        <button type="submit">확인</button>
+      </div>
     </form>
   );
 };
