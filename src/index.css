@@ -34,6 +34,11 @@
     --input-text-color: #fff;
     --placeholder-color: #a0aec0;
     --box-shadow-color: rgba(0, 0, 0, 0.5);
+    --diagram-background-color: #1f2937;
+    --table-title-color: #1f2b3c;
+    --table-text-color: #dddddd;
+
+
   }
   
   /* 라이트 테마 스타일 */
@@ -53,6 +58,11 @@
     --input-text-color: #212830;
     --placeholder-color: #888888;
     --box-shadow-color: rgba(0, 0, 0, 0.1);
+    --diagram-background-color: #ffffff;
+    --table-title-color: #80B6F3;
+    --table-text-color: #000000;
+
+
   }
   
   body {

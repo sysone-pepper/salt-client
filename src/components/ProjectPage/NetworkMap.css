@@ -1,14 +1,14 @@
 #cy {
   width: 100%;
   height: 100%;
-  background-color: #1f2937;
+  background-color: var(--diagram-background-color);
   border-radius: .3rem;
  }
 
  .diagram-field {
   width: 100%;
   height: 100%;
-  background-color: #1f2937;
+  background-color: var(--diagram-background-color);
   border-radius: 0.3rem;
   overflow: hidden;
   transition: max-width 0.3s ease;

@@ -55,7 +55,7 @@
 .table-title {
   display: flex;
   height: 1.5rem;
-  background-color: #1f2b3c;
+  background-color: var(--table-title-color);
   text-align: left;
   line-height: 1.5rem;
   padding: 0 .3rem;
@@ -95,7 +95,11 @@
 }
 
 .sidebar .table-header .table-field {
-  background-color: #1f2937;
+  background-color: var(--diagram-background-color);
+}
+
+.sidebar .table-field{
+  background-color: var(--diagram-background-color);
 }
 
 .table-header th:first-child {
@@ -107,7 +111,7 @@
   border-bottom: 1px solid #878f9b;
 	height: 1.5rem;
   font-size: .5rem;
-  color: #ddd;
+  color: var(--table-text-color);
 	}
 
 .table-field {
@@ -120,9 +124,7 @@
   text-align: left;
 }
 
-.sidebar .table-field{
-  background-color: #1f2937;
-}
+
 
 .table-field span:hover {
   color: white;
