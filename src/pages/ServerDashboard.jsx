@@ -6,7 +6,6 @@ import HighchartsMore from 'highcharts/highcharts-more';
 import SolidGauge from 'highcharts/modules/solid-gauge';
 import saltLogo from '../assets/images/salt-Logo-white-rm.png';
 import { getDeviceData } from '../api/Dashboard';
-import { useParams } from 'react-router-dom';
 
 HighchartsMore(Highcharts);
 SolidGauge(Highcharts);
@@ -14,6 +13,7 @@ SolidGauge(Highcharts);
 const ServerDashboard = ({ deviceId, deviceAlias }) => {
   const [activeTab, setActiveTab] = useState('요약');
   const [usageData, setUsageData] = useState(null);
+  const [useMaxValue, setUseMaxValue] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,7 +101,7 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
     };
   };
 
-  const getChartOptions = (tab) => {
+  const getChartOptions = (tab, useMaxValue) => {
     if (!usageData) return {};
 
     let chartData = [];
@@ -227,9 +227,56 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
           fillOpacity: 0.6,
         },
       ];
+
+      return {
+        chart: {
+          type: 'area',
+          zoomType: 'x',
+          backgroundColor: 'transparent',
+          height: 400,
+        },
+        title: {
+          text: '',
+        },
+        xAxis: {
+          type: 'datetime',
+          labels: { style: { color: '#9ca3af' } },
+        },
+        yAxis: {
+          title: {
+            text: yAxisTitle,
+            style: { color: '#9ca3af' },
+          },
+          labels: {
+            style: { color: '#9ca3af' },
+            formatter: function () {
+              return (this.value / 1024).toFixed(2) + ' KB/s';
+            },
+          },
+        },
+        plotOptions: {
+          area: {
+            stacking: 'normal',
+          },
+        },
+        legend: {
+          enabled: true,
+          itemStyle: {
+            color: '#e5e7eb',
+          },
+        },
+        credits: {
+          enabled: false,
+        },
+        series: series,
+      };
     } else {
       return {};
     }
+
+    const dataValues = chartData.map((point) => point[1]);
+    const maxDataValue = Math.max(...dataValues);
+    const yAxisMax = useMaxValue ? maxDataValue : 100;
 
     return {
       chart: {
@@ -246,31 +293,22 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
         labels: { style: { color: '#9ca3af' } },
       },
       yAxis: {
-        max: tab !== 'NIC' ? 100 : null,
+        max: yAxisMax,
         title: {
           text: yAxisTitle,
           style: { color: '#9ca3af' },
         },
         labels: {
           style: { color: '#9ca3af' },
-          formatter:
-            tab === 'NIC'
-              ? function () {
-                  return (this.value / 1024).toFixed(2) + ' KB/s';
-                }
-              : undefined,
         },
       },
       plotOptions: {
         area: {
-          stacking: tab === 'NIC' ? 'normal' : null,
+          stacking: null,
         },
       },
       legend: {
-        enabled: tab === 'NIC',
-        itemStyle: {
-          color: '#e5e7eb',
-        },
+        enabled: false,
       },
       credits: {
         enabled: false,
@@ -357,12 +395,24 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
           <div className="card-large">
             <div className="card-header">
               <div className="card-title">{activeTab} 사용률 추이</div>
+              {['CPU', 'Memory', 'DISK'].includes(activeTab) && (
+                <div className="max-value-toggle">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={useMaxValue}
+                      onChange={(e) => setUseMaxValue(e.target.checked)}
+                    />
+                    Max Value
+                  </label>
+                </div>
+              )}
             </div>
             <div className="card-value">
               {usageData ? (
                 <HighchartsReact
                   highcharts={Highcharts}
-                  options={getChartOptions(activeTab)}
+                  options={getChartOptions(activeTab, useMaxValue)}
                 />
               ) : (
                 <div>Loading...</div>
