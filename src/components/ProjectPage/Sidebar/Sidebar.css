@@ -32,6 +32,18 @@
   width: 100%;
 }
 
+.monitorDevice tbody {
+  display: block;
+  overflow-y: scroll;
+  max-height: 19vh; 
+
+}
+
+.table-container tbody::-webkit-scrollbar {
+  display: none;  
+  width: .5rem; 
+}
+
 .table-container tbody tr:last-child td:first-child {
   border-bottom-left-radius: .3rem;
 }
