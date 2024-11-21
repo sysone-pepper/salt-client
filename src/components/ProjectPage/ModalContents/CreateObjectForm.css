@@ -14,7 +14,7 @@
   margin-bottom: 0;
   width: 50%;
   flex-grow: 1;
-  color: var(--text-color);
+  color: var(--form-label-text-color);
 }
 
 .monitoring-option-title {

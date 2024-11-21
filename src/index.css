@@ -34,13 +34,17 @@
     --input-text-color: #fff;
     --placeholder-color: #a0aec0;
     --box-shadow-color: rgba(0, 0, 0, 0.5);
+
     --diagram-background-color: #1f2937;
     --table-title-color: #1f2b3c;
     --table-text-color: #dddddd;
     --table-border-color: transparent;
+
     --form-input-text-color: #a0aec0;
     --form-input-background-color: #28313e;
-    --modal-option-backgroud-color: #3b4f63;
+    --form-option-background-color: #3b4f63;
+    --form-option-text-color: #a3b6bc;
+    --form-label-text-color: #626f7f;
     --form-submit-button-background-color: #3b4f63;
     --form-submit-button-hovering-color: #2a3b4c;
 
@@ -71,14 +75,17 @@
     --input-text-color: #212830;
     --placeholder-color: #888888;
     --box-shadow-color: rgba(0, 0, 0, 0.1);
+
     --diagram-background-color: #F2F2F2;
     --table-title-color: #80B6F3;
     --table-text-color: #000000;
     --table-border-color: #909090;
+
     --form-input-text-color: #909090;
     --form-input-background-color: #ffffff;
-    --modal-option-backgroud-color: #80B6F3;
-    --modal-option-text-color: #000000;
+    --form-option-background-color: #80B6F3;
+    --form-option-text-color: #000000;
+    --form-label-text-color: #212830;
     --form-submit-button-background-color: #80B6F3;
     --form-submit-button-hovering-color: #4ca0ff; 
  

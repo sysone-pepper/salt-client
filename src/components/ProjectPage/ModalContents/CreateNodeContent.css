@@ -8,12 +8,12 @@
   align-items: center;
   text-align: center;
   margin-bottom: 1rem;
-  border-bottom: 2px solid var(--modal-option-backgroud-color);
+  border-bottom: 2px solid var(--form-option-background-color);
 }
 
 .option {
   flex-grow: 1;
-  color: var(--modal-option-text-color);
+  color: var(--form-option-text-color);
   cursor: pointer;
   padding: .5rem 1rem;
   border: none;
@@ -21,8 +21,8 @@
 }
 
 .option:hover, .selected-option {
-  background-color: var(--modal-option-backgroud-color); 
-  border: 2px 2px 2px 0 solid var(--modal-option-backgroud-color);
+  background-color: var(--form-option-background-color); 
+  border: 2px 2px 2px 0 solid var(--form-option-background-color);
 }
 
 .form-actions button {
