@@ -129,7 +129,11 @@
   align-content: center;
   width: 25%;
   margin: 0;
-  text-align: left;
+  text-align: right;
+}
+
+.table-field > div > div {
+  margin-left: auto;
 }
 
 .sidebar .table-field{
