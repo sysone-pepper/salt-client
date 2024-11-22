@@ -73,7 +73,6 @@ export const LoadDeviceForm = ({ closeModal }) => {
   // 실장비 데이터 로드 이후, 장비 카드 생성
   useEffect(() => {
     setDataReady(true);
-    console.log(existDevices);
   }, [existDevices]);
 
   const handleLoadDeviceSubmit = async (e) => {
