@@ -3,6 +3,7 @@
   position: relative;
   transition: width 0.3s ease;
   font-size: .5rem;
+  padding-left: .3rem;
 }
 
 .sidebar-wrapper.expanded {
