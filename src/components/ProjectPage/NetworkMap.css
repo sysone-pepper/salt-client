@@ -3,7 +3,7 @@
   height: 100%;
   background-color: var(--diagram-background-color);
   border: 1px solid var(--table-border-color) !important;
-  border-radius: .3rem;
+  /* border-radius: .3rem; */
 }
 
 .diagram-field {
