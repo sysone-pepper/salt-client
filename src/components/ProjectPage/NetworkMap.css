@@ -30,6 +30,7 @@
 .navigator-container.collapsed {
   height: 0;
   bottom: -10px;
+  border-color: var(--background-color);
 }
 
 .navigator-container.collapsed .toggle-navigator-btn {
@@ -37,18 +38,18 @@
   width: 50px; 
   height: 50px;
   border-radius: 50%;
-  background-color: #1f2937;
+  background-color: var(--background-color);
   opacity: 1;
   border: 2px white solid;
 }
 
 .toggle-navigator-btn {
-  position: absolute;
+  position: fixed;
   display: flex;
   align-items: center;
   justify-content: center;
-  top: 8px;
-  right: 8px;
+  bottom: calc(20vh + 5px);
+  right: 16px;
   height: 20px;
   width: 20px;
   cursor: pointer;
