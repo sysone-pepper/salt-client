@@ -8,12 +8,12 @@
   align-items: center;
   text-align: center;
   margin-bottom: 1rem;
-  border-bottom: 2px solid #3b4f63;
+  border-bottom: 2px solid var(--form-option-background-color);
 }
 
 .option {
   flex-grow: 1;
-  color: #e0f7fa;
+  color: var(--form-option-text-color);
   cursor: pointer;
   padding: .5rem 1rem;
   border: none;
@@ -21,12 +21,12 @@
 }
 
 .option:hover, .selected-option {
-  background-color: #3b4f63; 
-  border: 2px 2px 2px 0 solid #3b4f63;
+  background-color: var(--form-option-background-color); 
+  border: 2px 2px 2px 0 solid var(--form-option-background-color);
 }
 
 .form-actions button {
-  background-color: #3b4f63; /* Bluish-gray background to match the interface */
+  background-color: var(--form-submit-button-background-color); /* Bluish-gray background to match the interface */
   color: #e0f7fa; /* Light cyan text for contrast */
   border: none; /* Remove default border */
   border-radius: 0.5rem; /* Rounded corners for a softer look */
@@ -37,7 +37,7 @@
 }
 
 .form-actions button:hover {
-  background-color: #4a637b; /* Lighter shade on hover */
+  background-color: var(--form-submit-button-hovering-color); /* Lighter shade on hover */
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
 }
 

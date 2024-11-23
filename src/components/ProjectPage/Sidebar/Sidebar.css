@@ -3,6 +3,7 @@
   position: relative;
   transition: width 0.3s ease;
   font-size: .5rem;
+  padding-left: .3rem;
 }
 
 .sidebar-wrapper.expanded {
@@ -17,6 +18,12 @@
   width: 25rem;
   overflow: hidden;
   margin-right: .3rem;
+}
+
+.table-title {
+  border-top: solid ;
+  border-left: solid ;
+  border-right: solid ;
 }
 
 .table-list {
@@ -44,30 +51,74 @@
   width: .5rem; 
 }
 
+.table-container thead tr th:first-child {
+  border-left: solid ;
+}
+
+.table-container thead tr th:last-child {
+  border-right: solid ;
+}
+
+.table-container tbody tr td:first-child {
+  border-left: solid ;
+}
+
+.table-container tbody tr td:last-child {
+  border-right: solid ;
+}
+
 .table-container tbody tr:last-child td:first-child {
+  border-bottom: solid ;
+  border-left: solid ;
   border-bottom-left-radius: .3rem;
 }
 
 .table-container tbody tr:last-child td:last-child {
+  border-bottom:  solid ;
+  border-right: solid ;
   border-bottom-right-radius: .3rem;
 }
 
+.table-container tbody tr:last-child td {
+  border-bottom: solid ;
+}
+
 .table-container tbody tr:last-child {
-  border: 0;
+  border-bottom: solid ;
 }
 
 .table-container tbody tr:last-child {
   border: 0;
 }
 
-.table-container tbody tr td:first-child {
+.table-container tbody tr td:first-child,
+.table-container thead tr th:first-child {
   text-align: left;
+  flex-grow: 1;
+}
+
+.table-container tbody td:last-child {
+  border-bottom-right-radius: .3rem;
+}
+
+.table-title, 
+.table-container thead tr th:first-child, 
+.table-container thead tr th:last-child, 
+.table-container tbody tr td:first-child, 
+.table-container tbody tr td:last-child, 
+.table-container tbody tr:last-child td:first-child, 
+.table-container tbody tr:last-child td:first-child, 
+.table-container tbody tr:last-child td:last-child, 
+.table-container tbody tr:last-child td, 
+.table-container tbody tr:last-child {
+  border-color: var(--table-border-color);
+  border-width: 1px;
 }
 
 .table-title {
   display: flex;
   height: 1.5rem;
-  background-color: #1f2b3c;
+  background-color: var(--table-title-color);
   text-align: left;
   line-height: 1.5rem;
   padding: 0 .3rem;
@@ -96,18 +147,20 @@
   text-align: left;
   font-size: .6rem;
   border-bottom: 1px solid;
-}
-
-.sidebar .table-header {
   border-color: #878f9b;
 }
 
-.table-header .table-field {
-  height: 1rem;
+.table-header th:first-child {
+  text-align: left;
 }
 
 .sidebar .table-header .table-field {
-  background-color: #1f2937;
+  background-color: var(--diagram-background-color);
+  height: 1rem;
+}
+
+.sidebar .table-field{
+  background-color: var(--diagram-background-color);
 }
 
 .table-header th:first-child {
@@ -119,30 +172,32 @@
   border-bottom: 1px solid #878f9b;
 	height: 1.5rem;
   font-size: .5rem;
-  color: #ddd;
+  color: var(--table-text-color);
 	}
 
 .table-field {
+  display: flex;
+  align-items: center;
   padding: 0 .3rem;
   min-width: 0;
-  flex-grow: 1;
-  align-content: center;
-  width: 25%;
+  width: 20%;
   margin: 0;
-  text-align: left;
-}
-
-.sidebar .table-field{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap; 
+  font-size: .7rem;
   background-color: #1f2937;
+  text-align: right;
 }
 
-.table-field span:hover {
-  color: white;
+.table-field > div > div {
+  margin-left: auto;
 }
+
 
 /* 장비 현황 테이블용 스타일 */
 .sb-icon-image {
-  height: 90%;
+  height: 1.5rem;
   vertical-align: middle;
   margin-right: .2rem;
 }
@@ -154,7 +209,7 @@
   left:25.3rem;
   width: 15px;
   height: 30px;
-  background-color: #1f2937;
+  background-color: var(--background-color);
   border-radius: 0 15px 15px 0;
   cursor: pointer;
   display: flex;
@@ -184,4 +239,35 @@
 
 .sidebar-wrapper.collapsed + .sb-pan-btn .sb-pan-icon{
  rotate:0deg;
+}
+
+
+.marquee-container {
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.marquee-container span {
+  display: inline-block;
+}
+
+.marquee-active span {
+  position: relative;
+  animation: marquee-scroll 10s linear infinite;
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.monitorDevice tbody {
+  display: block;
+  overflow-y: scroll;
+  max-height: 19vh; 
 }
