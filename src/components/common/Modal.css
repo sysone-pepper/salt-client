@@ -35,9 +35,9 @@
 
 .modal-content.modal-large {
   width: 80%;
-  max-width: 1200px;
+  max-width: 1800px;
   height: auto;
-  overflow: hidden;
+  /* overflow: hidden; */
   margin: 0 auto;
 }
 
