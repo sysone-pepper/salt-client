@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import './LoadDeviceForm.css';
 import { NetworkContext } from '../../../contexts/NetworkContext';
+import { ThemeContext } from '../../../contexts/ThemeContext';
 
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
@@ -28,6 +29,8 @@ export const LoadDeviceForm = ({ closeModal }) => {
     setNodes,
     selectedSize,
   } = useContext(NetworkContext);
+  const { theme, toggleTheme } = useContext(ThemeContext);
+
   const [dataReady, setDataReady] = useState(false);
   const gridRef = useRef();
   const [selectedDevice, setSelectedDevice] = useState(null);
@@ -35,7 +38,7 @@ export const LoadDeviceForm = ({ closeModal }) => {
   // AGgrid 라이브러리 설정
   const [columnDefs, setColumnDefs] = useState([
     // 칼럼명 정의 및 데이터 설정
-    { headerName: 'ID', valueGetter: (p) => p.data.id, flex: 0.5 },
+    // { headerName: 'ID', valueGetter: (p) => p.data.id, flex: 0.5 },
     { headerName: '장비명', valueGetter: (p) => p.data.deviceName, flex: 1 },
     {
       headerName: '장비 별칭',
@@ -44,7 +47,26 @@ export const LoadDeviceForm = ({ closeModal }) => {
     },
     {
       headerName: '장비 타입',
-      valueGetter: (p) => p.data.deviceType,
+      valueGetter: (p) => {
+        switch (p.data.deviceType) {
+          case '1':
+            return 'Server';
+          case '2':
+            return 'Network';
+          case '3':
+            return 'L2 Switch';
+          case '4':
+            return 'L3 Switch';
+          case '5':
+            return 'L4 Switch';
+          case '6':
+            return 'L7 Switch';
+          case '7':
+            return 'Firewall';
+          case '8':
+            return 'UPS';
+        }
+      },
       flex: 0.8,
     },
     { headerName: 'IP', valueGetter: (p) => p.data.publicIp, flex: 0.7 },
@@ -70,7 +92,6 @@ export const LoadDeviceForm = ({ closeModal }) => {
   // 실장비 데이터 로드 이후, 장비 카드 생성
   useEffect(() => {
     setDataReady(true);
-    console.log(existDevices);
   }, [existDevices]);
 
   const handleLoadDeviceSubmit = async (e) => {
@@ -116,7 +137,9 @@ export const LoadDeviceForm = ({ closeModal }) => {
   return (
     <>
       <div
-        className="ag-theme-quartz-dark ag-theme-load-device"
+        className={`ag-theme-quartz${
+          theme === 'dark' ? '-dark' : ''
+        } ag-theme-load-device`}
         style={{ height: 400 }}
       >
         <AgGridReact
@@ -125,8 +148,8 @@ export const LoadDeviceForm = ({ closeModal }) => {
           defaultColDef={defaultColDef}
           rowSelection={rowSelection}
           pagination={true}
-          paginationPageSize={5}
-          paginationPageSizeSelector={[5, 10, 25, 50]}
+          paginationPageSize={50}
+          paginationPageSizeSelector={[10, 25, 50]}
           onSelectionChanged={onSelectionChanged}
           ref={gridRef}
         />

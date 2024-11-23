@@ -84,7 +84,6 @@ export const DiagramField = ({ projectId }) => {
         setIsEditingPermitted(userAuthority === 'ALL');
       }
     } catch (error) {
-      console.log(error);
       alert('사용자 정보를 가져오는데 실패했습니다.');
     }
   };

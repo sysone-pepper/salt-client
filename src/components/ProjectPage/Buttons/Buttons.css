@@ -49,9 +49,9 @@
 }
 
 .cancel {
-  background-color: #fc746c !important;
-  border-color: #ff9892 !important;
-  color: white !important;
+  background-color: var(--dropdown-button-selected-background-color) !important;
+  border-color: var(--dropdown-button-selected-border-color) !important;
+  color: var(--dropdown-button-selected-text-color) !important;
 }
 
 .rotate {
