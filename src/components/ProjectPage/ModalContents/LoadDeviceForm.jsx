@@ -35,7 +35,7 @@ export const LoadDeviceForm = ({ closeModal }) => {
   // AGgrid 라이브러리 설정
   const [columnDefs, setColumnDefs] = useState([
     // 칼럼명 정의 및 데이터 설정
-    { headerName: 'ID', valueGetter: (p) => p.data.id, flex: 0.5 },
+    // { headerName: 'ID', valueGetter: (p) => p.data.id, flex: 0.5 },
     { headerName: '장비명', valueGetter: (p) => p.data.deviceName, flex: 1 },
     {
       headerName: '장비 별칭',
@@ -44,7 +44,26 @@ export const LoadDeviceForm = ({ closeModal }) => {
     },
     {
       headerName: '장비 타입',
-      valueGetter: (p) => p.data.deviceType,
+      valueGetter: (p) => {
+        switch (p.data.deviceType) {
+          case '1':
+            return 'Server';
+          case '2':
+            return 'Network';
+          case '3':
+            return 'L2 Switch';
+          case '4':
+            return 'L3 Switch';
+          case '5':
+            return 'L4 Switch';
+          case '6':
+            return 'L7 Switch';
+          case '7':
+            return 'Firewall';
+          case '8':
+            return 'UPS';
+        }
+      },
       flex: 0.8,
     },
     { headerName: 'IP', valueGetter: (p) => p.data.publicIp, flex: 0.7 },
@@ -125,8 +144,8 @@ export const LoadDeviceForm = ({ closeModal }) => {
           defaultColDef={defaultColDef}
           rowSelection={rowSelection}
           pagination={true}
-          paginationPageSize={5}
-          paginationPageSizeSelector={[5, 10, 25, 50]}
+          paginationPageSize={50}
+          paginationPageSizeSelector={[10, 25, 50]}
           onSelectionChanged={onSelectionChanged}
           ref={gridRef}
         />
