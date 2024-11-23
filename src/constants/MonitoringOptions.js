@@ -1,8 +1,8 @@
 const MonitoringOptions = {
-  Traffic: 'trafficAmount',
-  CPU: 'cpuSystem',
-  MEM: 'usedMemoryPercentage',
-  DISK: 'usedDiskPercentage',
+  traffic: 'traffic',
+  cpu: 'cpuProcessor',
+  mem: 'usedMemoryPercentage',
+  disk: 'usedDiskPercentage',
 };
 
 export { MonitoringOptions };

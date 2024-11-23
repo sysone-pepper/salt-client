@@ -57,6 +57,17 @@ const iconLookup = {
   ),
   UPS: <img className="sb-icon-image" key="UPSImg" src={UPSIcon} alt="" />,
 };
+
+const fontcolors = {
+  0: 'white',
+  1: 'yellow',
+  2: 'red',
+};
+
+const isNum = (value) => {
+  return typeof value === 'number';
+};
+
 const Row = ({ rowData, needChart }) => {
   const createChart = (chartData) => {
     return (
@@ -78,8 +89,17 @@ const Row = ({ rowData, needChart }) => {
         } else {
           return (
             <td key={`${key} field`} className="table-field">
-              {iconLookup[value] && iconLookup[value]}
-              <span>{value}</span>
+              <span
+                style={{
+                  display: 'flex', // Flexbox 활성화
+                  justifyContent: isNum(value[0]) ? 'flex-end' : 'flex-start', // 좌/우 정렬
+                  alignItems: 'center', // 세로 중앙 정렬
+                  color: value[0] === 0 ? fontcolors[0] : fontcolors[value[1]],
+                }}
+              >
+                {iconLookup[value[0]] && iconLookup[value[0]]}
+                {value[0]}
+              </span>
             </td>
           );
         }
