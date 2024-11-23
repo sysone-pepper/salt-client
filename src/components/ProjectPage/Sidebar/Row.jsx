@@ -59,7 +59,7 @@ const iconLookup = {
 };
 
 const fontcolors = {
-  0: 'white',
+  0: '',
   1: 'yellow',
   2: 'red',
 };
@@ -69,6 +69,7 @@ const isNum = (value) => {
 };
 
 const Row = ({ rowData, needChart }) => {
+  console.log(Object.entries(rowData));
   const marqueeRef = useRef(null);
   const [isOverflow, setIsOverflow] = useState(false);
 
@@ -112,7 +113,10 @@ const Row = ({ rowData, needChart }) => {
                   isOverflow ? 'marquee-active' : ''
                 }`}
               >
-                <span>{value}</span>
+                <span>
+                  {iconLookup[value[0]] && iconLookup[value[0]]}
+                  {value[0]}
+                </span>
               </div>
             </td>
           );
@@ -121,13 +125,9 @@ const Row = ({ rowData, needChart }) => {
             <td key={`${key} field`} className="table-field">
               <span
                 style={{
-                  display: 'flex', // Flexbox 활성화
-                  justifyContent: isNum(value[0]) ? 'flex-end' : 'flex-start', // 좌/우 정렬
-                  alignItems: 'center', // 세로 중앙 정렬
                   color: value[0] === 0 ? fontcolors[0] : fontcolors[value[1]],
                 }}
               >
-                {iconLookup[value[0]] && iconLookup[value[0]]}
                 {value[0]}
               </span>
             </td>
