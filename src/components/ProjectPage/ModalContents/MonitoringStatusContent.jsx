@@ -1,4 +1,10 @@
-import React, { useState, useCallback, useMemo, useRef } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+  useEffect,
+} from 'react';
 import { MonitoringOptions } from '../../../constants/MonitoringOptions';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
@@ -12,7 +18,6 @@ export const MonitoringStatusContent = ({
   setMonitorDeviceOption,
   closeModal,
 }) => {
-  console.log(existDevices);
   const [selectedDevices, setSelectedDevices] = useState(monitorDevices);
   const [selectedOption, setSelectedOption] = useState(monitorDeviceOption);
   const gridRef = useRef();
@@ -22,8 +27,8 @@ export const MonitoringStatusContent = ({
   ]);
 
   const onSelectionChanged = useCallback(() => {
-    const seletedRows = gridRef.current.api.getSelectedRows();
-    setSelectedDevices(seletedRows);
+    const selectedRows = gridRef.current.api.getSelectedRows();
+    setSelectedDevices(selectedRows);
   });
 
   const onFirstDataRendered = (params) => {
