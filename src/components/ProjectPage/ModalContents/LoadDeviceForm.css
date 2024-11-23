@@ -37,3 +37,9 @@
   --ag-row-height: 2rem !important;
   --ag-odd-row-background-color: rgb(0, 0, 0, 0.03) !important;
 }
+
+.ag-theme-quartz {
+  --ag-header-height: 2rem !important;
+  --ag-row-height: 2rem !important;
+  --ag-odd-row-background-color: rgb(0, 0, 0, 0.03) !important;
+}

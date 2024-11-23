@@ -1,11 +1,7 @@
 .flex-div {
   display: flex;
-  height: 80vh;
   align-items: stretch;
-  background-color: #111827;
+  background-color: var( --project-page-background-color);
   color: #878f9b;
-  padding: 0 .3rem;
   overflow-y: hidden;
 }
-
-

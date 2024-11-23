@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import './LoadDeviceForm.css';
 import { NetworkContext } from '../../../contexts/NetworkContext';
+import { ThemeContext } from '../../../contexts/ThemeContext';
 
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
@@ -28,6 +29,8 @@ export const LoadDeviceForm = ({ closeModal }) => {
     setNodes,
     selectedSize,
   } = useContext(NetworkContext);
+  const { theme, toggleTheme } = useContext(ThemeContext);
+
   const [dataReady, setDataReady] = useState(false);
   const gridRef = useRef();
   const [selectedDevice, setSelectedDevice] = useState(null);
@@ -89,7 +92,6 @@ export const LoadDeviceForm = ({ closeModal }) => {
   // 실장비 데이터 로드 이후, 장비 카드 생성
   useEffect(() => {
     setDataReady(true);
-    console.log(existDevices);
   }, [existDevices]);
 
   const handleLoadDeviceSubmit = async (e) => {
@@ -135,7 +137,9 @@ export const LoadDeviceForm = ({ closeModal }) => {
   return (
     <>
       <div
-        className="ag-theme-quartz-dark ag-theme-load-device"
+        className={`ag-theme-quartz${
+          theme === 'dark' ? '-dark' : ''
+        } ag-theme-load-device`}
         style={{ height: 400 }}
       >
         <AgGridReact
