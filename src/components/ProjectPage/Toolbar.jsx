@@ -7,6 +7,8 @@ import { CreateNodeContent } from './ModalContents/CreateNodeContent';
 import { useAuth } from '../../contexts/AuthContext';
 import RotatingText from './RotatingText';
 import { updateDiagramThumbnail } from '../../api/Diagram';
+import Dropdown from './DropDown';
+import { FaBaby, FaCog, FaPowerOff, FaUser } from 'react-icons/fa';
 
 const HIDDEN_CLASSNAME = 'hidden';
 const NO_AUTHORITY_MESSAGE = '권한이 없습니다. 관리자에게 권한을 요청하세요';
@@ -35,6 +37,7 @@ const Toolbar = () => {
   const [isEditingDisabled, setIsEditingDisabled] = useState(false);
   const [inputSize, setInputSize] = useState(20);
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalChild, setModalChild] = useState('addNode');
   const fileInputRef = useRef(null);
   const thumbnailInputRef = useRef(null);
 
@@ -78,8 +81,8 @@ const Toolbar = () => {
       alert(NO_AUTHORITY_MESSAGE);
       return;
     }
-
     setSelectedSize(parseInt(inputSize, 10));
+    setModalOpen(false);
   };
 
   const toggleAddNode = () => {
@@ -87,7 +90,7 @@ const Toolbar = () => {
       alert(NO_AUTHORITY_MESSAGE);
       return;
     }
-
+    setModalChild('addNode');
     setModalOpen(true);
   };
   const activeAddLink = () => {
@@ -122,6 +125,25 @@ const Toolbar = () => {
 
     setIsObjectDelete(false);
   };
+
+  const toggleEditSize = () => {
+    if (!isEditingPermitted) {
+      alert(NO_AUTHORITY_MESSAGE);
+      return;
+    }
+    setModalChild('editSize');
+    setModalOpen(true);
+  };
+
+  const toggleUpdateProjectInfo = () => {
+    if (!isEditingPermitted) {
+      alert(NO_AUTHORITY_MESSAGE);
+      return;
+    }
+    setModalChild('updateProjectInfo');
+    setModalOpen(true);
+  };
+
   const onBgImgBtnClick = () => {
     if (!isEditingPermitted) {
       alert(NO_AUTHORITY_MESSAGE);
@@ -140,10 +162,25 @@ const Toolbar = () => {
       if (ok) {
         const formData = new FormData();
         formData.append('file', file);
-        await updateBgImg(formData);
+
+        try {
+          await updateBgImg(formData);
+          alert('배경 이미지가 성공적으로 업데이트되었습니다.');
+        } catch (error) {
+          alert('배경 이미지 업데이트에 실패했습니다.');
+        }
         setDataReady(true);
       }
     }
+  };
+
+  const onThumbnailBtnClick = () => {
+    if (!isEditingPermitted) {
+      alert(NO_AUTHORITY_MESSAGE);
+      return;
+    }
+
+    thumbnailInputRef.current.click();
   };
 
   const handleThumbnailFileChange = async (event) => {
@@ -165,15 +202,6 @@ const Toolbar = () => {
         }
       }
     }
-  };
-
-  const onThumbnailBtnClick = () => {
-    if (!isEditingPermitted) {
-      alert(NO_AUTHORITY_MESSAGE);
-      return;
-    }
-
-    thumbnailInputRef.current.click();
   };
 
   function getChildNodes(parentId) {
@@ -231,6 +259,77 @@ const Toolbar = () => {
     setInputSize(e.target.value);
   };
 
+  // 상수 선언
+  const toolMenuTitles = [
+    '노드 추가',
+    isLinking ? '링크 모드 종료' : '링크 추가 모드',
+    isObjectDelete ? '제거 모드 종료' : '요소 제거 모드',
+    '노드 크기 조절',
+  ];
+
+  const projectMenuTitles = [
+    '프로젝트 정보 수정',
+    '프로젝트 썸네일 편집',
+    '구성도 배경 편집',
+  ];
+
+  const toolMenuDetails = [
+    '실장비, 커스텀 노드를 추가합니다.',
+    isLinking ? '모드를 종료합니다.' : '링크를 추가합니다.',
+    isObjectDelete ? '모드를 종료합니다.' : '노드, 링크를 제거합니다.',
+    '노드의 전체 크기를 수정합니다.',
+  ];
+
+  const projectMenuDetails = [
+    '해당 프로젝트의 정보를 수정합니다.',
+    '프로젝트 썸네일을 편집합니다.',
+    '장비 구성도의 배경이미지를 수정합니다.',
+  ];
+
+  const toolMenuIcons = [<FaUser />, <FaCog />, <FaPowerOff />, <FaBaby />];
+
+  const projectMenuIcons = [<FaUser />, <FaCog />, <FaPowerOff />];
+
+  const toolMenuFunctions = [
+    toggleAddNode,
+    isLinking ? inactiveAddLink : activeAddLink,
+    isObjectDelete ? inactiveDeleteObject : activeDeleteObject,
+    toggleEditSize,
+  ];
+
+  const projectMenuFunctions = [
+    toggleUpdateProjectInfo,
+    onThumbnailBtnClick,
+    onBgImgBtnClick,
+  ];
+
+  const modalContents = {
+    addNode: <CreateNodeContent closeModal={() => setModalOpen(false)} />,
+    editSize: (
+      <>
+        <label htmlFor="sizeInput">노드 크기 조절</label>
+        <input
+          id="sizeInput"
+          type="number"
+          min="20"
+          max="100"
+          value={inputSize}
+          onChange={handleSizeInputChange}
+          placeholder="20 - 100"
+          disabled={!isEditing}
+        />
+        <button
+          disabled={!isEditing}
+          className="toolbar-button"
+          onClick={handleSizeButtonClick}
+        >
+          확인
+        </button>
+      </>
+    ),
+    updateProjectInfo: <></>,
+  };
+
   return (
     <div className="toolbar">
       <div className="hidden-elements">
@@ -242,7 +341,7 @@ const Toolbar = () => {
         />
         {modalOpen && (
           <Modal
-            child={<CreateNodeContent closeModal={() => setModalOpen(false)} />}
+            child={modalContents[modalChild]}
             closeModal={() => setModalOpen(false)}
           />
         )}
@@ -256,89 +355,20 @@ const Toolbar = () => {
         <div
           className={`diagram-editing-tools ${isEditing ? '' : 'tool-hidden'}`}
         >
-          <AddButton
-            fileName={'object-icon.png'}
-            onClickEvent={toggleAddNode}
-            disabled={!isEditing || isLinking || isObjectDelete || modalOpen}
-          >
-            요소 추가
-          </AddButton>
-          {isLinking ? (
-            <AddButton
-              fileName={'link-icon.png'}
-              onClickEvent={inactiveAddLink}
-              needCancel={true}
-              disabled={!isEditing}
-            >
-              링크추가모드 끄기
-            </AddButton>
-          ) : (
-            <AddButton
-              fileName={'link-icon.png'}
-              onClickEvent={activeAddLink}
-              disabled={!isEditing || isObjectDelete || modalOpen}
-            >
-              링크추가모드 켜기
-            </AddButton>
-          )}
-
-          {isObjectDelete ? (
-            <AddButton
-              fileName={'object-delete-icon.png'}
-              onClickEvent={inactiveDeleteObject}
-              needCancel={true}
-              disabled={!isEditing}
-            >
-              구성도 제거모드 끄기
-            </AddButton>
-          ) : (
-            <AddButton
-              fileName={'object-delete-icon.png'}
-              onClickEvent={activeDeleteObject}
-              needCancel={false}
-              disabled={!isEditing || isLinking || modalOpen}
-            >
-              구성도 제거모드 켜기
-            </AddButton>
-          )}
-
-          <AddButton
-            fileName={'background-icon.png'}
-            onClickEvent={onBgImgBtnClick}
-            needCancel={false}
-            for="bgImgInput"
-            disabled={!isEditing || isLinking || isObjectDelete || modalOpen}
-          >
-            배경 이미지 수정
-          </AddButton>
-
-          <AddButton
-            fileName={'thumbnail-icon.png'}
-            onClickEvent={onThumbnailBtnClick}
-            needCancel={false}
-            disabled={!isEditing || isLinking || isObjectDelete || modalOpen}
-          >
-            썸네일 이미지 수정
-          </AddButton>
-
-          <label htmlFor="sizeInput">노드 크기 조절</label>
-          <input
-            id="sizeInput"
-            type="number"
-            min="20"
-            max="100"
-            value={inputSize}
-            onChange={handleSizeInputChange}
-            placeholder="20 - 100"
-            disabled={!isEditing}
+          <Dropdown
+            title="프로젝트"
+            menuTitles={projectMenuTitles}
+            menuDetails={projectMenuDetails}
+            menuIcons={projectMenuIcons}
+            menuFunctions={projectMenuFunctions}
           />
-          <button
-            disabled={!isEditing}
-            className="toolbar-button"
-            onClick={handleSizeButtonClick}
-          >
-            확인
-          </button>
+          <Dropdown
+            title="도구"
+            menuTitles={toolMenuTitles}
+            menuDetails={toolMenuDetails}
+            menuIcons={toolMenuIcons}
+            menuFunctions={toolMenuFunctions}
+          />
         </div>
       )}
       <button

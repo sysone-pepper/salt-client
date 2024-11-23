@@ -30,8 +30,8 @@ export const MonitoringStatusContent = ({
   ]);
 
   const onSelectionChanged = useCallback(() => {
-    const seletedRows = gridRef.current.api.getSelectedRows();
-    setSelectedDevices(seletedRows);
+    const selectedRows = gridRef.current.api.getSelectedRows();
+    setSelectedDevices(selectedRows);
   });
 
   const onFirstDataRendered = (params) => {

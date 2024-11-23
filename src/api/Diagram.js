@@ -57,6 +57,18 @@ export const fetchDiagramData = async (projectId) => {
   return { nodeSize, backgroundSource, nodes, edges };
 };
 
+export const fetchDeviceInfos = async (projectId, limit = 1) => {
+  try {
+    const response = await api.get(
+      `api/v1/diagrams/${projectId}/exist-device?limit=${limit}`,
+    );
+    // console.log(response);
+    return response.data.data;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 export const fetchExistDevices = async (projectId) => {
   try {
     // 추후 회사(또는 유저)단위로 조회할 수 있는 장비를 분리해야함

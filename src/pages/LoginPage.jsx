@@ -18,7 +18,6 @@ const LoginPage = () => {
       await login(credentials);
       navigate(`/projects`, { replace: true });
     } catch (error) {
-      console.error('로그인 실패:', error);
       alert('로그인에 실패했습니다.');
     }
   };
