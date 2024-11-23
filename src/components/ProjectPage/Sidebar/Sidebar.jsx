@@ -17,6 +17,7 @@ import { useTimeout } from '../../../hooks/useTimeout.jsx';
 import { MonitoringOptions } from '../../../constants/MonitoringOptions.js';
 import { MonitoringStatusContent } from '../ModalContents/MonitoringStatusContent.jsx';
 import { TopUsageOptioningContent } from '../ModalContents/TopUsageOptioningContent.jsx';
+import { fetchDeviceInfos } from '../../../api/Diagram.js';
 
 const deviceCategory = {
   1: 'Server',
@@ -30,33 +31,30 @@ const deviceCategory = {
 };
 
 const Sidebar = () => {
-  const { nodes, isSidebarPanned, setIsSidebarPanned } =
+  const { dataReady, nodes, setNodes, isSidebarPanned, setIsSidebarPanned } =
     useContext(NetworkContext);
 
-  const [topUsageOption, setTopUsageOption] = useState('Traffic');
-  const [monitorDevices, setMonitorDevices] = useState([]);
-  const [monitorDeviceOption, setMonitorDeviceOption] = useState('CPU');
+  const [topUsageOption, setTopUsageOption] = useState('traffic');
+  const [monitorDevices, setMonitorDevices] = useState(null);
+  const [monitorDeviceOption, setMonitorDeviceOption] = useState('traffic');
   const [modalOpen, setModalOpen] = useState(false);
   const [modalOption, setModalOption] = useState(null);
   const [tables, setTables] = useState([
     {
       source: 'deviceStatus',
       title: '장비 현황',
-      data: [],
       toDisplayData: [],
       columnAliases: ['', '등록', '장애'],
     },
     {
       source: 'topUsage',
       title: '장비 Traffic 사용량 TOP 5',
-      data: [],
       toDisplayData: [],
       columnAliases: ['서버 명', 'Traffic', 'CPU(%)', 'MEM(%)', 'DISK(%)'],
     },
     {
       source: 'monitorDevice',
       title: '장비 Traffic',
-      data: [],
       toDisplayData: [],
       columnAliases: ['서버 명', 'Traffic', '차트'],
     },
@@ -64,169 +62,205 @@ const Sidebar = () => {
 
   const dragIndexRef = useRef(null);
 
-  const modalChilds = {
-    monitorDevice: (
-      <MonitoringStatusContent
-        existDevices={nodes
-          .filter((node) => node.data.nodeType === 'EXIST_DEVICE')
-          .map((node) => node.data.deviceAlias)}
-        monitorDevices={monitorDevices}
-        setMonitorDevices={setMonitorDevices}
-        monitorDeviceOption={monitorDeviceOption}
-        setMonitorDeviceOption={setMonitorDeviceOption}
-        closeModal={() => {
-          setModalOpen(false);
-          setModalOption(null);
-        }}
-      />
-    ),
-    topUsage: (
-      <TopUsageOptioningContent
-        topUsageOption={topUsageOption}
-        setTopUsageOption={setTopUsageOption}
-        closeModal={() => {
-          setModalOpen(false);
-          setModalOption(null);
-        }}
-      />
-    ),
+  const [modalChild, setModalChild] = useState(null); // modalChild 상태 추가
+
+  const handleModalOptionChange = (option) => {
+    if (option === 'monitorDevice') {
+      setModalChild(
+        <MonitoringStatusContent
+          existDevices={nodes
+            .filter((node) => node.data.nodeType === 'EXIST_DEVICE')
+            .map((node) => node.data.deviceAlias)}
+          monitorDevices={monitorDevices}
+          setMonitorDevices={setMonitorDevices}
+          monitorDeviceOption={monitorDeviceOption}
+          setMonitorDeviceOption={setMonitorDeviceOption}
+          closeModal={() => {
+            setModalOpen(false);
+          }}
+        />,
+      );
+    } else if (option === 'topUsage') {
+      setModalChild(
+        <TopUsageOptioningContent
+          topUsageOption={topUsageOption}
+          setTopUsageOption={setTopUsageOption}
+          closeModal={() => {
+            setModalOpen(false);
+          }}
+        />,
+      );
+    }
   };
 
   const createSideBarTables = async () => {
-    const filteredNode = nodes.filter(
-      (node) => node.data.nodeType === 'EXIST_DEVICE',
+    if (nodes.length <= 1) return;
+
+    const deviceNodes = nodes.filter(
+      (node, idx) => idx !== 0 && node.data.nodeType.endsWith('DEVICE'),
     );
 
-    let deviceStatusObject = {};
-    let deviceData = [];
-
-    // 비동기 작업을 배열에 저장
-    const fetchPromises = filteredNode.map(async (node) => {
-      const deviceType = deviceCategory[node.data.deviceType];
-      if (deviceStatusObject[deviceType]) {
-        deviceStatusObject[deviceType].total += 1;
-      } else {
-        deviceStatusObject[deviceType] = { total: 1, warning: 0 };
-      }
-
-      const res = await getDeviceData(node.data.deviceId, 30);
-      if (res.success && res.data.length > 0) {
-        res.data.map((data) => {
-          data.trafficAmount = data.nicInBytesPerSec + data.nicOutBytesPerSec;
-        });
-        const deviceInfo = res.data[0];
-        const monitorLimit = 30;
-        const hasTrouble =
-          deviceInfo?.usedDiskPercentage > monitorLimit ||
-          deviceInfo?.usedMemoryPercentage > monitorLimit
-            ? true
-            : false;
-
-        if (hasTrouble) {
-          deviceStatusObject[deviceType].warning += 1;
+    // 위험. 경고 수치
+    const alertLevel = deviceNodes
+      .filter((node) => node.data.nodeType.startsWith('EXIST'))
+      .reduce((obj, node) => {
+        const {
+          deviceAlias,
+          trafficWarning,
+          trafficDanger,
+          cpuWarning,
+          cpuDanger,
+          diskWarning,
+          diskDanger,
+          memWarning,
+          memDanger,
+        } = node.data;
+        if (!obj[deviceAlias]) {
+          obj[deviceAlias] = {
+            traffic: [trafficWarning, trafficDanger],
+            cpu: [cpuWarning, cpuDanger],
+            mem: [memWarning, 40],
+            disk: [diskWarning, diskDanger],
+          };
         }
+        return obj;
+      }, {});
 
-        const newDeviceData = {
-          deviceInfo,
-          serverName: node.data.deviceAlias,
-          chartData: res.data,
-        };
-        newDeviceData.deviceInfo.trafficAmount =
-          deviceInfo.nicInBytesPerSec + deviceInfo.nicOutBytesPerSec;
+    const data = await fetchDeviceInfos(1, 30);
 
-        deviceData.push(newDeviceData);
-      }
-    });
-
-    await Promise.all(fetchPromises);
-
-    const deviceStatusData = Object.entries(deviceStatusObject).map(
-      ([category, { total, warning }]) => ({
-        category,
-        total,
-        warning,
-      }),
-    );
-
-    const sortingTopUsageData = () => {
-      deviceData;
-      return deviceData
-        .sort(
-          (a, b) =>
-            b.deviceInfo[MonitoringOptions[topUsageOption]] -
-            a.deviceInfo[MonitoringOptions[topUsageOption]],
-        )
-        .slice(0, 5);
+    const groupById = (array) => {
+      return array.reduce((groups, item) => {
+        const { deviceId } = item;
+        if (!groups[deviceId]) {
+          groups[deviceId] = [];
+        }
+        groups[deviceId].push(item);
+        return groups;
+      }, {});
     };
 
-    const topUsageData = sortingTopUsageData().map((data) => {
-      return {
-        serverName: data.serverName,
-        traffic: data.deviceInfo.trafficAmount || '-',
-        cpuUsagePercent: data.deviceInfo.cpuProcessor || '-',
-        memUsagePercent: data.deviceInfo.usedMemoryPercentage || '-',
-        diskUsagePercent: data.deviceInfo.usedDiskPercentage || '-',
-      };
-    });
+    const groupedData = groupById(data.chartInfos);
 
-    const newTables = tables.map((table) => {
-      if (table.source === 'deviceStatus') {
-        table.data = deviceStatusData;
-        table.toDisplayData = deviceStatusData;
-      } else if (table.source === 'monitorDevice') {
-        table.data = deviceData;
-        table.columnAliases = [
-          '서버 명',
-          `${monitorDeviceOption} (${
-            monitorDeviceOption === 'Traffic' ? '' : '%'
-          })`,
-          '차트',
-        ];
-        table.toDisplayData = deviceData
-          .filter((data) => monitorDevices.includes(data.serverName))
-          .map((data) => {
-            if (monitorDeviceOption === 'Traffic') console.log(data);
-            return {
-              serverName: data.serverName,
-              amount: data.deviceInfo[[MonitoringOptions[monitorDeviceOption]]],
-              chartData: data.chartData.map(
-                (data) => data[[MonitoringOptions[monitorDeviceOption]]],
-              ),
-            };
-          });
-      } else if (table.source === 'topUsage') {
-        table.data = topUsageData;
-        table.toDisplayData = topUsageData.map((data) => {
-          return {
-            serverName: data.serverName,
-            traffic: data.traffic,
-            cpuUsagePercent: data.cpuUsagePercent,
-            memUsagePercent: data.memUsagePercent,
-            diskUsagePercent: data.diskUsagePercent,
-          };
-        });
+    // device status
+    const categoryMap = Object.values(deviceCategory).reduce((acc, value) => {
+      acc[value] = [0, 0];
+      return acc;
+    }, {});
+
+    const warningNodes = [];
+    const dangerNodes = [];
+
+    deviceNodes.forEach((node) => {
+      if (node.data.nodeType.startsWith('NEW')) {
+        categoryMap[node.data.newDeviceType][0] += 1;
+      } else {
+        categoryMap[deviceCategory[node.data.deviceType]][0] += 1;
+        const nodeData = groupedData[node.data.deviceId][0];
+        if (
+          nodeData.cpuProcessor > alertLevel[node.data.deviceAlias].cpu[0] ||
+          nodeData.usedDiskPercentage >
+            alertLevel[node.data.deviceAlias].disk[0] ||
+          nodeData.usedMemoryPercentage >
+            alertLevel[node.data.deviceAlias].mem[0] ||
+          nodeData.traffic > alertLevel[node.data.deviceAlias].traffic[0]
+        ) {
+          categoryMap[deviceCategory[node.data.deviceType]][1] += 1;
+          warningNodes.push(node.data.id);
+        }
       }
-      return table;
     });
 
-    setTables(newTables);
+    // const newNodes = [...nodes].map((node) => {
+    //   if (warningNodes.includes(node.data.id)) {
+    //     node.classes = 'object EXIST_DEVICE WARNING';
+    //   }
+    //   return node;
+    // });
+
+    // setNodes(newNodes);
+
+    const deviceStatusData = Object.entries(categoryMap).map(([key, value]) => [
+      [key, 0],
+      [value[0], 0],
+      [value[1], 2],
+    ]);
+
+    // top usage
+    let topUsageData = data[topUsageOption].map((info) => {
+      const deviceAlias = info.deviceAlias;
+      let infoRow = [[deviceAlias, 0]];
+      Object.entries(MonitoringOptions).map(([key, value]) => {
+        if (info[value] > alertLevel[deviceAlias][key][1]) {
+          infoRow.push([info[value], 2]);
+        } else if (info[value] > alertLevel[deviceAlias][key][0]) {
+          infoRow.push([info[value], 1]);
+        } else {
+          infoRow.push([info[value], 0]);
+        }
+      });
+      return infoRow;
+    });
+
+    // monitor device
+    let monitorDeviceData = [];
+    Object.entries(groupedData).forEach(([deviceId, items]) => {
+      const deviceName = items[0].deviceAlias;
+      if (monitorDevices.includes(deviceName)) {
+        let rowData = [[deviceName, 0]];
+        let chartData = [];
+        items.map((info) => {
+          chartData.push(info[MonitoringOptions[monitorDeviceOption]]);
+        });
+        rowData.push([chartData[0], 0]);
+        rowData.push(chartData);
+        monitorDeviceData.push(rowData);
+      }
+    });
+
+    const newTable = [...tables];
+    newTable.map((table) => {
+      if (table.source === 'deviceStatus')
+        table.toDisplayData = deviceStatusData;
+      else if (table.source === 'topUsage') table.toDisplayData = topUsageData;
+      else if (table.source === 'monitorDevice')
+        table.toDisplayData = monitorDeviceData;
+    });
+    setTables(newTable);
   };
 
   useTimeout(() => {
     createSideBarTables();
-  }, 60000);
+  }, 5000);
 
   useEffect(() => {
-    const filteredNode = nodes.filter(
-      (node) => node.data.nodeType === 'EXIST_DEVICE',
-    );
-    const newMonitorDevices = filteredNode.map((node) => node.data.deviceAlias);
-    setMonitorDevices(newMonitorDevices);
-  }, [nodes]);
+    if (!monitorDevices) {
+      const filteredNode = nodes.filter(
+        (node) => node.data.nodeType === 'EXIST_DEVICE',
+      );
+      const newMonitorDevices = filteredNode.map(
+        (node) => node.data.deviceAlias,
+      );
+      setMonitorDevices(newMonitorDevices);
+    }
+  }, [dataReady]);
 
   useEffect(() => {
     createSideBarTables();
   }, [topUsageOption, monitorDevices, monitorDeviceOption]);
+
+  useEffect(() => {
+    const newTables = [...tables].map((table) => {
+      if (table?.source === 'monitorDevice') {
+        table.columnAliases = [
+          '서버 명',
+          monitorDeviceOption.toLocaleUpperCase(),
+          '차트',
+        ];
+      }
+      return table;
+    });
+    setTables(newTables);
+  }, [monitorDeviceOption]);
 
   useEffect(() => {
     tables.forEach((_, index) => {
@@ -278,10 +312,9 @@ const Sidebar = () => {
     <>
       {modalOpen && (
         <Modal
-          child={modalChilds[modalOption]}
+          child={modalChild}
           closeModal={() => {
             setModalOpen(false);
-            setModalOption(null);
           }}
         />
       )}
@@ -315,7 +348,7 @@ const Sidebar = () => {
                         className="filter-toggling-btn"
                         onClick={() => {
                           setModalOpen(true);
-                          setModalOption(table.source);
+                          handleModalOptionChange(table.source);
                         }}
                       >
                         <i className="bi bi-gear" />
@@ -323,7 +356,7 @@ const Sidebar = () => {
                     )}
                   </div>
                   <div className={`sidebar-element ${table.source}`}>
-                    <Table source={dataSource} key={index} />
+                    <Table source={dataSource} />
                   </div>
                 </li>
               );
