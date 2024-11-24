@@ -42,7 +42,7 @@ const ViewAllUsersModalContent = ({ users, deleteUser, currentRole }) => {
           <tr>
             <th>사용자 계정</th>
             <th>사용자 이름</th>
-            <th>비밀번호 복사</th>
+            {/* <th>비밀번호 복사</th> */}
             <th>권한</th>
             {isAdmin && <th>관리</th>}
           </tr>
@@ -52,14 +52,14 @@ const ViewAllUsersModalContent = ({ users, deleteUser, currentRole }) => {
             <tr key={user.username}>
               <td>{user.username}</td>
               <td>{user.name}</td>
-              <td>
+              {/* <td>
                 <button
                   className="vau-copy-button"
                   onClick={() => copyToClipboard(user.password)}
                 >
                   •••••••• 📋
                 </button>
-              </td>
+              </td> */}
               <td>{user.authority === 'ALL' ? '전체 권한' : '읽기 전용'}</td>
               {isAdmin && (
                 <td>

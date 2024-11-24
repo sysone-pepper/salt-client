@@ -101,111 +101,13 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
     };
   };
 
-  // const getChartOptions = (tab, dataKey, yAxisTitle, useMaxValue) => {
-  //   if (!usageData) return {};
-
-  //   const averageData = usageData.map((item) => [
-  //     new Date(item.generateTime).getTime(),
-  //     item[dataKey],
-  //   ]);
-
-  //   const minDataKey = dataKey + 'Min';
-  //   const maxDataKey = dataKey + 'Max';
-
-  //   const minData = usageData.map((item) => [
-  //     new Date(item.generateTime).getTime(),
-  //     item[minDataKey],
-  //   ]);
-
-  //   const maxData = usageData.map((item) => [
-  //     new Date(item.generateTime).getTime(),
-  //     item[maxDataKey],
-  //   ]);
-
-  //   const allDataValues = [
-  //     ...averageData.map((point) => point[1]),
-  //     ...minData.map((point) => point[1]),
-  //     ...maxData.map((point) => point[1]),
-  //   ];
-  //   const maxDataValue = Math.max(...allDataValues);
-
-  //   let yAxisMax;
-  //   if (useMaxValue) {
-  //     yAxisMax = maxDataValue;
-  //   } else {
-  //     yAxisMax = yAxisTitle.includes('%') ? 100 : maxDataValue;
-  //   }
-
-  //   return {
-  //     chart: {
-  //       type: 'area',
-  //       zoomType: 'x',
-  //       backgroundColor: 'transparent',
-  //       height: 300,
-  //     },
-  //     title: { text: '' },
-  //     xAxis: {
-  //       type: 'datetime',
-  //       labels: { style: { color: '#9ca3af' } },
-  //     },
-  //     yAxis: {
-  //       max: yAxisMax,
-  //       title: {
-  //         text: yAxisTitle,
-  //         style: { color: '#9ca3af' },
-  //       },
-  //       labels: { style: { color: '#9ca3af' } },
-  //     },
-  //     legend: {
-  //       enabled: true,
-  //       itemStyle: { color: '#e5e7eb' },
-  //     },
-  //     credits: { enabled: false },
-  //     series: [
-  //       {
-  //         name: 'Average',
-  //         data: averageData,
-  //         color: {
-  //           linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-  //           stops: [
-  //             [0, 'rgb(199, 113, 243)'],
-  //             [1, 'rgb(76, 175, 254)'],
-  //           ],
-  //         },
-  //         marker: { radius: 2 },
-  //         lineWidth: 1,
-  //       },
-  //       {
-  //         name: 'Min',
-  //         data: minData,
-  //         color: {
-  //           linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-  //           stops: [
-  //             [0, 'rgb(143, 68, 204)'],
-  //             [1, 'rgb(43, 146, 255)'],
-  //           ],
-  //         },
-  //         dashStyle: 'ShortDot',
-  //         marker: { radius: 2 },
-  //         lineWidth: 1,
-  //       },
-  //       {
-  //         name: 'Max',
-  //         data: maxData,
-  //         color: {
-  //           linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-  //           stops: [
-  //             [0, 'rgb(255, 94, 171)'],
-  //             [1, 'rgb(76, 175, 254)'],
-  //           ],
-  //         },
-  //         dashStyle: 'ShortDot',
-  //         marker: { radius: 2 },
-  //         lineWidth: 1,
-  //       },
-  //     ],
-  //   };
-  // };
+  const formatBytes = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'];
+    const i = Math.floor(Math.log(Math.abs(bytes)) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
 
   const getChartOptions = (tab, dataKey, yAxisTitle, useMaxValue) => {
     if (!usageData) return {};
@@ -239,12 +141,24 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
     if (useMaxValue) {
       yAxisMax = maxDataValue;
     } else {
-      yAxisMax = yAxisTitle.includes('%') ? 100 : maxDataValue;
+      yAxisMax = yAxisTitle.includes('%') ? 100 : null;
     }
+
+    const byteDataKeys = [
+      'totalMemory',
+      'usedMemory',
+      'freeMemory',
+      'memoryBuffers',
+      'memoryCached',
+      'memoryPagefault',
+      'totalSwap',
+      'usedSwap',
+      'freeSwap',
+    ];
 
     return {
       chart: {
-        type: 'areaspline', // 영역 그라데이션을 위해 areaspline 사용
+        type: 'areaspline',
         zoomType: 'x',
         backgroundColor: 'transparent',
         height: 300,
@@ -260,7 +174,33 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
           text: yAxisTitle,
           style: { color: '#9ca3af' },
         },
-        labels: { style: { color: '#9ca3af' } },
+        labels: {
+          style: { color: '#9ca3af' },
+          formatter: function () {
+            if (byteDataKeys.includes(dataKey)) {
+              return formatBytes(this.value);
+            } else {
+              return this.value;
+            }
+          },
+        },
+      },
+      tooltip: {
+        shared: true,
+        formatter: function () {
+          const date = Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x);
+          let s = `<b>${date}</b>`;
+          this.points.forEach((point) => {
+            let value = point.y;
+            if (byteDataKeys.includes(dataKey)) {
+              value = formatBytes(point.y);
+            } else {
+              value = point.y;
+            }
+            s += `<br/><span style="color:${point.color}">\u25CF</span> ${point.series.name}: <b>${value}</b>`;
+          });
+          return s;
+        },
       },
       legend: {
         enabled: true,
@@ -271,12 +211,12 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
         {
           name: 'Average',
           data: averageData,
-          type: 'line', // 평균은 라인 스타일
-          color: 'rgb(50, 150, 250)', // 파란 계열
-          lineWidth: 3, // 굵은 라인
+          type: 'line',
+          color: 'rgb(50, 150, 250)',
+          lineWidth: 3,
           marker: {
             radius: 4,
-            symbol: 'circle', // 동그란 마커
+            symbol: 'circle',
             lineWidth: 2,
             lineColor: 'rgb(50, 150, 250)',
           },
@@ -284,12 +224,12 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
         {
           name: 'Min',
           data: minData,
-          type: 'areaspline', // 영역 스타일
+          type: 'areaspline',
           color: {
             linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
             stops: [
-              [0, 'rgba(100, 200, 250, 0.7)'], // 연한 파란색
-              [1, 'rgba(50, 150, 250, 0.2)'], // 더 연한 파란색
+              [0, 'rgba(100, 200, 250, 0.7)'],
+              [1, 'rgba(50, 150, 250, 0.2)'],
             ],
           },
           marker: { enabled: false },
@@ -297,12 +237,12 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
         {
           name: 'Max',
           data: maxData,
-          type: 'areaspline', // 영역 스타일
+          type: 'areaspline',
           color: {
             linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
             stops: [
-              [0, 'rgba(100, 250, 150, 0.7)'], // 연한 초록색
-              [1, 'rgba(50, 200, 100, 0.2)'], // 더 연한 초록색
+              [0, 'rgba(100, 250, 150, 0.7)'],
+              [1, 'rgba(50, 200, 100, 0.2)'],
             ],
           },
           marker: { enabled: false },
@@ -333,14 +273,17 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
         { dataKey: 'cpuSyscall', title: 'CPU Syscall 횟수' },
       ],
       Memory: [
-        { dataKey: 'usedMemoryPercentage', title: 'Memory Usage (%)' },
-        { dataKey: 'freeMemory', title: 'Free Memory' },
-        { dataKey: 'cachedMemory', title: 'Cached Memory' },
-        { dataKey: 'buffersMemory', title: 'Buffers Memory' },
-        { dataKey: 'swapUsed', title: 'Swap Used' },
-        { dataKey: 'swapFree', title: 'Swap Free' },
-        { dataKey: 'swapUsagePercentage', title: 'Swap Usage (%)' },
+        {
+          dataKey: 'usedMemoryPercentage',
+          title: 'Used Memory Percentage (%)',
+        },
         { dataKey: 'totalMemory', title: 'Total Memory' },
+        { dataKey: 'usedMemory', title: 'Used Memory' },
+        { dataKey: 'freeMemory', title: 'Free Memory' },
+        { dataKey: 'usedSwapPercentage', title: 'Used Swap Percentage (%)' },
+        { dataKey: 'memoryBuffers', title: 'Memory Buffers' },
+        { dataKey: 'memoryCached', title: 'Memory Cached' },
+        { dataKey: 'memoryPagefault', title: 'Memory Page Faults' },
       ],
       DISK: [
         { dataKey: 'usedDiskPercentage', title: 'Disk Usage (%)' },
@@ -401,9 +344,7 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
 
     return (
       <>
-        {/* 상단 4개 카드 */}
         <div className="card">
-          {/* CPU 현재 사용률 (도넛 차트) */}
           <div className="card-value">
             {latestData ? (
               <>
@@ -427,7 +368,6 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
           </div>
         </div>
         <div className="card">
-          {/* Memory 현재 사용률 (도넛 차트) */}
           <div className="card-value">
             {latestData ? (
               <>
@@ -451,7 +391,6 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
           </div>
         </div>
         <div className="card">
-          {/* Disk 현재 사용률 (도넛 차트) */}
           <div className="card-value">
             {latestData ? (
               <>
@@ -475,7 +414,6 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
           </div>
         </div>
         <div className="card">
-          {/* NIC In 사용률 추이 */}
           <div className="card-header">
             <div className="card-title">NIC In</div>
             <div className="max-value-toggle">
@@ -506,9 +444,7 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
           </div>
         </div>
 
-        {/* 하단 4개 카드 */}
         <div className="card">
-          {/* CPU 사용률 추이 */}
           <div className="card-header">
             <div className="card-title">CPU 추이</div>
             <div className="max-value-toggle">
@@ -539,7 +475,6 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
           </div>
         </div>
         <div className="card">
-          {/* Memory 사용률 추이 */}
           <div className="card-header">
             <div className="card-title">Memory 추이</div>
             <div className="max-value-toggle">
@@ -570,7 +505,6 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
           </div>
         </div>
         <div className="card">
-          {/* Disk 사용률 추이 */}
           <div className="card-header">
             <div className="card-title">Disk 추이</div>
             <div className="max-value-toggle">
@@ -601,7 +535,6 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
           </div>
         </div>
         <div className="card">
-          {/* NIC Out 사용률 추이 */}
           <div className="card-header">
             <div className="card-title">NIC Out</div>
             <div className="max-value-toggle">
@@ -685,8 +618,6 @@ export default ServerDashboard;
 // const ServerDashboard = ({ deviceId, deviceAlias }) => {
 //   const [activeTab, setActiveTab] = useState('요약');
 //   const [usageData, setUsageData] = useState(null);
-
-//   // Max Value 상태를 각 차트별로 관리하기 위한 상태
 //   const [maxValueStates, setMaxValueStates] = useState({});
 
 //   useEffect(() => {
@@ -775,28 +706,172 @@ export default ServerDashboard;
 //     };
 //   };
 
+//   const formatBytes = (bytes) => {
+//     if (bytes === 0) return '0 Bytes';
+//     const k = 1024;
+//     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'];
+//     const i = Math.floor(Math.log(Math.abs(bytes)) / Math.log(k));
+//     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+//   };
+
+//   // const getChartOptions = (tab, dataKey, yAxisTitle, useMaxValue) => {
+//   //   if (!usageData) return {};
+
+//   //   const averageData = usageData.map((item) => [
+//   //     new Date(item.generateTime).getTime(),
+//   //     item[dataKey],
+//   //   ]);
+
+//   //   const minDataKey = dataKey + 'Min';
+//   //   const maxDataKey = dataKey + 'Max';
+
+//   //   const minData = usageData.map((item) => [
+//   //     new Date(item.generateTime).getTime(),
+//   //     item[minDataKey],
+//   //   ]);
+
+//   //   const maxData = usageData.map((item) => [
+//   //     new Date(item.generateTime).getTime(),
+//   //     item[maxDataKey],
+//   //   ]);
+//   //   const allDataValues = [
+//   //     ...averageData.map((point) => point[1]),
+//   //     ...minData.map((point) => point[1]),
+//   //     ...maxData.map((point) => point[1]),
+//   //   ];
+//   //   const maxDataValue = Math.max(...allDataValues);
+
+//   //   let yAxisMax;
+//   //   if (useMaxValue) {
+//   //     yAxisMax = maxDataValue;
+//   //   } else {
+//   //     yAxisMax = yAxisTitle.includes('%') ? 100 : maxDataValue;
+//   //   }
+
+//   //   return {
+//   //     chart: {
+//   //       type: 'areaspline',
+//   //       zoomType: 'x',
+//   //       backgroundColor: 'transparent',
+//   //       height: 300,
+//   //     },
+//   //     title: { text: '' },
+//   //     xAxis: {
+//   //       type: 'datetime',
+//   //       labels: { style: { color: '#9ca3af' } },
+//   //     },
+//   //     yAxis: {
+//   //       max: yAxisMax,
+//   //       title: {
+//   //         text: yAxisTitle,
+//   //         style: { color: '#9ca3af' },
+//   //       },
+//   //       labels: { style: { color: '#9ca3af' } },
+//   //     },
+//   //     legend: {
+//   //       enabled: true,
+//   //       itemStyle: { color: '#e5e7eb' },
+//   //     },
+//   //     credits: { enabled: false },
+//   //     series: [
+//   //       {
+//   //         name: 'Average',
+//   //         data: averageData,
+//   //         type: 'line',
+//   //         color: 'rgb(50, 150, 250)',
+//   //         lineWidth: 3,
+//   //         marker: {
+//   //           radius: 4,
+//   //           symbol: 'circle',
+//   //           lineWidth: 2,
+//   //           lineColor: 'rgb(50, 150, 250)',
+//   //         },
+//   //       },
+//   //       {
+//   //         name: 'Min',
+//   //         data: minData,
+//   //         type: 'areaspline',
+//   //         color: {
+//   //           linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+//   //           stops: [
+//   //             [0, 'rgba(100, 200, 250, 0.7)'],
+//   //             [1, 'rgba(50, 150, 250, 0.2)'],
+//   //           ],
+//   //         },
+//   //         marker: { enabled: false },
+//   //       },
+//   //       {
+//   //         name: 'Max',
+//   //         data: maxData,
+//   //         type: 'areaspline',
+//   //         color: {
+//   //           linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+//   //           stops: [
+//   //             [0, 'rgba(100, 250, 150, 0.7)'],
+//   //             [1, 'rgba(50, 200, 100, 0.2)'],
+//   //           ],
+//   //         },
+//   //         marker: { enabled: false },
+//   //       },
+//   //     ],
+//   //   };
+//   // };
+
 //   const getChartOptions = (tab, dataKey, yAxisTitle, useMaxValue) => {
 //     if (!usageData) return {};
 
-//     const chartData = usageData.map((item) => [
+//     const averageData = usageData.map((item) => [
 //       new Date(item.generateTime).getTime(),
 //       item[dataKey],
 //     ]);
 
-//     const dataValues = chartData.map((point) => point[1]);
-//     const maxDataValue = Math.max(...dataValues);
-//     const yAxisMax = useMaxValue ? maxDataValue : 100;
+//     const minDataKey = dataKey + 'Min';
+//     const maxDataKey = dataKey + 'Max';
+
+//     const minData = usageData.map((item) => [
+//       new Date(item.generateTime).getTime(),
+//       item[minDataKey],
+//     ]);
+
+//     const maxData = usageData.map((item) => [
+//       new Date(item.generateTime).getTime(),
+//       item[maxDataKey],
+//     ]);
+
+//     const allDataValues = [
+//       ...averageData.map((point) => point[1]),
+//       ...minData.map((point) => point[1]),
+//       ...maxData.map((point) => point[1]),
+//     ];
+//     const maxDataValue = Math.max(...allDataValues);
+
+//     let yAxisMax;
+//     if (useMaxValue) {
+//       yAxisMax = maxDataValue;
+//     } else {
+//       yAxisMax = yAxisTitle.includes('%') ? 100 : null;
+//     }
+
+//     const byteDataKeys = [
+//       'totalMemory',
+//       'usedMemory',
+//       'freeMemory',
+//       'memoryBuffers',
+//       'memoryCached',
+//       'memoryPagefault',
+//       'totalSwap',
+//       'usedSwap',
+//       'freeSwap',
+//     ];
 
 //     return {
 //       chart: {
-//         type: 'area',
+//         type: 'areaspline',
 //         zoomType: 'x',
 //         backgroundColor: 'transparent',
 //         height: 300,
 //       },
-//       title: {
-//         text: '',
-//       },
+//       title: { text: '' },
 //       xAxis: {
 //         type: 'datetime',
 //         labels: { style: { color: '#9ca3af' } },
@@ -809,46 +884,81 @@ export default ServerDashboard;
 //         },
 //         labels: {
 //           style: { color: '#9ca3af' },
+//           formatter: function () {
+//             if (byteDataKeys.includes(dataKey)) {
+//               return formatBytes(this.value);
+//             } else {
+//               return this.value;
+//             }
+//           },
 //         },
 //       },
-//       plotOptions: {
-//         area: {
-//           stacking: null,
+//       tooltip: {
+//         shared: true,
+//         formatter: function () {
+//           const date = Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x);
+//           let s = `<b>${date}</b>`;
+//           this.points.forEach((point) => {
+//             let value = point.y;
+//             if (byteDataKeys.includes(dataKey)) {
+//               value = formatBytes(point.y);
+//             } else {
+//               value = point.y;
+//             }
+//             s += `<br/><span style="color:${point.color}">\u25CF</span> ${point.series.name}: <b>${value}</b>`;
+//           });
+//           return s;
 //         },
 //       },
 //       legend: {
-//         enabled: false,
+//         enabled: true,
+//         itemStyle: { color: '#e5e7eb' },
 //       },
-//       credits: {
-//         enabled: false,
-//       },
+//       credits: { enabled: false },
 //       series: [
 //         {
-//           name: yAxisTitle,
-//           data: chartData,
+//           name: 'Average',
+//           data: averageData,
+//           type: 'line',
+//           color: 'rgb(50, 150, 250)',
+//           lineWidth: 3,
+//           marker: {
+//             radius: 4,
+//             symbol: 'circle',
+//             lineWidth: 2,
+//             lineColor: 'rgb(50, 150, 250)',
+//           },
+//         },
+//         {
+//           name: 'Min',
+//           data: minData,
+//           type: 'areaspline',
 //           color: {
 //             linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 //             stops: [
-//               [0, 'rgb(199, 113, 243)'],
-//               [1, 'rgb(76, 175, 254)'],
+//               [0, 'rgba(100, 200, 250, 0.7)'],
+//               [1, 'rgba(50, 150, 250, 0.2)'],
 //             ],
 //           },
-//           marker: {
-//             radius: 2,
+//           marker: { enabled: false },
+//         },
+//         {
+//           name: 'Max',
+//           data: maxData,
+//           type: 'areaspline',
+//           color: {
+//             linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+//             stops: [
+//               [0, 'rgba(100, 250, 150, 0.7)'],
+//               [1, 'rgba(50, 200, 100, 0.2)'],
+//             ],
 //           },
-//           lineWidth: 1,
-//           states: {
-//             hover: {
-//               lineWidth: 1,
-//             },
-//           },
-//           threshold: null,
+//           marker: { enabled: false },
 //         },
 //       ],
 //     };
 //   };
 
-//   // 각 차트마다 Max Value 상태를 토글하는 함수
 //   const toggleMaxValue = (chartKey) => {
 //     setMaxValueStates((prevState) => ({
 //       ...prevState,
@@ -856,279 +966,39 @@ export default ServerDashboard;
 //     }));
 //   };
 
-//   // 요약 탭에서 차트 배치 설정
-//   const renderSummaryCards = () => {
-//     const latestData = usageData && usageData[usageData.length - 1];
-
-//     return (
-//       <>
-//         {/* 상단 4개 카드 */}
-//         <div className="card">
-//           {/* CPU 현재 사용률 (도넛 차트) */}
-//           <div className="card-value">
-//             {latestData ? (
-//               <>
-//                 <HighchartsReact
-//                   highcharts={Highcharts}
-//                   options={getDonutOptions(
-//                     'CPU 사용률',
-//                     latestData.cpuProcessor,
-//                   )}
-//                 />
-//                 <div className="donut-label">
-//                   <div className="donut-title">CPU</div>
-//                   <div className="donut-percentage">
-//                     {latestData.cpuProcessor}%
-//                   </div>
-//                 </div>
-//               </>
-//             ) : (
-//               <div>Loading...</div>
-//             )}
-//           </div>
-//         </div>
-//         <div className="card">
-//           {/* Memory 현재 사용률 (도넛 차트) */}
-//           <div className="card-value">
-//             {latestData ? (
-//               <>
-//                 <HighchartsReact
-//                   highcharts={Highcharts}
-//                   options={getDonutOptions(
-//                     'Memory 사용률',
-//                     latestData.usedMemoryPercentage,
-//                   )}
-//                 />
-//                 <div className="donut-label">
-//                   <div className="donut-title">Memory</div>
-//                   <div className="donut-percentage">
-//                     {latestData.usedMemoryPercentage}%
-//                   </div>
-//                 </div>
-//               </>
-//             ) : (
-//               <div>Loading...</div>
-//             )}
-//           </div>
-//         </div>
-//         <div className="card">
-//           {/* Disk 현재 사용률 (도넛 차트) */}
-//           <div className="card-value">
-//             {latestData ? (
-//               <>
-//                 <HighchartsReact
-//                   highcharts={Highcharts}
-//                   options={getDonutOptions(
-//                     'Disk 사용률',
-//                     latestData.usedDiskPercentage,
-//                   )}
-//                 />
-//                 <div className="donut-label">
-//                   <div className="donut-title">Disk</div>
-//                   <div className="donut-percentage">
-//                     {latestData.usedDiskPercentage}%
-//                   </div>
-//                 </div>
-//               </>
-//             ) : (
-//               <div>Loading...</div>
-//             )}
-//           </div>
-//         </div>
-//         <div className="card">
-//           {/* NIC In 사용률 추이 */}
-//           <div className="card-header">
-//             <div className="card-title">NIC In</div>
-//             <div className="max-value-toggle">
-//               <label>
-//                 <input
-//                   type="checkbox"
-//                   checked={maxValueStates['NIC_IN'] || false}
-//                   onChange={() => toggleMaxValue('NIC_IN')}
-//                 />
-//                 Max Value
-//               </label>
-//             </div>
-//           </div>
-//           <div className="card-value">
-//             {usageData ? (
-//               <HighchartsReact
-//                 highcharts={Highcharts}
-//                 options={getChartOptions(
-//                   'NIC',
-//                   'nicInBytesPerSec',
-//                   'NIC In Bytes/sec',
-//                   maxValueStates['NIC_IN'] || false,
-//                 )}
-//               />
-//             ) : (
-//               <div>Loading...</div>
-//             )}
-//           </div>
-//         </div>
-//         {/* 하단 4개 카드 */}
-//         <div className="card">
-//           {/* CPU 사용률 추이 */}
-//           <div className="card-header">
-//             <div className="card-title">CPU 추이</div>
-//             <div className="max-value-toggle">
-//               <label>
-//                 <input
-//                   type="checkbox"
-//                   checked={maxValueStates['CPU'] || false}
-//                   onChange={() => toggleMaxValue('CPU')}
-//                 />
-//                 Max Value
-//               </label>
-//             </div>
-//           </div>
-//           <div className="card-value">
-//             {usageData ? (
-//               <HighchartsReact
-//                 highcharts={Highcharts}
-//                 options={getChartOptions(
-//                   'CPU',
-//                   'cpuProcessor',
-//                   'CPU %',
-//                   maxValueStates['CPU'] || false,
-//                 )}
-//               />
-//             ) : (
-//               <div>Loading...</div>
-//             )}
-//           </div>
-//         </div>
-//         <div className="card">
-//           {/* Memory 사용률 추이 */}
-//           <div className="card-header">
-//             <div className="card-title">Memory 추이</div>
-//             <div className="max-value-toggle">
-//               <label>
-//                 <input
-//                   type="checkbox"
-//                   checked={maxValueStates['Memory'] || false}
-//                   onChange={() => toggleMaxValue('Memory')}
-//                 />
-//                 Max Value
-//               </label>
-//             </div>
-//           </div>
-//           <div className="card-value">
-//             {usageData ? (
-//               <HighchartsReact
-//                 highcharts={Highcharts}
-//                 options={getChartOptions(
-//                   'Memory',
-//                   'usedMemoryPercentage',
-//                   'Memory %',
-//                   maxValueStates['Memory'] || false,
-//                 )}
-//               />
-//             ) : (
-//               <div>Loading...</div>
-//             )}
-//           </div>
-//         </div>
-//         <div className="card">
-//           {/* Disk 사용률 추이 */}
-//           <div className="card-header">
-//             <div className="card-title">Disk 추이</div>
-//             <div className="max-value-toggle">
-//               <label>
-//                 <input
-//                   type="checkbox"
-//                   checked={maxValueStates['DISK'] || false}
-//                   onChange={() => toggleMaxValue('DISK')}
-//                 />
-//                 Max Value
-//               </label>
-//             </div>
-//           </div>
-//           <div className="card-value">
-//             {usageData ? (
-//               <HighchartsReact
-//                 highcharts={Highcharts}
-//                 options={getChartOptions(
-//                   'DISK',
-//                   'usedDiskPercentage',
-//                   'Disk %',
-//                   maxValueStates['DISK'] || false,
-//                 )}
-//               />
-//             ) : (
-//               <div>Loading...</div>
-//             )}
-//           </div>
-//         </div>
-//         <div className="card">
-//           {/* NIC Out 사용률 추이 */}
-//           <div className="card-header">
-//             <div className="card-title">NIC Out</div>
-//             <div className="max-value-toggle">
-//               <label>
-//                 <input
-//                   type="checkbox"
-//                   checked={maxValueStates['NIC_OUT'] || false}
-//                   onChange={() => toggleMaxValue('NIC_OUT')}
-//                 />
-//                 Max Value
-//               </label>
-//             </div>
-//           </div>
-//           <div className="card-value">
-//             {usageData ? (
-//               <HighchartsReact
-//                 highcharts={Highcharts}
-//                 options={getChartOptions(
-//                   'NIC',
-//                   'nicOutBytesPerSec',
-//                   'NIC Out Bytes/sec',
-//                   maxValueStates['NIC_OUT'] || false,
-//                 )}
-//               />
-//             ) : (
-//               <div>Loading...</div>
-//             )}
-//           </div>
-//         </div>
-//       </>
-//     );
-//   };
-
-//   // 각 탭에서 8개의 카드 렌더링
 //   const renderTabCards = () => {
 //     if (!usageData) return null;
 
 //     const tabConfig = {
 //       CPU: [
-//         { dataKey: 'cpuUser', title: 'User Time' },
-//         { dataKey: 'cpuSystem', title: 'System Time' },
-//         { dataKey: 'cpuIdle', title: 'Idle Time' },
-//         { dataKey: 'cpuWait', title: 'Wait Time' },
-//         { dataKey: 'cpuLoadavg', title: 'Load Average' },
-//         { dataKey: 'cpuContextSwitch', title: 'Context Switches' },
-//         { dataKey: 'cpuSyscall', title: 'System Calls' },
-//         { dataKey: 'cpuIrq', title: 'Interrupts' },
+//         { dataKey: 'cpuProcessor', title: 'CPU Processor 사용률 (%)' },
+//         { dataKey: 'cpuIdle', title: 'CPU Idle (%)' },
+//         { dataKey: 'cpuUser', title: 'CPU User (%)' },
+//         { dataKey: 'cpuSystem', title: 'CPU System (%)' },
+//         { dataKey: 'cpuWait', title: 'CPU Wait (%)' },
+//         { dataKey: 'cpuLoadAvg', title: 'CPU Load Average' },
+//         { dataKey: 'cpuContextSwitch', title: 'CPU Context Switch 횟수' },
+//         { dataKey: 'cpuSyscall', title: 'CPU Syscall 횟수' },
 //       ],
 //       Memory: [
-//         { dataKey: 'usedMemoryPercentage', title: 'Memory Usage %' },
-//         { dataKey: 'usedMemory', title: 'Used Memory' },
+//         { dataKey: 'usedMemoryPercentage', title: 'Memory Usage (%)' },
 //         { dataKey: 'freeMemory', title: 'Free Memory' },
 //         { dataKey: 'cachedMemory', title: 'Cached Memory' },
 //         { dataKey: 'buffersMemory', title: 'Buffers Memory' },
 //         { dataKey: 'swapUsed', title: 'Swap Used' },
 //         { dataKey: 'swapFree', title: 'Swap Free' },
-//         { dataKey: 'swapUsagePercentage', title: 'Swap Usage %' },
+//         { dataKey: 'swapUsagePercentage', title: 'Swap Usage (%)' },
+//         { dataKey: 'totalMemory', title: 'Total Memory' },
 //       ],
 //       DISK: [
-//         { dataKey: 'usedDiskPercentage', title: 'Disk Usage %' },
+//         { dataKey: 'usedDiskPercentage', title: 'Disk Usage (%)' },
 //         { dataKey: 'diskReadBytesPerSec', title: 'Disk Read Bytes/sec' },
 //         { dataKey: 'diskWriteBytesPerSec', title: 'Disk Write Bytes/sec' },
+//         { dataKey: 'diskQueueLength', title: 'Disk Queue Length' },
+//         { dataKey: 'diskUtilization', title: 'Disk Utilization (%)' },
+//         { dataKey: 'diskServiceTime', title: 'Disk Service Time' },
 //         { dataKey: 'diskReadTime', title: 'Disk Read Time' },
 //         { dataKey: 'diskWriteTime', title: 'Disk Write Time' },
-//         { dataKey: 'diskQueueLength', title: 'Disk Queue Length' },
-//         { dataKey: 'diskServiceTime', title: 'Disk Service Time' },
-//         { dataKey: 'diskUtilization', title: 'Disk Utilization' },
 //       ],
 //       NIC: [
 //         { dataKey: 'nicInBytesPerSec', title: 'NIC In Bytes/sec' },
@@ -1172,6 +1042,235 @@ export default ServerDashboard;
 //         </div>
 //       </div>
 //     ));
+//   };
+
+//   const renderSummaryCards = () => {
+//     const latestData = usageData && usageData[usageData.length - 1];
+
+//     return (
+//       <>
+//         <div className="card">
+//           <div className="card-value">
+//             {latestData ? (
+//               <>
+//                 <HighchartsReact
+//                   highcharts={Highcharts}
+//                   options={getDonutOptions(
+//                     'CPU 사용률',
+//                     latestData.cpuProcessor,
+//                   )}
+//                 />
+//                 <div className="donut-label">
+//                   <div className="donut-title">CPU</div>
+//                   <div className="donut-percentage">
+//                     {latestData.cpuProcessor}%
+//                   </div>
+//                 </div>
+//               </>
+//             ) : (
+//               <div>Loading...</div>
+//             )}
+//           </div>
+//         </div>
+//         <div className="card">
+//           <div className="card-value">
+//             {latestData ? (
+//               <>
+//                 <HighchartsReact
+//                   highcharts={Highcharts}
+//                   options={getDonutOptions(
+//                     'Memory 사용률',
+//                     latestData.usedMemoryPercentage,
+//                   )}
+//                 />
+//                 <div className="donut-label">
+//                   <div className="donut-title">Memory</div>
+//                   <div className="donut-percentage">
+//                     {latestData.usedMemoryPercentage}%
+//                   </div>
+//                 </div>
+//               </>
+//             ) : (
+//               <div>Loading...</div>
+//             )}
+//           </div>
+//         </div>
+//         <div className="card">
+//           <div className="card-value">
+//             {latestData ? (
+//               <>
+//                 <HighchartsReact
+//                   highcharts={Highcharts}
+//                   options={getDonutOptions(
+//                     'Disk 사용률',
+//                     latestData.usedDiskPercentage,
+//                   )}
+//                 />
+//                 <div className="donut-label">
+//                   <div className="donut-title">Disk</div>
+//                   <div className="donut-percentage">
+//                     {latestData.usedDiskPercentage}%
+//                   </div>
+//                 </div>
+//               </>
+//             ) : (
+//               <div>Loading...</div>
+//             )}
+//           </div>
+//         </div>
+//         <div className="card">
+//           <div className="card-header">
+//             <div className="card-title">NIC In</div>
+//             <div className="max-value-toggle">
+//               <label>
+//                 <input
+//                   type="checkbox"
+//                   checked={maxValueStates['NIC_IN'] || false}
+//                   onChange={() => toggleMaxValue('NIC_IN')}
+//                 />
+//                 Max Value
+//               </label>
+//             </div>
+//           </div>
+//           <div className="card-value">
+//             {usageData ? (
+//               <HighchartsReact
+//                 highcharts={Highcharts}
+//                 options={getChartOptions(
+//                   'NIC',
+//                   'nicInBytesPerSec',
+//                   'NIC In Bytes/sec',
+//                   maxValueStates['NIC_IN'] || false,
+//                 )}
+//               />
+//             ) : (
+//               <div>Loading...</div>
+//             )}
+//           </div>
+//         </div>
+
+//         <div className="card">
+//           <div className="card-header">
+//             <div className="card-title">CPU 추이</div>
+//             <div className="max-value-toggle">
+//               <label>
+//                 <input
+//                   type="checkbox"
+//                   checked={maxValueStates['CPU'] || false}
+//                   onChange={() => toggleMaxValue('CPU')}
+//                 />
+//                 Max Value
+//               </label>
+//             </div>
+//           </div>
+//           <div className="card-value">
+//             {usageData ? (
+//               <HighchartsReact
+//                 highcharts={Highcharts}
+//                 options={getChartOptions(
+//                   'CPU',
+//                   'cpuProcessor',
+//                   'CPU %',
+//                   maxValueStates['CPU'] || false,
+//                 )}
+//               />
+//             ) : (
+//               <div>Loading...</div>
+//             )}
+//           </div>
+//         </div>
+//         <div className="card">
+//           <div className="card-header">
+//             <div className="card-title">Memory 추이</div>
+//             <div className="max-value-toggle">
+//               <label>
+//                 <input
+//                   type="checkbox"
+//                   checked={maxValueStates['Memory'] || false}
+//                   onChange={() => toggleMaxValue('Memory')}
+//                 />
+//                 Max Value
+//               </label>
+//             </div>
+//           </div>
+//           <div className="card-value">
+//             {usageData ? (
+//               <HighchartsReact
+//                 highcharts={Highcharts}
+//                 options={getChartOptions(
+//                   'Memory',
+//                   'usedMemoryPercentage',
+//                   'Memory %',
+//                   maxValueStates['Memory'] || false,
+//                 )}
+//               />
+//             ) : (
+//               <div>Loading...</div>
+//             )}
+//           </div>
+//         </div>
+//         <div className="card">
+//           <div className="card-header">
+//             <div className="card-title">Disk 추이</div>
+//             <div className="max-value-toggle">
+//               <label>
+//                 <input
+//                   type="checkbox"
+//                   checked={maxValueStates['DISK'] || false}
+//                   onChange={() => toggleMaxValue('DISK')}
+//                 />
+//                 Max Value
+//               </label>
+//             </div>
+//           </div>
+//           <div className="card-value">
+//             {usageData ? (
+//               <HighchartsReact
+//                 highcharts={Highcharts}
+//                 options={getChartOptions(
+//                   'DISK',
+//                   'usedDiskPercentage',
+//                   'Disk %',
+//                   maxValueStates['DISK'] || false,
+//                 )}
+//               />
+//             ) : (
+//               <div>Loading...</div>
+//             )}
+//           </div>
+//         </div>
+//         <div className="card">
+//           <div className="card-header">
+//             <div className="card-title">NIC Out</div>
+//             <div className="max-value-toggle">
+//               <label>
+//                 <input
+//                   type="checkbox"
+//                   checked={maxValueStates['NIC_OUT'] || false}
+//                   onChange={() => toggleMaxValue('NIC_OUT')}
+//                 />
+//                 Max Value
+//               </label>
+//             </div>
+//           </div>
+//           <div className="card-value">
+//             {usageData ? (
+//               <HighchartsReact
+//                 highcharts={Highcharts}
+//                 options={getChartOptions(
+//                   'NIC',
+//                   'nicOutBytesPerSec',
+//                   'NIC Out Bytes/sec',
+//                   maxValueStates['NIC_OUT'] || false,
+//                 )}
+//               />
+//             ) : (
+//               <div>Loading...</div>
+//             )}
+//           </div>
+//         </div>
+//       </>
+//     );
 //   };
 
 //   return (
