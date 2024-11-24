@@ -18,6 +18,7 @@ import { MonitoringOptions } from '../../../constants/MonitoringOptions.js';
 import { MonitoringStatusContent } from '../ModalContents/MonitoringStatusContent.jsx';
 import { TopUsageOptioningContent } from '../ModalContents/TopUsageOptioningContent.jsx';
 import { fetchDeviceInfos } from '../../../api/Diagram.js';
+import { ControlWarningLevelContent } from '../ModalContents/ControlWarningLevelContetnt.jsx';
 
 const deviceCategory = {
   1: 'Server',
@@ -31,14 +32,20 @@ const deviceCategory = {
 };
 
 const Sidebar = () => {
-  const { dataReady, nodes, setNodes, isSidebarPanned, setIsSidebarPanned } =
-    useContext(NetworkContext);
-
+  const {
+    curProjectId,
+    frequency,
+    dataReady,
+    nodes,
+    setNodeEffects,
+    isSidebarPanned,
+    setIsSidebarPanned,
+  } = useContext(NetworkContext);
   const [topUsageOption, setTopUsageOption] = useState('traffic');
   const [monitorDevices, setMonitorDevices] = useState(null);
   const [monitorDeviceOption, setMonitorDeviceOption] = useState('traffic');
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalOption, setModalOption] = useState(null);
+  const [alertLevels, setAlertLevels] = useState({});
   const [tables, setTables] = useState([
     {
       source: 'deviceStatus',
@@ -59,9 +66,7 @@ const Sidebar = () => {
       columnAliases: ['서버 명', 'Traffic', '차트'],
     },
   ]);
-
   const dragIndexRef = useRef(null);
-
   const [modalChild, setModalChild] = useState(null); // modalChild 상태 추가
 
   const handleModalOptionChange = (option) => {
@@ -90,7 +95,24 @@ const Sidebar = () => {
           }}
         />,
       );
+    } else {
+      setModalChild(
+        <ControlWarningLevelContent
+          data={alertLevels}
+          closeModal={() => {
+            setModalOpen(false);
+          }}
+        />,
+      );
     }
+  };
+
+  const formatBytes = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'];
+    const i = Math.floor(Math.log(Math.abs(bytes)) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   const createSideBarTables = async () => {
@@ -119,14 +141,17 @@ const Sidebar = () => {
           obj[deviceAlias] = {
             traffic: [trafficWarning, trafficDanger],
             cpu: [cpuWarning, cpuDanger],
-            mem: [memWarning, 40],
+            mem: [memWarning, memDanger],
             disk: [diskWarning, diskDanger],
+            id: [node.data.id],
           };
         }
         return obj;
       }, {});
 
-    const data = await fetchDeviceInfos(1, 30);
+    setAlertLevels(alertLevel);
+
+    const data = await fetchDeviceInfos(curProjectId, 30);
 
     const groupById = (array) => {
       return array.reduce((groups, item) => {
@@ -147,8 +172,7 @@ const Sidebar = () => {
       return acc;
     }, {});
 
-    const warningNodes = [];
-    const dangerNodes = [];
+    const newNodeEffects = [];
 
     deviceNodes.forEach((node) => {
       if (node.data.nodeType.startsWith('NEW')) {
@@ -157,6 +181,24 @@ const Sidebar = () => {
         categoryMap[deviceCategory[node.data.deviceType]][0] += 1;
         const nodeData = groupedData[node.data.deviceId][0];
         if (
+          nodeData.cpuProcessor > alertLevel[node.data.deviceAlias].cpu[1] ||
+          nodeData.usedDiskPercentage >
+            alertLevel[node.data.deviceAlias].disk[1] ||
+          nodeData.usedMemoryPercentage >
+            alertLevel[node.data.deviceAlias].mem[1] ||
+          nodeData.traffic > alertLevel[node.data.deviceAlias].traffic[1]
+        ) {
+          categoryMap[deviceCategory[node.data.deviceType]][1] += 1;
+          const nodeEffect = {
+            classes: 'effect DANGER',
+            data: {
+              id: `effect-${node.data.id}`,
+              nodeSize: node.data.nodeSize + 5,
+            },
+            position: node.position,
+          };
+          newNodeEffects.push(nodeEffect);
+        } else if (
           nodeData.cpuProcessor > alertLevel[node.data.deviceAlias].cpu[0] ||
           nodeData.usedDiskPercentage >
             alertLevel[node.data.deviceAlias].disk[0] ||
@@ -165,10 +207,20 @@ const Sidebar = () => {
           nodeData.traffic > alertLevel[node.data.deviceAlias].traffic[0]
         ) {
           categoryMap[deviceCategory[node.data.deviceType]][1] += 1;
-          warningNodes.push(node.data.id);
+          const nodeEffect = {
+            classes: 'effect WARNING',
+            data: {
+              id: `effect-${node.data.id}`,
+              nodeSize: node.data.nodeSize + 5,
+            },
+            position: node.position,
+          };
+          newNodeEffects.push(nodeEffect);
         }
       }
     });
+
+    setNodeEffects(newNodeEffects);
 
     // const newNodes = [...nodes].map((node) => {
     //   if (warningNodes.includes(node.data.id)) {
@@ -189,13 +241,13 @@ const Sidebar = () => {
     let topUsageData = data[topUsageOption].map((info) => {
       const deviceAlias = info.deviceAlias;
       let infoRow = [[deviceAlias, 0]];
-      Object.entries(MonitoringOptions).map(([key, value]) => {
+      Object.entries(MonitoringOptions).map(([key, value], idx) => {
         if (info[value] > alertLevel[deviceAlias][key][1]) {
-          infoRow.push([info[value], 2]);
+          infoRow.push([idx === 0 ? formatBytes(info[value]) : info[value], 2]);
         } else if (info[value] > alertLevel[deviceAlias][key][0]) {
-          infoRow.push([info[value], 1]);
+          infoRow.push([idx === 0 ? formatBytes(info[value]) : info[value], 1]);
         } else {
-          infoRow.push([info[value], 0]);
+          infoRow.push([idx === 0 ? formatBytes(info[value]) : info[value], 0]);
         }
       });
       return infoRow;
@@ -205,13 +257,18 @@ const Sidebar = () => {
     let monitorDeviceData = [];
     Object.entries(groupedData).forEach(([deviceId, items]) => {
       const deviceName = items[0].deviceAlias;
-      if (monitorDevices.includes(deviceName)) {
+      if (monitorDevices?.includes(deviceName)) {
         let rowData = [[deviceName, 0]];
         let chartData = [];
         items.map((info) => {
           chartData.push(info[MonitoringOptions[monitorDeviceOption]]);
         });
-        rowData.push([chartData[0], 0]);
+        rowData.push([
+          chartData[0].toString().length > 9
+            ? formatBytes(chartData[0])
+            : chartData[0],
+          0,
+        ]);
         rowData.push(chartData);
         monitorDeviceData.push(rowData);
       }
@@ -230,7 +287,7 @@ const Sidebar = () => {
 
   useTimeout(() => {
     createSideBarTables();
-  }, 5000);
+  }, frequency * 1000);
 
   useEffect(() => {
     if (!monitorDevices) {
@@ -246,7 +303,7 @@ const Sidebar = () => {
 
   useEffect(() => {
     createSideBarTables();
-  }, [topUsageOption, monitorDevices, monitorDeviceOption]);
+  }, [topUsageOption, monitorDevices, monitorDeviceOption, frequency]);
 
   useEffect(() => {
     const newTables = [...tables].map((table) => {
@@ -343,17 +400,15 @@ const Sidebar = () => {
                     <span>
                       {'\u22EE\u22EE'} {dataSourceTitle}
                     </span>
-                    {dataSourceTitle === '장비 현황' ? null : (
-                      <button
-                        className="filter-toggling-btn"
-                        onClick={() => {
-                          setModalOpen(true);
-                          handleModalOptionChange(table.source);
-                        }}
-                      >
-                        <i className="bi bi-gear" />
-                      </button>
-                    )}
+                    <button
+                      className="filter-toggling-btn"
+                      onClick={() => {
+                        setModalOpen(true);
+                        handleModalOptionChange(table.source);
+                      }}
+                    >
+                      <i className="bi bi-gear" />
+                    </button>
                   </div>
                   <div className={`sidebar-element ${table.source}`}>
                     <Table source={dataSource} />

@@ -20,7 +20,7 @@ export const MonitoringStatusContent = ({
   setMonitorDeviceOption,
   closeModal,
 }) => {
-  const { theme, toggleTheme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const [selectedDevices, setSelectedDevices] = useState(monitorDevices);
   const [selectedOption, setSelectedOption] = useState(monitorDeviceOption);
   const gridRef = useRef();

@@ -69,7 +69,6 @@ const isNum = (value) => {
 };
 
 const Row = ({ rowData, needChart }) => {
-  console.log(Object.entries(rowData));
   const marqueeRef = useRef(null);
   const [isOverflow, setIsOverflow] = useState(false);
 

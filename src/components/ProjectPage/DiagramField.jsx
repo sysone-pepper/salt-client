@@ -34,12 +34,16 @@ export const DiagramField = ({ projectId }) => {
     cyRef,
     nodes,
     edges,
+    nodeEffects,
     dataReady,
     setDataReady,
     setNodes,
     setEdges,
+    setNodeEffects,
     isLinking,
     isObjectDelete,
+    setIsLinking,
+    setIsObjectDelete,
     isNavigatorToggled,
     setIsNavigatorToggled,
     setIsEditingPermitted,
@@ -112,6 +116,26 @@ export const DiagramField = ({ projectId }) => {
             style: {
               width: 'data(calculatedWidth)',
               height: 'data(nodeSize)',
+            },
+          },
+          {
+            selector: '.effect.DANGER',
+            style: {
+              width: 'data(nodeSize)',
+              height: 'data(nodeSize)',
+              backgroundColor: 'red',
+              events: 'no',
+              'z-compound-depth': 'bottom',
+            },
+          },
+          {
+            selector: '.effect.WARNING',
+            style: {
+              width: 'data(nodeSize)',
+              height: 'data(nodeSize)',
+              backgroundColor: 'yellow',
+              events: 'no',
+              'z-compound-depth': 'bottom',
             },
           },
         ],
@@ -424,6 +448,18 @@ export const DiagramField = ({ projectId }) => {
     }
   }, [nodes, edges]);
 
+  useEffect(() => {
+    if (!isEditing && cyRef.current) {
+      const cy = cyRef.current;
+      cy.startBatch();
+      cy.nodes()
+        .filter((ele) => ele.hasClass('effect'))
+        .remove();
+      cy.add([...nodeEffects]);
+      cy.endBatch();
+    }
+  }, [nodeEffects]);
+
   // cytoscape-edgehandler 연결 및 관련 이벤트 마운트/언마운트
   useEffect(() => {
     if (cyRef.current) {
@@ -505,10 +541,15 @@ export const DiagramField = ({ projectId }) => {
 
   useEffect(() => {
     if (cyRef.current && !isEditing) {
+      setIsLinking(false);
+      setIsObjectDelete(false);
       cyRef.current.on('click', 'node.EXIST_DEVICE', (event) => {
         setSelectedDevice(event.target.json());
         setModalOpen(true);
       });
+    }
+    if (cyRef.current && isEditing) {
+      setNodeEffects([]);
     }
   }, [cyRef.current, isEditing]);
 

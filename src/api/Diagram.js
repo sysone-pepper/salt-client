@@ -169,6 +169,14 @@ export const updateDiagramThumbnail = async (projectId, formData) => {
   return response.data;
 };
 
+export const updateNodeThreshold = async (formData) => {
+  const response = await api.put(
+    `/api/v1/diagrams/node/${formData.id}/threshold`,
+    formData,
+  );
+  return response.data;
+};
+
 export const deleteNode = async (nodeId) => {
   const response = await api.delete(`/api/v1/diagrams/node/${nodeId}`);
   return response.data;
