@@ -42,10 +42,9 @@ const Toolbar = () => {
   const thumbnailInputRef = useRef(null);
 
   const sentences = [
-    '안녕하세요! 환영합니다.',
-    '이 문장은 일정 시간마다 바뀝니다.',
-    'React와 setInterval을 활용해 구현되었습니다.',
-    '다양한 문장을 추가해 보세요!',
+    '이상 없음',
+    '[24/11/25 03:31:14] "DESKTOP_업무_09" 장비 CPU에서 위험을 감지했습니다. (실측치: 50.8%, 임계치: 50%)',
+    '[24/11/25 03:31:14] "DESKTOP_업무_09" 장비 MEM에서 위험을 감지했습니다. (실측치: 55.3386%, 임계치: 50%)',
   ];
 
   // 구성도 편집 - ALL권한용 기능모음
@@ -348,7 +347,7 @@ const Toolbar = () => {
       </div>
       {!isEditing && (
         <div className="tb-alert-message-container">
-          <RotatingText sentences={sentences} interval={5000} />
+          <RotatingText sentences={sentences} interval={3000} />
         </div>
       )}
       {isEditing && (
