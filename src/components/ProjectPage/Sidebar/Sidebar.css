@@ -91,11 +91,7 @@
   border: 0;
 }
 
-.table-container tbody tr td:first-child,
-.table-container thead tr th:first-child {
-  flex-grow: 1;
-  justify-content: left;
-}
+
 
 .table-title, 
 .table-container thead tr th:first-child, 
@@ -127,6 +123,8 @@
   justify-content: space-between;
 }
 
+
+
 .table-title .filter-toggling-btn{
   height: calc(100% + 1px);
   background-color: transparent;
@@ -142,24 +140,22 @@
   font-size: .6rem;
   border-bottom: 1px solid;
   border-color: #878f9b;
+  background-color: var(--diagram-background-color);
+
 }
 
 .table-header th:first-child {
   text-align: left;
 }
 
-.sidebar .table-header .table-field {
-  background-color: var(--diagram-background-color);
-  height: 1rem;
-}
-
-.sidebar .table-field{
+.table-header .table-field {
   background-color: var(--diagram-background-color);
 }
 
-.table-header th:first-child {
-  text-align: left;
+.table-field{
+  background-color: var(--diagram-background-color);
 }
+
 
 .table-row {
   display: flex;
@@ -169,21 +165,26 @@
   color: var(--table-text-color);
 	}
 
+
 .table-field {
   display: flex;
   justify-content: right;
   align-items: center;
+  line-height: 100%;
   padding: 0 .3rem;
-  min-width: 0;
-  width: 25%;
-  margin: 0;
+  width: 20%;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap; 
   font-size: .7rem;
-  background-color: #1f2937;
 }
 
+
+.table-container tbody tr td:first-child,
+.table-container thead tr th:first-child {
+  flex-grow: 1;
+  justify-content: left;
+}
 
 /* 장비 현황 테이블용 스타일 */
 .sb-icon-image {
@@ -247,9 +248,13 @@
   animation: marquee-scroll 10s linear infinite;
 }
 
+span {
+  display: inline;
+}
+
 @keyframes marquee-scroll {
   from {
-    transform: translateX(100%);
+    transform: translateX(0%);
   }
   to {
     transform: translateX(-100%);
