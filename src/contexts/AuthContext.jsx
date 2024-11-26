@@ -1,9 +1,3 @@
-/*
-로그인 상태를 전체 앱에서 관리하는 중앙 저장소
-로그인/로그아웃 함수 제공
-마치 호텔의 투숙객 관리 시스템같은 역할
-*/
-
 import { createContext, useContext, useState } from 'react';
 import * as authApi from '../api/Auth.js';
 import { jwtDecode } from 'jwt-decode';
@@ -34,7 +28,7 @@ export const AuthProvider = ({ children }) => {
       const user = {
         username: credentials.id,
         role: decodedToken.role,
-        authority: decodeToken.authority || 'ALL', // 임시로 권한 추가
+        authority: decodedToken.authority,
       };
       setCurrentUser(user);
 
