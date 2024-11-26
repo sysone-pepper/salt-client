@@ -8,11 +8,18 @@ export function NetworkProvider({ children }) {
   const cyRef = useRef(null);
 
   const [curProjectId, setCurProjectId] = useState();
-  const [frequency, setFrequency] = useState(5);
+  const [frequency, setFrequency] = useState(1);
   const [nodes, setNodes] = useState([]);
   const [nodeEffects, setNodeEffects] = useState([]);
   const [edges, setEdges] = useState([]);
   const [existDevices, setExistDevices] = useState([]);
+  const [pushMessages, setPushMessages] = useState([]);
+  const [pushOptions, setPushOptions] = useState([
+    'Traffic',
+    'CPU',
+    'MEM',
+    'DISK',
+  ]);
   const [bgImgInfo, setBgImgInfo] = useState({});
   const [dataReady, setDataReady] = useState(false);
   const [isLinking, setIsLinking] = useState(false);
@@ -235,6 +242,10 @@ export function NetworkProvider({ children }) {
         setEdges,
         existDevices,
         setExistDevices,
+        pushMessages,
+        setPushMessages,
+        pushOptions,
+        setPushOptions,
         dataReady,
         setDataReady,
         isLinking,

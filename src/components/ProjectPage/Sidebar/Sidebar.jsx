@@ -19,6 +19,7 @@ import { MonitoringStatusContent } from '../ModalContents/MonitoringStatusConten
 import { TopUsageOptioningContent } from '../ModalContents/TopUsageOptioningContent.jsx';
 import { fetchDeviceInfos } from '../../../api/Diagram.js';
 import { ControlWarningLevelContent } from '../ModalContents/ControlWarningLevelContetnt.jsx';
+import useNotification from '../../../hooks/usePushNotification.jsx';
 
 const deviceCategory = {
   1: 'Server',
@@ -38,9 +39,23 @@ const Sidebar = () => {
     dataReady,
     nodes,
     setNodeEffects,
+    pushMessages,
+    setPushMessages,
+    pushOptions,
+    setPushOptions,
     isSidebarPanned,
     setIsSidebarPanned,
   } = useContext(NetworkContext);
+  const { permission, requestPermission, showNotification } = useNotification();
+
+  const handleNotification = (message) => {
+    showNotification(message.title, {
+      body: message.body,
+      icon: message.icon,
+      tag: `unique-${Date.now()}`, // 중복 방지 태그
+    });
+  };
+
   const [topUsageOption, setTopUsageOption] = useState('traffic');
   const [monitorDevices, setMonitorDevices] = useState(null);
   const [monitorDeviceOption, setMonitorDeviceOption] = useState('traffic');
@@ -115,6 +130,20 @@ const Sidebar = () => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
+  const getDateTime = () => {
+    const today = new Date();
+
+    const year = today.getFullYear();
+    const month = ('0' + (today.getMonth() + 1)).slice(-2);
+    const day = ('0' + today.getDate()).slice(-2);
+
+    const hours = ('0' + today.getHours()).slice(-2);
+    const minutes = ('0' + today.getMinutes()).slice(-2);
+    const seconds = ('0' + today.getSeconds()).slice(-2);
+    //${year}.${month}.${day}
+    return `${hours}:${minutes}:${seconds}`;
+  };
+
   const createSideBarTables = async () => {
     if (nodes.length <= 1) return;
 
@@ -173,6 +202,7 @@ const Sidebar = () => {
     }, {});
 
     const newNodeEffects = [];
+    const newPushMessages = [];
 
     deviceNodes.forEach((node) => {
       if (node.data.nodeType.startsWith('NEW')) {
@@ -180,6 +210,9 @@ const Sidebar = () => {
       } else {
         categoryMap[deviceCategory[node.data.deviceType]][0] += 1;
         const nodeData = groupedData[node.data.deviceId][0];
+
+        let pushMessage = `[${getDateTime()}] ${node.data.deviceAlias}에서 [ `;
+        let needPush = false;
         if (
           nodeData.cpuProcessor > alertLevel[node.data.deviceAlias].cpu[1] ||
           nodeData.usedDiskPercentage >
@@ -193,11 +226,42 @@ const Sidebar = () => {
             classes: 'effect DANGER',
             data: {
               id: `effect-${node.data.id}`,
-              nodeSize: node.data.nodeSize + 5,
+              nodeSize: node.data.nodeSize * 1.15,
             },
             position: node.position,
           };
           newNodeEffects.push(nodeEffect);
+          // Danger push message
+          if (
+            nodeData.cpuProcessor > alertLevel[node.data.deviceAlias].cpu[1] &&
+            pushOptions.includes('CPU')
+          ) {
+            pushMessage += `CPU 위험(${nodeData.cpuProcessor}%) `;
+            needPush = true;
+          }
+          if (
+            nodeData.usedDiskPercentage >
+              alertLevel[node.data.deviceAlias].disk[1] &&
+            pushOptions.includes('DISK')
+          ) {
+            pushMessage += `DISK 위험(${nodeData.usedDiskPercentage}%) `;
+            needPush = true;
+          }
+          if (
+            nodeData.usedMemoryPercentage >
+              alertLevel[node.data.deviceAlias].mem[1] &&
+            pushOptions.includes('MEM')
+          ) {
+            pushMessage += `MEM 위험(${nodeData.usedMemoryPercentage}%) `;
+            needPush = true;
+          }
+          if (
+            nodeData.traffic > alertLevel[node.data.deviceAlias].traffic[1] &&
+            pushOptions.includes('Traffic')
+          ) {
+            pushMessage += `traffic 위험(${formatBytes(nodeData.traffic)}) `;
+            needPush = true;
+          }
         } else if (
           nodeData.cpuProcessor > alertLevel[node.data.deviceAlias].cpu[0] ||
           nodeData.usedDiskPercentage >
@@ -211,15 +275,65 @@ const Sidebar = () => {
             classes: 'effect WARNING',
             data: {
               id: `effect-${node.data.id}`,
-              nodeSize: node.data.nodeSize + 5,
+              nodeSize: node.data.nodeSize * 1.15,
+            },
+            position: node.position,
+          };
+          newNodeEffects.push(nodeEffect);
+
+          // Warning push message
+          if (
+            nodeData.cpuProcessor > alertLevel[node.data.deviceAlias].cpu[0] &&
+            pushOptions.includes('CPU')
+          ) {
+            pushMessage += `CPU 경고(${nodeData.cpuProcessor}%) `;
+            needPush = true;
+          }
+          if (
+            nodeData.usedDiskPercentage >
+              alertLevel[node.data.deviceAlias].disk[0] &&
+            pushOptions.includes('DISK')
+          ) {
+            pushMessage += `DISK 경고(${nodeData.usedDiskPercentage}%) `;
+            needPush = true;
+          }
+          if (
+            nodeData.usedMemoryPercentage >
+              alertLevel[node.data.deviceAlias].mem[0] &&
+            pushOptions.includes('MEM')
+          ) {
+            pushMessage += `MEM 경고(${nodeData.cpuProcessor}%) `;
+            needPush = true;
+          }
+          if (
+            nodeData.traffic > alertLevel[node.data.deviceAlias].traffic[0] &&
+            pushOptions.includes('Traffic')
+          ) {
+            pushMessage += `traffic 경고(${formatBytes(
+              nodeData.cpuProcessor,
+            )}) `;
+            needPush = true;
+          }
+        } else {
+          const nodeEffect = {
+            classes: 'effect NORMAL',
+            data: {
+              id: `effect-${node.data.id}`,
+              nodeSize: node.data.nodeSize * 1.15,
             },
             position: node.position,
           };
           newNodeEffects.push(nodeEffect);
         }
+        pushMessage += ']가 감지되었습니다.';
+
+        if (monitorDevices?.includes(node.data.deviceAlias) && needPush) {
+          newPushMessages.push(pushMessage);
+        }
       }
     });
 
+    setPushMessages((prev) => [...prev, ...newPushMessages]);
     setNodeEffects(newNodeEffects);
 
     // const newNodes = [...nodes].map((node) => {
@@ -288,6 +402,22 @@ const Sidebar = () => {
   useTimeout(() => {
     createSideBarTables();
   }, frequency * 1000);
+
+  // useTimeout(() => {
+  //   handleNotification({
+  //     title: 'ㅋㅋ',
+  //     body: `${Date.now()}`,
+  //     tag: `unique-${Date.now()}`,
+  //   });
+  // }, frequency * 5000);
+
+  useEffect(() => {
+    handleNotification({
+      title: '모니터링 시작',
+      body: '모니터링을 시작합니다!',
+      icon: 'icon.png',
+    });
+  }, []);
 
   useEffect(() => {
     if (!monitorDevices) {

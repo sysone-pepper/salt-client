@@ -1,25 +1,51 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './RotatingText.css'; // CSS 스타일 분리
+import { NetworkContext } from '../../contexts/NetworkContext';
 
-const RotatingText = ({ sentences, interval = 3000 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const RotatingText = ({ interval = 3000 }) => {
+  const { pushMessages, setPushMessages } = useContext(NetworkContext);
   const [animationClass, setAnimationClass] = useState('');
+  const [isInitialized, setIsInitialized] = useState(false); // 초기화 상태 확인
 
+  // 기본 메시지 설정
+  const defaultMessages = [
+    '반갑습니다.',
+    '모니터링 대상 장비에서 에러가 존재하지 않습니다.',
+  ];
+
+  // 기본 메시지 초기화
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setAnimationClass('fade-out-up'); // 현재 문장을 사라지게
-      setTimeout(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % sentences.length);
-        setAnimationClass('fade-in-up'); // 새 문장을 등장시키는 애니메이션
-      }, 1000); // 애니메이션 시간
-    }, interval);
+    if (!isInitialized && pushMessages.length === 0) {
+      setPushMessages([...defaultMessages]);
+      setIsInitialized(true); // 초기화 완료
+    }
+  }, [isInitialized, pushMessages, setPushMessages]);
 
-    return () => clearInterval(intervalId); // 컴포넌트 언마운트 시 정리
-  }, [sentences, interval]);
+  // 애니메이션 로직 처리
+  useEffect(() => {
+    if (isInitialized && pushMessages.length > 0) {
+      const intervalId = setInterval(() => {
+        setAnimationClass('fade-out-up');
+        setTimeout(() => {
+          setPushMessages((prevMessages) => {
+            if (prevMessages.length > 1) {
+              const newMessages = [...prevMessages];
+              newMessages.shift(); // 메시지 제거
+              return newMessages;
+            }
+            return defaultMessages; // 기본 메시지로 복원
+          });
+          setAnimationClass('fade-in-up');
+        }, 1000); // 애니메이션 지속 시간
+      }, interval);
+
+      return () => clearInterval(intervalId); // 정리
+    }
+  }, [isInitialized, interval]);
 
   return (
     <div className={`text-container ${animationClass}`}>
-      {sentences[currentIndex]}
+      {pushMessages.length > 0 ? pushMessages[0] : '로딩 중...'}
     </div>
   );
 };
