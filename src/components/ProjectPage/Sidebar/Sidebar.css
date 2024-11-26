@@ -141,7 +141,7 @@
   border-bottom: 1px solid;
   border-color: #878f9b;
   background-color: var(--diagram-background-color);
-
+  padding: .2rem 0;
 }
 
 .table-header th:first-child {
