@@ -156,6 +156,11 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
       'freeSwap',
       'nicInBytesPerSec',
       'nicOutBytesPerSec',
+      'ioReadBps',
+      'ioWriteBps',
+      'ioTotalBps',
+      'ioReadBytesTot',
+      'ioWriteBytesTot',
     ];
 
     return {
@@ -288,14 +293,15 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
         { dataKey: 'memoryPagefault', title: 'Memory Page Faults' },
       ],
       DISK: [
-        { dataKey: 'usedDiskPercentage', title: 'Disk Usage (%)' },
-        { dataKey: 'diskReadBytesPerSec', title: 'Disk Read Bytes/sec' },
-        { dataKey: 'diskWriteBytesPerSec', title: 'Disk Write Bytes/sec' },
-        { dataKey: 'diskQueueLength', title: 'Disk Queue Length' },
-        { dataKey: 'diskUtilization', title: 'Disk Utilization (%)' },
-        { dataKey: 'diskServiceTime', title: 'Disk Service Time' },
-        { dataKey: 'diskReadTime', title: 'Disk Read Time' },
-        { dataKey: 'diskWriteTime', title: 'Disk Write Time' },
+        { dataKey: 'usedDiskPercentage', title: '디스크 사용률 (%)' },
+        { dataKey: 'ioReadBps', title: '디스크 읽기 처리량 (Bytes/sec)' },
+        { dataKey: 'ioWriteBps', title: '디스크 쓰기 처리량 (Bytes/sec)' },
+        { dataKey: 'ioReadCnt', title: '디스크 읽기 작업 횟수 (IOPS)' },
+        { dataKey: 'ioWriteCnt', title: '디스크 쓰기 작업 횟수 (IOPS)' },
+        { dataKey: 'ioTimePercentage', title: '디스크 I/O 시간 비율 (%)' },
+        { dataKey: 'ioQueueDepth', title: '디스크 I/O 대기열 깊이' },
+        { dataKey: 'readAvgReqSize', title: '평균 읽기 요청 크기' },
+        { dataKey: 'writeAvgReqSize', title: '평균 쓰기 요청 크기' },
       ],
       NIC: [
         { dataKey: 'nicInBytesPerSec', title: 'NIC In Bytes/sec' },
