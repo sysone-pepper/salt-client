@@ -193,7 +193,7 @@ const Sidebar = () => {
             classes: 'effect DANGER',
             data: {
               id: `effect-${node.data.id}`,
-              nodeSize: node.data.nodeSize + 5,
+              nodeSize: node.data.nodeSize * 1.15,
             },
             position: node.position,
           };
@@ -211,7 +211,17 @@ const Sidebar = () => {
             classes: 'effect WARNING',
             data: {
               id: `effect-${node.data.id}`,
-              nodeSize: node.data.nodeSize + 5,
+              nodeSize: node.data.nodeSize * 1.15,
+            },
+            position: node.position,
+          };
+          newNodeEffects.push(nodeEffect);
+        } else {
+          const nodeEffect = {
+            classes: 'effect NORMAL',
+            data: {
+              id: `effect-${node.data.id}`,
+              nodeSize: node.data.nodeSize * 1.15,
             },
             position: node.position,
           };
