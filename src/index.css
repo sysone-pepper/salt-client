@@ -30,10 +30,11 @@
     --header-button-background-color: #1f2937; 
     --button-text-color: #ffffff;
     --button-hover-background-color: #212830;
-    --input-background-color: #212830;
+    --input-background-color: #343e4a;
     --input-text-color: #fff;
     --placeholder-color: #a0aec0;
     --box-shadow-color: rgba(0, 0, 0, 0.5);
+    --label-text-color: #fff;
 
     --diagram-background-color: #1f2937;
     --table-title-color: #1f2b3c;
@@ -75,6 +76,7 @@
     --input-text-color: #212830;
     --placeholder-color: #888888;
     --box-shadow-color: rgba(0, 0, 0, 0.1);
+    --label-text-color: #80B6F3;
 
     --diagram-background-color: #F2F2F2;
     --table-title-color: #80B6F3;
