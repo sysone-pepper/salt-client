@@ -12,7 +12,7 @@ const Dropdown = ({
   menuHasChild = [],
 }) => {
   return (
-    <div className="dropdown">
+    <div className="dropdown toolbar-button">
       <div className="dropdown-title">{title}</div>
       <ul className="dropdown-menu">
         {menuTitles.map((menuTitle, index) => (

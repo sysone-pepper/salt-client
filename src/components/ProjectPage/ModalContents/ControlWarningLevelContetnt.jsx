@@ -40,7 +40,13 @@ export const ControlWarningLevelContent = ({ data, closeModal }) => {
   // 컬럼 정의
   const columnDefs = useMemo(
     () => [
-      { field: '장비명', headerName: '장비명', editable: false },
+      {
+        field: '장비명',
+        headerName: '장비명',
+        editable: false,
+        filter: true,
+        flex: 2.7,
+      },
       {
         headerName: 'Traffic',
         children: [
@@ -76,7 +82,6 @@ export const ControlWarningLevelContent = ({ data, closeModal }) => {
   const defaultColDef = useMemo(
     () => ({
       flex: 1,
-      filter: true,
       sortable: true,
       resizable: true,
     }),

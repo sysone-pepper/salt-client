@@ -3,6 +3,8 @@ import {
   draggable,
   dropTargetForElements,
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
+
 import invariant from 'tiny-invariant';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
@@ -320,34 +322,30 @@ const Sidebar = () => {
   }, [monitorDeviceOption]);
 
   useEffect(() => {
-    tables.forEach((_, index) => {
+    const cleanUpFunctions = tables.map((_, index) => {
       const element = document.getElementById(`table-${index}`);
       const dragHandle = document.getElementById(`drag-handle-${index}`);
 
       invariant(element, '해당 element가 존재하지 않습니다.');
       invariant(dragHandle, '해당 dragHandle이 존재하지 않습니다.');
-
-      draggable({
-        element,
-        dragHandle,
-        onDragStart: () => {
-          dragIndexRef.current = index;
-        },
-      });
+      return combine(
+        draggable({
+          element,
+          dragHandle,
+          onDragStart: () => {
+            dragIndexRef.current = index;
+          },
+        }),
+        dropTargetForElements({
+          element,
+          onDrop: () => handleDrop(index),
+        }),
+      );
     });
-  }, [tables]);
 
-  useEffect(() => {
-    tables.forEach((_, index) => {
-      const element = document.getElementById(`table-${index}`);
-
-      invariant(element, '해당 element가 존재하지 않습니다.');
-
-      dropTargetForElements({
-        element,
-        onDrop: () => handleDrop(index),
-      });
-    });
+    return () => {
+      cleanUpFunctions.forEach((cleanup) => cleanup());
+    };
   }, [tables]);
 
   const handleDrop = (dropIndex) => {
