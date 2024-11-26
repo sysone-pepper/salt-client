@@ -261,6 +261,7 @@ const ProjectList = () => {
       )}
       {showProjectSummaryModal && selectedProject && (
         <Modal
+          className="modal-small"
           child={<ProjectSummaryModalContent project={selectedProject} />}
           closeModal={() => setShowProjectSummaryModal(false)}
         />
