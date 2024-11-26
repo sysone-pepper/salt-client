@@ -154,6 +154,8 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
       'totalSwap',
       'usedSwap',
       'freeSwap',
+      'nicInBytesPerSec',
+      'nicOutBytesPerSec',
     ];
 
     return {
