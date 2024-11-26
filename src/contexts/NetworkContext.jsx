@@ -8,7 +8,7 @@ export function NetworkProvider({ children }) {
   const cyRef = useRef(null);
 
   const [curProjectId, setCurProjectId] = useState();
-  const [frequency, setFrequency] = useState(5);
+  const [frequency, setFrequency] = useState(1);
   const [nodes, setNodes] = useState([]);
   const [nodeEffects, setNodeEffects] = useState([]);
   const [edges, setEdges] = useState([]);
