@@ -9,6 +9,7 @@ import RotatingText from './RotatingText';
 import { updateDiagramThumbnail } from '../../api/Diagram';
 import Dropdown from './DropDown';
 import { FaBaby, FaCog, FaPowerOff, FaUser } from 'react-icons/fa';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const HIDDEN_CLASSNAME = 'hidden';
 const NO_AUTHORITY_MESSAGE = '권한이 없습니다. 관리자에게 권한을 요청하세요';
@@ -22,6 +23,10 @@ const Toolbar = () => {
     nodes,
     updateNodeSize,
     setNodes,
+    pushMessages,
+    setPushMessages,
+    pushOptions,
+    setPushOptions,
     setDataReady,
     isLinking,
     setIsLinking,
@@ -345,12 +350,7 @@ const Toolbar = () => {
           />
         )}
       </div>
-      {!isEditing && (
-        <div className="tb-alert-message-container">
-          <RotatingText sentences={sentences} interval={3000} />
-        </div>
-      )}
-      {isEditing && (
+      {isEditing ? (
         <div
           className={`diagram-editing-tools ${isEditing ? '' : 'tool-hidden'}`}
         >
@@ -369,20 +369,36 @@ const Toolbar = () => {
             menuFunctions={toolMenuFunctions}
           />
         </div>
+      ) : (
+        <div className="tb-alert-message-container">
+          <RotatingText interval={3000} />
+          <div
+            className="icon-container"
+            onClick={() => {
+              console.log('dd');
+            }}
+          >
+            <i className="bi bi-sliders"></i>
+          </div>
+        </div>
       )}
-      <button
-        disabled={!isEditingPermitted}
-        className="toolbar-button toolbar-edit-button"
-        onClick={toggleEditing}
-      >
-        편집{isEditing ? '비활성' : '활성'}
-      </button>
-      <input
-        type="file"
-        ref={thumbnailInputRef}
-        style={{ display: 'none' }}
-        onChange={handleThumbnailFileChange}
-      />
+      {isEditingPermitted && (
+        <>
+          <button
+            disabled={!isEditingPermitted}
+            className="toolbar-button toolbar-edit-button"
+            onClick={toggleEditing}
+          >
+            편집{isEditing ? '비활성' : '활성'}
+          </button>
+          <input
+            type="file"
+            ref={thumbnailInputRef}
+            style={{ display: 'none' }}
+            onChange={handleThumbnailFileChange}
+          />
+        </>
+      )}
     </div>
   );
 };
