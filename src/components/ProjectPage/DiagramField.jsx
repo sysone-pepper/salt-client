@@ -138,6 +138,20 @@ export const DiagramField = ({ projectId }) => {
               'z-compound-depth': 'bottom',
             },
           },
+          {
+            selector: '.effect.NORMAL',
+            style: {
+              width: 'data(nodeSize)',
+              height: 'data(nodeSize)',
+              backgroundColor: 'lightgreen',
+              events: 'no',
+              'z-compound-depth': 'bottom',
+            },
+          },
+          {
+            selector: 'edge',
+            style: { 'line-color': '#DCE2F0' },
+          },
         ],
         layout: {
           name: 'preset',
