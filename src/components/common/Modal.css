@@ -41,6 +41,13 @@
   margin: 0 auto;
 }
 
+.modal-content.modal-small{
+  width: 40%;
+  max-width: 800px;
+  height:auto;
+  margin: 0 auto;
+}
+
 .modal-close-button {
   position: absolute;
   top: 15px;
