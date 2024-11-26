@@ -2,8 +2,8 @@
 .sidebar-wrapper {
   position: relative;
   transition: width 0.3s ease;
-  font-size: .5rem;
   padding-left: .3rem;
+  font-size: .8rem;
 }
 
 .sidebar-wrapper.expanded {
@@ -42,7 +42,7 @@
 .monitorDevice tbody {
   display: block;
   overflow-y: scroll;
-  max-height: 19vh; 
+  max-height: 22vh; 
 
 }
 
@@ -53,10 +53,6 @@
 
 .table-container thead tr th:first-child {
   border-left: solid ;
-}
-
-.table-container thead tr th:last-child {
-  border-right: solid ;
 }
 
 .table-container tbody tr td:first-child {
@@ -109,18 +105,17 @@
 
 .table-title {
   display: flex;
-  height: 1.5rem;
+  height: 1.8rem;
   background-color: var(--table-title-color);
   text-align: left;
-  line-height: 1.5rem;
+  align-items: center;
   padding: 0 .3rem;
-  font-size: .6rem;
   border-radius: .3rem .3rem 0 0;
-  border-bottom: 1px solid #fff;
-  color: #fff;
+  border-bottom: 1px solid var(--table-row-separation-color) ;
   gap: .3rem;
   cursor: move;
   justify-content: space-between;
+  color: var(--table-title-text-color);
 }
 
 
@@ -128,20 +123,22 @@
 .table-title .filter-toggling-btn{
   height: calc(100% + 1px);
   background-color: transparent;
-  border: 0;
+  border: none;
   cursor: pointer;
-  color: #fff;
   font-size: .7rem;
+  color: var(--table-title-text-color);
+
 }
 
 .table-header {
   display: flex;
   align-items: center;
-  font-size: .6rem;
-  border-bottom: 1px solid;
-  border-color: #878f9b;
+  border-bottom: 1px var(--table-row-separation-color) solid;
+  border-right: 1px var(--table-border-color) solid;
+  border-left: 1px var(--table-border-color) solid;
   background-color: var(--diagram-background-color);
   padding: .2rem 0;
+   
 }
 
 .table-header th:first-child {
@@ -159,9 +156,8 @@
 
 .table-row {
   display: flex;
-  border-bottom: 1px solid #878f9b;
+  border-bottom: 1px solid var(--table-row-separation-color);
 	height: 1.5rem;
-  font-size: .5rem;
   color: var(--table-text-color);
 	}
 
@@ -176,7 +172,6 @@
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap; 
-  font-size: .7rem;
 }
 
 
@@ -259,10 +254,4 @@ span {
   to {
     transform: translateX(-100%);
   }
-}
-
-.monitorDevice tbody {
-  display: block;
-  overflow-y: scroll;
-  max-height: 19vh; 
 }

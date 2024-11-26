@@ -121,7 +121,7 @@ export const ControlWarningLevelContent = ({ data, closeModal }) => {
 
   return (
     <>
-      <h3>장비 모니터링 주기 설정</h3>
+      <h3 className="monitoring-option-title">장비 모니터링 주기 설정</h3>
       <input
         id="sizeInput"
         type="number"
@@ -132,7 +132,7 @@ export const ControlWarningLevelContent = ({ data, closeModal }) => {
         placeholder="1초 ~ 3600초 "
       />
 
-      <h3>장비 모니터링 수치 설정</h3>
+      <h3 className="monitoring-option-title">장비 모니터링 수치 설정</h3>
       <div
         className={`ag-theme-quartz${
           theme === 'dark' ? '-dark' : ''
@@ -149,7 +149,9 @@ export const ControlWarningLevelContent = ({ data, closeModal }) => {
           editType="fullRow"
         />
       </div>
-      <button onClick={onClick}>적용</button>
+      <div className="form-actions">
+        <button onClick={onClick}>적용</button>
+      </div>
     </>
   );
 };

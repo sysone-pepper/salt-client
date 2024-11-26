@@ -395,9 +395,7 @@ const Sidebar = () => {
                     id={`drag-handle-${index}`}
                     className="drag-handle table-title"
                   >
-                    <span>
-                      {'\u22EE\u22EE'} {dataSourceTitle}
-                    </span>
+                    <span>{dataSourceTitle}</span>
                     <button
                       className="filter-toggling-btn"
                       onClick={() => {
