@@ -80,7 +80,7 @@ const ProjectList = () => {
 
   const addUser = async (userData) => {
     try {
-      const response = await addUserAPI(userData);
+      const response = await userApi.addUserAPI(userData);
       if (response.success) {
         const newUser = {
           id: userData.id,
