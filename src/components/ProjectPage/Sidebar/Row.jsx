@@ -60,7 +60,7 @@ const iconLookup = {
 
 const fontcolors = {
   0: '',
-  1: 'yellow',
+  1: '#ffcd29',
   2: 'red',
 };
 
