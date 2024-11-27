@@ -60,7 +60,25 @@
     --dropdown-button-selected-background-color: #657D96;    
     --dropdown-button-selected-border-color: #657D96;
     --dropdown-button-selected-text-color: #ffffff;
-    --dropdown-button-hovering-background-color: #111827;
+
+    --nav-button-color: #9ca3af;
+    --nav-button-hover-color: #e5e7eb;
+    --nav-button-active-bg-color: #ffffff;
+    --nav-button-active-color: #111827;
+    --user-section-color: #9ca3af;
+    --welcome-text-primary-color: #ffffff;
+    --welcome-text-secondary-color: #9ca3af;
+    --card-bg-color: #233044;
+    --card-hover-bg-color: #374151;
+    --card-box-shadow: rgba(0, 0, 0, 0.1);
+    --card-hover-box-shadow: rgba(0, 0, 0, 0.15);
+    --max-value-toggle-label-color: #9ca3af;
+    --card-title-color: #e5e7eb;
+    --card-subtitle-color: #9ca3af;
+    --donut-title-color: #e5e7eb;
+    --donut-percentage-color: #ffffff;
+
+    --largemodal-background-color: #1f2937;
   }
   
   /* 라이트 테마 스타일 */ 
@@ -108,7 +126,25 @@
     --dropdown-button-selected-text-color: #ffffff;
     --dropdown-button-hovering-background-color: #ffffff;
 
- 
+  --nav-button-color: #212830; 
+  --nav-button-hover-color: #333333; 
+  --nav-button-active-bg-color: #80B6F3;
+  --nav-button-active-color: #ffffff;
+  --user-section-color: #666666;
+  --welcome-text-primary-color: #212830;
+  --welcome-text-secondary-color: #666666; 
+  --card-bg-color: #ffffff; 
+  --card-hover-bg-color: #f0f4fa;
+  --card-box-shadow: rgba(0, 0, 0, 0.1);
+  --card-hover-box-shadow: rgba(0, 0, 0, 0.15);
+  --max-value-toggle-label-color: #666666;
+  --card-title-color: #212830;
+  --card-subtitle-color: #666666; 
+  --donut-title-color: #212830; 
+  --donut-percentage-color: #212830; 
+  --logo-background-color: rgba(0, 0, 0, 0.05); 
+
+  --largemodal-background-color: #DCE2F0;
   }
   
   body {

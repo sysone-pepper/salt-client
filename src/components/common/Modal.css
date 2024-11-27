@@ -37,8 +37,9 @@
   width: 80%;
   max-width: 1800px;
   height: auto;
-  /* overflow: hidden; */
+  background-color: var(--largemodal-background-color);
   margin: 0 auto;
+  overflow: hidden;
 }
 
 .modal-content.modal-small{
