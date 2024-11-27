@@ -40,7 +40,13 @@ export const ControlWarningLevelContent = ({ data, closeModal }) => {
   // 컬럼 정의
   const columnDefs = useMemo(
     () => [
-      { field: '장비명', headerName: '장비명', editable: false },
+      {
+        field: '장비명',
+        headerName: '장비명',
+        editable: false,
+        filter: true,
+        flex: 2.7,
+      },
       {
         headerName: 'Traffic',
         children: [
@@ -76,7 +82,6 @@ export const ControlWarningLevelContent = ({ data, closeModal }) => {
   const defaultColDef = useMemo(
     () => ({
       flex: 1,
-      filter: true,
       sortable: true,
       resizable: true,
     }),
@@ -116,7 +121,7 @@ export const ControlWarningLevelContent = ({ data, closeModal }) => {
 
   return (
     <>
-      <h3>장비 모니터링 주기 설정</h3>
+      <h3 className="monitoring-option-title">장비 모니터링 주기 설정</h3>
       <input
         id="sizeInput"
         type="number"
@@ -127,7 +132,7 @@ export const ControlWarningLevelContent = ({ data, closeModal }) => {
         placeholder="1초 ~ 3600초 "
       />
 
-      <h3>장비 모니터링 수치 설정</h3>
+      <h3 className="monitoring-option-title">장비 모니터링 수치 설정</h3>
       <div
         className={`ag-theme-quartz${
           theme === 'dark' ? '-dark' : ''
@@ -144,7 +149,9 @@ export const ControlWarningLevelContent = ({ data, closeModal }) => {
           editType="fullRow"
         />
       </div>
-      <button onClick={onClick}>적용</button>
+      <div className="form-actions">
+        <button onClick={onClick}>적용</button>
+      </div>
     </>
   );
 };

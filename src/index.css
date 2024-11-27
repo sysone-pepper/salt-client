@@ -38,8 +38,10 @@
 
     --diagram-background-color: #1f2937;
     --table-title-color: #1f2b3c;
-    --table-text-color: #dddddd;
+    --table-title-text-color: #ffffff;
+    --table-text-color: #dcdcdc;
     --table-border-color: transparent;
+    --table-row-separation-color: #878f9b;
 
     --form-input-text-color: #a0aec0;
     --form-input-background-color: #28313e;
@@ -51,9 +53,10 @@
 
     --project-page-background-color: #111827;
     --toolbar-button-background-color: #28313E;
-    --toolbar-button-text-color: #ffffff;
-    --toolbar-button-border-color: #646464;
     --toolbar-button-hovering-backgroud-color: #3B4F63;
+    --toolbar-button-text-color: #ffffff;
+    --toolbar-button-hovering-text-color: #ffffff;
+    --toolbar-button-border-color: #646464;
     --dropdown-button-selected-background-color: #657D96;    
     --dropdown-button-selected-border-color: #657D96;
     --dropdown-button-selected-text-color: #ffffff;
@@ -78,24 +81,27 @@
     --box-shadow-color: rgba(0, 0, 0, 0.1);
     --label-text-color: #80B6F3;
 
-    --diagram-background-color: #F2F2F2;
+    --diagram-background-color: #ffffff;
     --table-title-color: #80B6F3;
-    --table-text-color: #000000;
-    --table-border-color: #909090;
+    --table-title-text-color: #ffffff;
+    --table-text-color: #333333;
+    --table-border-color: #ccc;
+    --table-row-separation-color: #ccc;
 
     --form-input-text-color: #909090;
     --form-input-background-color: #ffffff;
     --form-option-background-color: #80B6F3;
     --form-option-text-color: #000000;
-    --form-label-text-color: #212830;
+    --form-label-text-color: #343b43;
     --form-submit-button-background-color: #80B6F3;
     --form-submit-button-hovering-color: #4ca0ff; 
  
-    --project-page-background-color: #ffffff;
-    --toolbar-button-background-color: #ffffff;
-    --toolbar-button-text-color: #000000;
+    --project-page-background-color: #f8fafd;
+    --toolbar-button-background-color: #c1dcfc;
+    --toolbar-button-hovering-backgroud-color: #80B6F3 ;
+    --toolbar-button-text-color: #333333;
+    --toolbar-button-hovering-text-color: #ffffff;
     --toolbar-button-border-color: transparent;
-    --toolbar-button-hovering-backgroud-color: #F2F2F2;
     --dropdown-button-selected-background-color:  #7BD3EA;
     --dropdown-button-selected-border-color: #69B9F3 ;
     --dropdown-button-selected-text-color: #ffffff;
