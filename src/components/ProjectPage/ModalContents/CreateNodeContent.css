@@ -57,10 +57,14 @@
 }
 
 .node-modal-content {
-  width: 50%;
+  width: 66%;
  }
 
 .node-modal-content > * {
  width: 100%;
+}
+
+#icon-preview {
+  width: 10%;
 }
 

@@ -19,7 +19,7 @@ import ServerDashboard from '../../pages/ServerDashboard';
 
 import closeIcon from '../../assets/images/add-icon.png';
 import openIcon from '../../assets/images/open-navigator-icon.png';
-import './NetworkMap.css';
+import './DiagramField.css';
 import { Modal } from '../common/Modal';
 
 export const DiagramField = ({ projectId }) => {

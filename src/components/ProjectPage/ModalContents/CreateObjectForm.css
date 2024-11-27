@@ -12,8 +12,8 @@
 
 .form-group label {
   margin-bottom: 0;
-  width: 50%;
-  flex-grow: 1;
+  /* width: 50%; */
+  /* flex-grow: 1; */
   color: var(--form-label-text-color);
 }
 
@@ -37,6 +37,7 @@
   border-radius: 4px;
   box-sizing: border-box;
   outline: none;
+  line-height: 1;
 }
 
 .device-icons {
