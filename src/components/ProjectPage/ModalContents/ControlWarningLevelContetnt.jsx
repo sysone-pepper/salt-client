@@ -45,34 +45,75 @@ export const ControlWarningLevelContent = ({ data, closeModal }) => {
         headerName: '장비명',
         editable: false,
         filter: true,
-        flex: 2.7,
+        flex: 1.5,
+        cellStyle: { 'text-align': 'left' },
       },
       {
         headerName: 'Traffic',
         children: [
-          { field: 'trafficDanger', headerName: '위험레벨', editable: true },
-          { field: 'trafficWarning', headerName: '경고레벨', editable: true },
+          {
+            field: 'trafficDanger',
+            headerName: '위험레벨',
+            editable: true,
+            type: 'numericColumn',
+          },
+          {
+            field: 'trafficWarning',
+            headerName: '경고레벨',
+            editable: true,
+            type: 'numericColumn',
+          },
         ],
       },
       {
         headerName: 'CPU',
         children: [
-          { field: 'cpuDanger', headerName: '위험레벨', editable: true },
-          { field: 'cpuWarning', headerName: '경고레벨', editable: true },
+          {
+            field: 'cpuDanger',
+            headerName: '위험레벨',
+            editable: true,
+            type: 'numericColumn',
+          },
+          {
+            field: 'cpuWarning',
+            headerName: '경고레벨',
+            editable: true,
+            type: 'numericColumn',
+          },
         ],
       },
       {
         headerName: 'MEM',
         children: [
-          { field: 'memDanger', headerName: '위험레벨', editable: true },
-          { field: 'memWarning', headerName: '경고레벨', editable: true },
+          {
+            field: 'memDanger',
+            headerName: '위험레벨',
+            editable: true,
+            type: 'numericColumn',
+          },
+          {
+            field: 'memWarning',
+            headerName: '경고레벨',
+            editable: true,
+            type: 'numericColumn',
+          },
         ],
       },
       {
         headerName: 'DISK',
         children: [
-          { field: 'diskDanger', headerName: '위험레벨', editable: true },
-          { field: 'diskWarning', headerName: '경고레벨', editable: true },
+          {
+            field: 'diskDanger',
+            headerName: '위험레벨',
+            editable: true,
+            type: 'numericColumn',
+          },
+          {
+            field: 'diskWarning',
+            headerName: '경고레벨',
+            editable: true,
+            type: 'numericColumn',
+          },
         ],
       },
     ],
@@ -84,6 +125,7 @@ export const ControlWarningLevelContent = ({ data, closeModal }) => {
       flex: 1,
       sortable: true,
       resizable: true,
+      cellStyle: { 'text-align': 'right' },
     }),
     [],
   );

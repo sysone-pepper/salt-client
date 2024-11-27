@@ -8,7 +8,14 @@ import { useAuth } from '../../contexts/AuthContext';
 import RotatingText from './RotatingText';
 import { updateDiagramThumbnail } from '../../api/Diagram';
 import Dropdown from './DropDown';
-import { FaBaby, FaCog, FaPowerOff, FaUser } from 'react-icons/fa';
+import {
+  FaExpandArrowsAlt,
+  FaPhotoVideo,
+  FaImage,
+  FaEdit,
+  FaTrashAlt,
+  FaLink,
+} from 'react-icons/fa';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const HIDDEN_CLASSNAME = 'hidden';
@@ -290,9 +297,14 @@ const Toolbar = () => {
     '장비 구성도의 배경이미지를 수정합니다.',
   ];
 
-  const toolMenuIcons = [<FaUser />, <FaCog />, <FaPowerOff />, <FaBaby />];
+  const toolMenuIcons = [
+    <FaEdit />,
+    <FaLink />,
+    <FaTrashAlt />,
+    <FaExpandArrowsAlt />,
+  ];
 
-  const projectMenuIcons = [<FaUser />, <FaCog />, <FaPowerOff />];
+  const projectMenuIcons = [<FaEdit />, <FaPhotoVideo />, <FaImage />];
 
   const toolMenuFunctions = [
     toggleAddNode,
@@ -311,7 +323,9 @@ const Toolbar = () => {
     addNode: <CreateNodeContent closeModal={() => setModalOpen(false)} />,
     editSize: (
       <>
-        <label htmlFor="sizeInput">노드 크기 조절</label>
+        <label htmlFor="sizeInput" className="node-resizing-label">
+          노드 크기 조절
+        </label>
         <input
           id="sizeInput"
           type="number"
@@ -336,24 +350,22 @@ const Toolbar = () => {
 
   return (
     <div className="toolbar">
-      <div className="hidden-elements">
-        <input
-          type="file"
-          ref={fileInputRef}
-          style={{ display: 'none' }}
-          onChange={handleFileChange}
-        />
-        {modalOpen && (
-          <Modal
-            child={modalContents[modalChild]}
-            closeModal={() => setModalOpen(false)}
-          />
-        )}
-      </div>
       {isEditing ? (
         <div
           className={`diagram-editing-tools ${isEditing ? '' : 'tool-hidden'}`}
         >
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
+          {modalOpen && (
+            <Modal
+              child={modalContents[modalChild]}
+              closeModal={() => setModalOpen(false)}
+            />
+          )}
           <Dropdown
             title="프로젝트"
             menuTitles={projectMenuTitles}
@@ -384,13 +396,13 @@ const Toolbar = () => {
       )}
       {isEditingPermitted && (
         <>
-          <button
+          <div
             disabled={!isEditingPermitted}
             className="toolbar-button toolbar-edit-button"
             onClick={toggleEditing}
           >
             편집{isEditing ? '비활성' : '활성'}
-          </button>
+          </div>
           <input
             type="file"
             ref={thumbnailInputRef}

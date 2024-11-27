@@ -5,7 +5,6 @@
   background-color: var(--project-page-background-color);
   padding: .5rem .4rem;
   height: 4vh;
-  width: 100%;
 }
 
 .toolbar > div {
@@ -27,14 +26,15 @@
   font-size: 1rem;
   border: 1px solid var(--toolbar-button-border-color);
   transition: all 0.3s ease;
+  padding: 0 .3rem ;
 }
 
-.toolbar-edit-button{
- width: 10%;
+.toolbar ul {
+  line-height: 1;
 }
 
 .toolbar-button:hover {
-  background-color: var(--toolbar-button-hovering-backgroud-color);
+  background-color: var(--toolbar-button-hovering-background-color);
   color: var(--toolbar-button-hovering-text-color);
 }
 
@@ -76,4 +76,8 @@
   font-size: 24px;
   cursor: pointer;
   padding-right: 10px;
+}
+
+.node-resizing-label {
+  color: var(--form-label-text-color);
 }

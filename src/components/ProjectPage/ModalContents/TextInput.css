@@ -11,6 +11,10 @@
   font-size: 1rem;
 }
 
+.text-preview  {
+  line-height: 1;
+}
+
 #text-color-input {
   position: absolute;
   right: 0;           /* Align it to the right side of the parent */

@@ -12,8 +12,6 @@
 
 .form-group label {
   margin-bottom: 0;
-  width: 50%;
-  flex-grow: 1;
   color: var(--form-label-text-color);
 }
 
@@ -37,6 +35,7 @@
   border-radius: 4px;
   box-sizing: border-box;
   outline: none;
+  line-height: 1;
 }
 
 .device-icons {
@@ -62,7 +61,6 @@
   width: .7rem !important;
   margin-left: 8px; /* Radio 버튼과 이미지 사이의 간격을 설정 */
 }
-
 
 .device-icon-image-container {
   width: 3rem;
