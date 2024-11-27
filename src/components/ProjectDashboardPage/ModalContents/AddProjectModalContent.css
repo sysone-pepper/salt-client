@@ -52,6 +52,7 @@
 .ap-input:focus,
 .ap-textarea:focus {
   outline: none;
+  background-color: var(--input-background-color);
 }
 
 .ap-input:focus ~ .ap-label,
@@ -60,7 +61,7 @@
 .ap-textarea:valid ~ .ap-label {
   top: -14px;
   font-size: 12px;
-  color: var(--primary-color);
+  color: var(--label-text-color);
 }
 
 .ap-input:focus ~ .ap-bar:before,

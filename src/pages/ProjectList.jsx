@@ -230,7 +230,7 @@ const ProjectList = () => {
         <input
           className="project-details"
           type="text"
-          placeholder="프로젝트 이름 또는 작성자 검색 "
+          placeholder="    프로젝트 이름 또는 작성자 검색 "
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />

@@ -45,13 +45,14 @@
 
 .au-input:focus {
   outline: none;
+  background-color: var(--input-background-color);
 }
 
 .au-input:focus ~ .au-label,
 .au-input:valid ~ .au-label {
   top: -14px;
   font-size: 12px;
-  color:#fff;
+  color:var(--label-text-color);
 }
 
 .au-input:focus ~ .au-bar:before {

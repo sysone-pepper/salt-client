@@ -51,7 +51,8 @@
 .modal-close-button {
   position: absolute;
   top: 15px;
-  right: 15px;background: transparent;
+  right: 15px;
+  background: transparent;
   border: none;
   color: #a5d3ec;
   font-size: 28px;

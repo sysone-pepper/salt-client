@@ -32,7 +32,7 @@ const ViewAllUsersModalContent = ({ users, deleteUser, currentRole }) => {
         <input
           className="vau-search"
           type="text"
-          placeholder="사용자 계정 또는 이름 검색"
+          placeholder="  사용자 계정 또는 이름 검색"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
