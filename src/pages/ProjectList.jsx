@@ -171,12 +171,14 @@ const ProjectList = () => {
         <div className="users-header">
           <div className="title-and-add">
             <h1 className="my-users">사용자 관리</h1>
-            <button
-              className="add-button"
-              onClick={() => setShowAddUserModal(true)}
-            >
-              추가
-            </button>
+            {currentUser.authority === 'ALL' && (
+              <button
+                className="add-button"
+                onClick={() => setShowAddUserModal(true)}
+              >
+                추가
+              </button>
+            )}
           </div>
         </div>
         {/* <hr className="my-users-hr" /> */}
@@ -220,12 +222,14 @@ const ProjectList = () => {
       <div className="projects-header">
         <div className="title-and-add">
           <h1 className="my-project">내 프로젝트</h1>
-          <button
-            className="add-button"
-            onClick={() => setShowAddProjectModal(true)}
-          >
-            추가
-          </button>
+          {currentUser.authority === 'ALL' && (
+            <button
+              className="add-button"
+              onClick={() => setShowAddProjectModal(true)}
+            >
+              추가
+            </button>
+          )}
         </div>
         <input
           className="project-details"

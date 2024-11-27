@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import './ProjectContent.css';
 import deleteIcon from '../../assets/images/delete.png';
+import { useAuth } from '../../contexts/AuthContext';
 
 const ProjectContent = ({
   id,
@@ -12,15 +13,18 @@ const ProjectContent = ({
   deleteProject,
   onShowSummary,
 }) => {
+  const { currentUser } = useAuth();
   return (
     <figure className="project-content">
-      <button
-        className="delete-button"
-        onClick={() => deleteProject(id)}
-        title="프로젝트 삭제"
-      >
-        <img src={deleteIcon} alt="삭제 아이콘" className="delete-icon" />
-      </button>
+      {currentUser.authority === 'ALL' && (
+        <button
+          className="delete-button"
+          onClick={() => deleteProject(id)}
+          title="프로젝트 삭제"
+        >
+          <img src={deleteIcon} alt="삭제 아이콘" className="delete-icon" />
+        </button>
+      )}
       <div className="image-container">
         <img src={imageSrc} alt={projectName} />
       </div>
