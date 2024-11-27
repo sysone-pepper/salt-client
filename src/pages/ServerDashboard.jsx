@@ -161,6 +161,9 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
       'ioTotalBps',
       'ioReadBytesTot',
       'ioWriteBytesTot',
+      'inPktsPerSec',
+      'outPktsPerSec',
+      'inErrorPkts',
     ];
 
     return {
@@ -306,12 +309,12 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
       NIC: [
         { dataKey: 'nicInBytesPerSec', title: 'NIC In Bytes/sec' },
         { dataKey: 'nicOutBytesPerSec', title: 'NIC Out Bytes/sec' },
-        { dataKey: 'nicInPacketsPerSec', title: 'NIC In Packets/sec' },
-        { dataKey: 'nicOutPacketsPerSec', title: 'NIC Out Packets/sec' },
-        { dataKey: 'nicInErrors', title: 'NIC In Errors' },
-        { dataKey: 'nicOutErrors', title: 'NIC Out Errors' },
-        { dataKey: 'nicInDropped', title: 'NIC In Dropped' },
-        { dataKey: 'nicOutDropped', title: 'NIC Out Dropped' },
+        { dataKey: 'inPktsPerSec', title: 'In Packets/sec' },
+        { dataKey: 'outPktsPerSec', title: 'Out Packets/sec' },
+        { dataKey: 'networkUsage', title: 'Network Usage (%)' },
+        { dataKey: 'rxUsage', title: 'RX Usage (%)' },
+        { dataKey: 'txUsage', title: 'TX Usage (%)' },
+        { dataKey: 'inErrorPkts', title: 'In Error Packets/sec' },
       ],
     };
 
