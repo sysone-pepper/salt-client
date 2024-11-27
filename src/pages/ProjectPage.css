@@ -4,4 +4,6 @@
   background-color: var( --project-page-background-color);
   color: #878f9b;
   overflow-y: hidden;
+  height: 150vh;
+  padding-bottom: .4rem;
 }
