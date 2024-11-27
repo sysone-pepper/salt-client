@@ -323,7 +323,9 @@ const Toolbar = () => {
     addNode: <CreateNodeContent closeModal={() => setModalOpen(false)} />,
     editSize: (
       <>
-        <label htmlFor="sizeInput">노드 크기 조절</label>
+        <label htmlFor="sizeInput" className="node-resizing-label">
+          노드 크기 조절
+        </label>
         <input
           id="sizeInput"
           type="number"

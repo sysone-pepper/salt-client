@@ -77,3 +77,7 @@
   cursor: pointer;
   padding-right: 10px;
 }
+
+.node-resizing-label {
+  color: var(--form-label-text-color);
+}
