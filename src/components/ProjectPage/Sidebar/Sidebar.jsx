@@ -126,10 +126,19 @@ const Sidebar = () => {
 
   const formatBytes = (bytes) => {
     if (bytes === 0) return '0 Bytes';
+
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'];
     const i = Math.floor(Math.log(Math.abs(bytes)) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    // prettier-ignore
+    let value = (bytes / 60) / Math.pow(k, i);
+
+    if (value < 1 && i > 0) {
+      value = value * k;
+      return parseFloat(value.toFixed(2)) + ' ' + sizes[i - 1];
+    }
+
+    return parseFloat(value.toFixed(2)) + ' ' + sizes[i];
   };
 
   const getDateTime = () => {
