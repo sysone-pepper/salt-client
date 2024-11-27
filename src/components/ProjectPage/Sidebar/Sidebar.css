@@ -42,7 +42,7 @@
 .monitorDevice tbody {
   display: block;
   overflow-y: scroll;
-  max-height: 22vh; 
+  max-height: 19vh; 
 
 }
 

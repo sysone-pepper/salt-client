@@ -53,13 +53,14 @@
 
     --project-page-background-color: #111827;
     --toolbar-button-background-color: #28313E;
-    --toolbar-button-hovering-backgroud-color: #3B4F63;
+    --toolbar-button-hovering-background-color: #3B4F63;
     --toolbar-button-text-color: #ffffff;
     --toolbar-button-hovering-text-color: #ffffff;
     --toolbar-button-border-color: #646464;
     --dropdown-button-selected-background-color: #657D96;    
     --dropdown-button-selected-border-color: #657D96;
     --dropdown-button-selected-text-color: #ffffff;
+    --dropdown-button-hovering-background-color: #111827;
   }
   
   /* 라이트 테마 스타일 */ 
@@ -98,13 +99,14 @@
  
     --project-page-background-color: #f8fafd;
     --toolbar-button-background-color: #c1dcfc;
-    --toolbar-button-hovering-backgroud-color: #80B6F3 ;
+    --toolbar-button-hovering-background-color: #80B6F3 ;
     --toolbar-button-text-color: #333333;
     --toolbar-button-hovering-text-color: #ffffff;
     --toolbar-button-border-color: transparent;
     --dropdown-button-selected-background-color:  #7BD3EA;
     --dropdown-button-selected-border-color: #69B9F3 ;
     --dropdown-button-selected-text-color: #ffffff;
+    --dropdown-button-hovering-background-color: #ffffff;
 
  
   }

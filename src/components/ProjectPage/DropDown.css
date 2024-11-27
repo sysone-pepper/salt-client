@@ -5,18 +5,6 @@
     cursor: pointer;
   }
   
-  /* Title section of the dropdown */
-  .dropdown-title {
-    padding: 8px 12px;
-    height: 1rem;
-    background-color: var(--background-color);
-    /* border: 1px solid #ddd; */
-    border-radius: 4px;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
   
   /* Dropdown menu */
   .dropdown-menu {
@@ -47,7 +35,7 @@
   }
   
   .dropdown-menu-item:hover {
-    background-color: var(--toolbar-button-hovering-backgroud-color);
+    background-color: var(--dropdown-button-hovering-background-color);
   }
   
   /* Menu icons */

@@ -501,6 +501,7 @@ const Sidebar = () => {
           closeModal={() => {
             setModalOpen(false);
           }}
+          className="modal-large"
         />
       )}
       <div
