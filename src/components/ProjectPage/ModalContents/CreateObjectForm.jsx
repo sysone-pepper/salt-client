@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import './CreateObjectForm.css';
 import ServerIcon from '../../../assets/images/Server-icon2.png';
 import NetworkIcon from '../../../assets/images/Network-icon2.png';
+import L2SwitchIcon from '../../../assets/images/L2Switch-icon.png';
 import L3SwitchIcon from '../../../assets/images/L3Switch-icon.png';
 import L4SwitchIcon from '../../../assets/images/L4Switch-icon.png';
 import L7SwitchIcon from '../../../assets/images/L7Switch-icon.png';
@@ -14,6 +15,7 @@ import { TextInput } from './TextInput.jsx';
 const deviceCategories = [
   'Server',
   'Network',
+  'L2Switch',
   'L3Switch',
   'L4Switch',
   'L7Switch',
@@ -24,6 +26,7 @@ const deviceCategories = [
 const deviceIcons = {
   Server: ServerIcon,
   Network: NetworkIcon,
+  L2Switch: L2SwitchIcon,
   L3Switch: L3SwitchIcon,
   L4Switch: L4SwitchIcon,
   L7Switch: L7SwitchIcon,
