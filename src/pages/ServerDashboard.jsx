@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './ServerDashboard.css';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
@@ -6,11 +6,13 @@ import HighchartsMore from 'highcharts/highcharts-more';
 import SolidGauge from 'highcharts/modules/solid-gauge';
 import saltLogo from '../assets/images/salt-Logo-white-rm.png';
 import { getDeviceData } from '../api/Dashboard';
+import { NetworkContext } from '../contexts/NetworkContext';
 
 HighchartsMore(Highcharts);
 SolidGauge(Highcharts);
 
-const ServerDashboard = ({ deviceId, deviceAlias }) => {
+const ServerDashboard = React.memo(({ deviceId, deviceAlias }) => {
+  const { frequency } = useContext(NetworkContext);
   const [activeTab, setActiveTab] = useState('요약');
   const [usageData, setUsageData] = useState(null);
   const [maxValueStates, setMaxValueStates] = useState({});
@@ -35,10 +37,10 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
     fetchData();
     const interval = setInterval(() => {
       fetchData();
-    }, 60000);
+    }, frequency * 1000);
 
     return () => clearInterval(interval);
-  }, [deviceId]);
+  }, [deviceId, frequency]);
 
   const getDonutOptions = (title, value) => {
     return {
@@ -112,21 +114,22 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
   const getChartOptions = (tab, dataKey, yAxisTitle, useMaxValue) => {
     if (!usageData) return {};
 
-    const averageData = usageData.map((item) => [
-      new Date(item.generateTime).getTime(),
+    const minDataKey = `${dataKey}Min`;
+    const maxDataKey = `${dataKey}Max`;
+    const dataLength = usageData.length;
+
+    const averageData = usageData.map((item, index) => [
+      dataLength - index - 1,
       item[dataKey],
     ]);
 
-    const minDataKey = dataKey + 'Min';
-    const maxDataKey = dataKey + 'Max';
-
-    const minData = usageData.map((item) => [
-      new Date(item.generateTime).getTime(),
+    const minData = usageData.map((item, index) => [
+      dataLength - index - 1,
       item[minDataKey],
     ]);
 
-    const maxData = usageData.map((item) => [
-      new Date(item.generateTime).getTime(),
+    const maxData = usageData.map((item, index) => [
+      dataLength - index - 1,
       item[maxDataKey],
     ]);
 
@@ -175,8 +178,19 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
       },
       title: { text: '' },
       xAxis: {
-        type: 'datetime',
-        labels: { style: { color: '#9ca3af' } },
+        reversed: true, // 오른쪽에서 왼쪽으로 "0초 전"부터 표시
+        type: 'linear',
+        tickInterval: 1,
+        title: {
+          text: '',
+          style: { color: '#9ca3af' },
+        },
+        labels: {
+          style: { color: '#9ca3af' },
+          formatter: function () {
+            return `${this.value}s 전`;
+          },
+        },
       },
       yAxis: {
         max: yAxisMax,
@@ -198,14 +212,12 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
       tooltip: {
         shared: true,
         formatter: function () {
-          const date = Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x);
-          let s = `<b>${date}</b>`;
+          const secondsAgo = this.x;
+          let s = `<b>${secondsAgo}초 전</b>`;
           this.points.forEach((point) => {
             let value = point.y;
             if (byteDataKeys.includes(dataKey)) {
               value = formatBytes(point.y);
-            } else {
-              value = point.y;
             }
             s += `<br/><span style="color:${point.color}">\u25CF</span> ${point.series.name}: <b>${value}</b>`;
           });
@@ -273,48 +285,44 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
 
     const tabConfig = {
       CPU: [
-        { dataKey: 'cpuProcessor', title: 'CPU Processor 사용률 (%)' },
-        { dataKey: 'cpuIdle', title: 'CPU Idle (%)' },
-        { dataKey: 'cpuUser', title: 'CPU User (%)' },
-        { dataKey: 'cpuSystem', title: 'CPU System (%)' },
-        { dataKey: 'cpuWait', title: 'CPU Wait (%)' },
-        { dataKey: 'cpuLoadAvg', title: 'CPU Load Average' },
-        { dataKey: 'cpuContextSwitch', title: 'CPU Context Switch 횟수' },
-        { dataKey: 'cpuSyscall', title: 'CPU Syscall 횟수' },
+        { dataKey: 'cpuProcessor', title: 'CPU 사용률 (%)' },
+        { dataKey: 'cpuIdle', title: 'Idle (%)' },
+        { dataKey: 'cpuUser', title: 'User (%)' },
+        { dataKey: 'cpuSystem', title: 'System (%)' },
+        { dataKey: 'cpuWait', title: 'Wait (%)' },
+        { dataKey: 'cpuLoadAvg', title: '부하 평균' },
+        { dataKey: 'cpuContextSwitch', title: '컨텍스트 스위치' },
+        { dataKey: 'cpuSyscall', title: '시스템 호출' },
       ],
       Memory: [
-        {
-          dataKey: 'usedMemoryPercentage',
-          title: 'Used Memory Percentage (%)',
-        },
-        { dataKey: 'totalMemory', title: 'Total Memory' },
-        { dataKey: 'usedMemory', title: 'Used Memory' },
-        { dataKey: 'freeMemory', title: 'Free Memory' },
-        { dataKey: 'usedSwapPercentage', title: 'Used Swap Percentage (%)' },
-        { dataKey: 'memoryBuffers', title: 'Memory Buffers' },
-        { dataKey: 'memoryCached', title: 'Memory Cached' },
-        { dataKey: 'memoryPagefault', title: 'Memory Page Faults' },
+        { dataKey: 'usedMemoryPercentage', title: '메모리 사용률 (%)' },
+        { dataKey: 'totalMemory', title: '총 메모리' },
+        { dataKey: 'usedMemory', title: '사용 메모리' },
+        { dataKey: 'freeMemory', title: '여유 메모리' },
+        { dataKey: 'usedSwapPercentage', title: '스왑 사용률 (%)' },
+        { dataKey: 'memoryBuffers', title: '메모리 버퍼' },
+        { dataKey: 'memoryCached', title: '메모리 캐시' },
+        { dataKey: 'memoryPagefault', title: '페이지 폴트' },
       ],
       DISK: [
         { dataKey: 'usedDiskPercentage', title: '디스크 사용률 (%)' },
-        { dataKey: 'ioReadBps', title: '디스크 읽기 처리량 (Bytes/sec)' },
-        { dataKey: 'ioWriteBps', title: '디스크 쓰기 처리량 (Bytes/sec)' },
-        { dataKey: 'ioReadCnt', title: '디스크 읽기 작업 횟수 (IOPS)' },
-        { dataKey: 'ioWriteCnt', title: '디스크 쓰기 작업 횟수 (IOPS)' },
-        { dataKey: 'ioTimePercentage', title: '디스크 I/O 시간 비율 (%)' },
-        { dataKey: 'ioQueueDepth', title: '디스크 I/O 대기열 깊이' },
-        { dataKey: 'readAvgReqSize', title: '평균 읽기 요청 크기' },
-        { dataKey: 'writeAvgReqSize', title: '평균 쓰기 요청 크기' },
+        { dataKey: 'ioReadBps', title: '읽기 처리량 (B/s)' },
+        { dataKey: 'ioWriteBps', title: '쓰기 처리량 (B/s)' },
+        { dataKey: 'ioReadCnt', title: '읽기 작업 횟수' },
+        { dataKey: 'ioWriteCnt', title: '쓰기 작업 횟수' },
+        { dataKey: 'ioTimePercentage', title: 'I/O 시간 비율 (%)' },
+        { dataKey: 'readAvgReqSize', title: '평균 읽기 크기' },
+        { dataKey: 'writeAvgReqSize', title: '평균 쓰기 크기' },
       ],
       NIC: [
-        { dataKey: 'nicInBytesPerSec', title: 'NIC In Bytes/sec' },
-        { dataKey: 'nicOutBytesPerSec', title: 'NIC Out Bytes/sec' },
-        { dataKey: 'inPktsPerSec', title: 'In Packets/sec' },
-        { dataKey: 'outPktsPerSec', title: 'Out Packets/sec' },
-        { dataKey: 'networkUsage', title: 'Network Usage (%)' },
-        { dataKey: 'rxUsage', title: 'RX Usage (%)' },
-        { dataKey: 'txUsage', title: 'TX Usage (%)' },
-        { dataKey: 'inErrorPkts', title: 'In Error Packets/sec' },
+        { dataKey: 'nicInBytesPerSec', title: '수신 바이트/초' },
+        { dataKey: 'nicOutBytesPerSec', title: '송신 바이트/초' },
+        { dataKey: 'inPktsPerSec', title: '수신 패킷/초' },
+        { dataKey: 'outPktsPerSec', title: '송신 패킷/초' },
+        { dataKey: 'networkUsage', title: '네트워크 사용률 (%)' },
+        { dataKey: 'rxUsage', title: 'RX 사용률 (%)' },
+        { dataKey: 'txUsage', title: 'TX 사용률 (%)' },
+        { dataKey: 'inErrorPkts', title: '수신 오류 패킷/초' },
       ],
     };
 
@@ -610,6 +618,6 @@ const ServerDashboard = ({ deviceId, deviceAlias }) => {
       </div>
     </div>
   );
-};
+});
 
 export default ServerDashboard;
