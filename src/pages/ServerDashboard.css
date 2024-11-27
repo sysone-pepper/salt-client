@@ -39,24 +39,24 @@
   border-radius: 0.5rem;
   background: none;
   border: none;
-  color: #9ca3af;
+  color: var(--nav-button-color);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .nav-button:hover {
-  color: #e5e7eb;
+  color: var(--nav-button-hover-color);
 }
 
 .nav-button.active {
-  background-color: white;
-  color: #111827;
+  background-color: var(--nav-button-active-bg-color);
+  color: var(--nav-button-active-color);
 }
 
 .user-section {
   display: flex;
   gap: 1rem;
-  color: #9ca3af;
+  color: var(--user-section-color);
 }
 
 .welcome-section {
@@ -69,25 +69,23 @@
 }
 
 .welcome-text span:first-child {
-  color: white;
+  color: var(--welcome-text-primary-color);
 }
 
 .welcome-text span:last-child {
-  color: #9ca3af;
+  color: var(--welcome-text-secondary-color);
   margin-left: 0.5rem;
 }
 
 .cards-grid {
   display: grid;
   gap: 1rem;
-  /* grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); */
   grid-template-columns: repeat(4, 1fr);
   justify-content: center;
 }
 
-
 .card {
-  background-color: #233044;
+  background-color: var(--card-bg-color);
   padding: 1rem;
   border-radius: 0.75rem;
   display: flex;
@@ -95,12 +93,12 @@
   max-width: 350px;
   min-height: 300px;
   transition: background-color 0.2s;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--card-box-shadow);
 }
 
 .card:hover {
-  background-color: #374151;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  background-color: var(--card-hover-bg-color);
+  box-shadow: 0 4px 6px var(--card-hover-box-shadow);
 }
 
 .card-header {
@@ -116,7 +114,7 @@
 }
 
 .max-value-toggle label {
-  color: #9ca3af;
+  color: var(--max-value-toggle-label-color);
   font-size: 0.875rem;
 }
 
@@ -128,7 +126,7 @@
   text-align: center;
   font-size: 1.2rem;
   font-weight: 700;
-  color: #e5e7eb;
+  color: var(--card-title-color);
   margin-bottom: 0.5rem;
 }
 
@@ -144,7 +142,7 @@
 .card-subtitle {
   font-size: 1rem;
   font-weight: 700;
-  color: #9ca3af;
+  color: var(--card-subtitle-color);
   text-align: center;
   margin-top: 0.3rem;
 }
@@ -158,13 +156,13 @@
 .donut-title {
   font-size: 1rem;
   font-weight: bold;
-  color: #e5e7eb;
+  color: var(--donut-title-color);
 }
 
 .donut-percentage {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #ffffff;
+  color: var(--donut-percentage-color);
   margin-top: 0.3rem;
 }
 
