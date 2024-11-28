@@ -53,12 +53,6 @@ const Toolbar = () => {
   const fileInputRef = useRef(null);
   const thumbnailInputRef = useRef(null);
 
-  const sentences = [
-    '이상 없음',
-    '[24/11/25 03:31:14] "DESKTOP_업무_09" 장비 CPU에서 위험을 감지했습니다. (실측치: 50.8%, 임계치: 50%)',
-    '[24/11/25 03:31:14] "DESKTOP_업무_09" 장비 MEM에서 위험을 감지했습니다. (실측치: 55.3386%, 임계치: 50%)',
-  ];
-
   // 구성도 편집 - ALL권한용 기능모음
 
   const toggleEditing = () => {
@@ -66,6 +60,7 @@ const Toolbar = () => {
 
     // 버튼 클릭 이벤트 처리
     if (currentUser.authority === 'ALL') {
+      setPushMessages([]);
       setIsEditing((prevState) => !prevState);
 
       // 0.5초 동안 버튼 비활성화
@@ -384,14 +379,14 @@ const Toolbar = () => {
       ) : (
         <div className="tb-alert-message-container">
           <RotatingText interval={3000} />
-          <div
+          {/* <div
             className="icon-container"
             onClick={() => {
               console.log('dd');
             }}
           >
             <i className="bi bi-sliders"></i>
-          </div>
+          </div> */}
         </div>
       )}
       {isEditingPermitted && (
