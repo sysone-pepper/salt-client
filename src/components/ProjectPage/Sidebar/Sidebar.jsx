@@ -209,7 +209,11 @@ const Sidebar = () => {
 
     deviceNodes.forEach((node) => {
       if (node.data.nodeType.startsWith('NEW')) {
-        categoryMap[node.data.newDeviceType][0] += 1;
+        categoryMap[
+          node.data.newDeviceType === 'Firewall'
+            ? 'FW'
+            : node.data.newDeviceType
+        ][0] += 1;
       } else {
         categoryMap[deviceCategory[node.data.deviceType]][0] += 1;
         const nodeData = groupedData[node.data.deviceId][0];
