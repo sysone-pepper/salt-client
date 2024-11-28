@@ -85,6 +85,7 @@ const Sidebar = () => {
   ]);
   const dragIndexRef = useRef(null);
   const [modalChild, setModalChild] = useState(null); // modalChild 상태 추가
+  const [countErrors, setCountErrors] = useState([0, 0]);
 
   const handleModalOptionChange = (option) => {
     if (option === 'monitorDevice') {
@@ -240,6 +241,7 @@ const Sidebar = () => {
           ) {
             pushMessage += `CPU 위험(${nodeData.cpuProcessor}%) `;
             needPush = true;
+            if (needPush) setCountErrors((prev) => [prev[0], prev[1] + 1]);
           }
           if (
             nodeData.usedDiskPercentage >
@@ -248,6 +250,7 @@ const Sidebar = () => {
           ) {
             pushMessage += `DISK 위험(${nodeData.usedDiskPercentage}%) `;
             needPush = true;
+            if (needPush) setCountErrors((prev) => [prev[0], prev[1] + 1]);
           }
           if (
             nodeData.usedMemoryPercentage >
@@ -256,6 +259,7 @@ const Sidebar = () => {
           ) {
             pushMessage += `MEM 위험(${nodeData.usedMemoryPercentage}%) `;
             needPush = true;
+            if (needPush) setCountErrors((prev) => [prev[0], prev[1] + 1]);
           }
           if (
             nodeData.traffic > alertLevel[node.data.deviceAlias].traffic[1] &&
@@ -263,6 +267,7 @@ const Sidebar = () => {
           ) {
             pushMessage += `traffic 위험(${formatBytes(nodeData.traffic)}) `;
             needPush = true;
+            if (needPush) setCountErrors((prev) => [prev[0], prev[1] + 1]);
           }
         } else if (
           nodeData.cpuProcessor > alertLevel[node.data.deviceAlias].cpu[0] ||
@@ -290,6 +295,7 @@ const Sidebar = () => {
           ) {
             pushMessage += `CPU 경고(${nodeData.cpuProcessor}%) `;
             needPush = true;
+            if (needPush) setCountErrors((prev) => [prev[0] + 1, prev[1]]);
           }
           if (
             nodeData.usedDiskPercentage >
@@ -298,6 +304,7 @@ const Sidebar = () => {
           ) {
             pushMessage += `DISK 경고(${nodeData.usedDiskPercentage}%) `;
             needPush = true;
+            if (needPush) setCountErrors((prev) => [prev[0] + 1, prev[1]]);
           }
           if (
             nodeData.usedMemoryPercentage >
@@ -306,6 +313,7 @@ const Sidebar = () => {
           ) {
             pushMessage += `MEM 경고(${nodeData.cpuProcessor}%) `;
             needPush = true;
+            if (needPush) setCountErrors((prev) => [prev[0] + 1, prev[1]]);
           }
           if (
             nodeData.traffic > alertLevel[node.data.deviceAlias].traffic[0] &&
@@ -315,6 +323,7 @@ const Sidebar = () => {
               nodeData.cpuProcessor,
             )}) `;
             needPush = true;
+            if (needPush) setCountErrors((prev) => [prev[0] + 1, prev[1]]);
           }
         } else {
           const nodeEffect = {
@@ -405,13 +414,16 @@ const Sidebar = () => {
     createSideBarTables();
   }, frequency * 1000);
 
-  // useTimeout(() => {
-  //   handleNotification({
-  //     title: 'ㅋㅋ',
-  //     body: `${Date.now()}`,
-  //     tag: `unique-${Date.now()}`,
-  //   });
-  // }, frequency * 5000);
+  useTimeout(() => {
+    handleNotification({
+      title: '1분당 장애 집계 보고',
+      body: `[${getDateTime()}] 위험 발생 횟수 : ${
+        countErrors[1]
+      }건, 경고 발생 횟수 : ${countErrors[0]}건`,
+      tag: `unique-${Date.now()}`,
+    });
+    setCountErrors([0, 0]);
+  }, 60000);
 
   useEffect(() => {
     handleNotification({
@@ -421,17 +433,17 @@ const Sidebar = () => {
     });
   }, []);
 
-  useEffect(() => {
-    if (!monitorDevices) {
-      const filteredNode = nodes.filter(
-        (node) => node.data.nodeType === 'EXIST_DEVICE',
-      );
-      const newMonitorDevices = filteredNode.map(
-        (node) => node.data.deviceAlias,
-      );
-      setMonitorDevices(newMonitorDevices);
-    }
-  }, [dataReady]);
+  // useEffect(() => {
+  //   if (!monitorDevices) {
+  //     const filteredNode = nodes.filter(
+  //       (node) => node.data.nodeType === 'EXIST_DEVICE',
+  //     );
+  //     const newMonitorDevices = filteredNode.map(
+  //       (node) => node.data.deviceAlias,
+  //     );
+  //     // setMonitorDevices(newMonitorDevices);
+  //   }
+  // }, [dataReady]);
 
   useEffect(() => {
     createSideBarTables();

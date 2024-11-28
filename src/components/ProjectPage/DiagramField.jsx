@@ -22,7 +22,7 @@ import openIcon from '../../assets/images/open-navigator-icon.png';
 import './DiagramField.css';
 import { Modal } from '../common/Modal';
 
-export const DiagramField = React.memo(({ projectId }) => {
+export const DiagramField = ({ projectId }) => {
   const {
     curProjectId,
     setCurProjectId,
@@ -621,4 +621,4 @@ export const DiagramField = React.memo(({ projectId }) => {
       </div>
     </div>
   );
-});
+};

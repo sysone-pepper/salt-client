@@ -7,10 +7,19 @@ const RotatingText = ({ interval = 3000 }) => {
   const [animationClass, setAnimationClass] = useState('');
   const [isInitialized, setIsInitialized] = useState(false); // 초기화 상태 확인
 
+  const getDateTime = () => {
+    const today = new Date();
+
+    const hours = ('0' + today.getHours()).slice(-2);
+    const minutes = ('0' + today.getMinutes()).slice(-2);
+    const seconds = ('0' + today.getSeconds()).slice(-2);
+    //${year}.${month}.${day}
+    return `${hours}:${minutes}:${seconds}`;
+  };
+
   // 기본 메시지 설정
   const defaultMessages = [
-    '반갑습니다.',
-    '모니터링 대상 장비에서 에러가 존재하지 않습니다.',
+    `[${getDateTime()}] 모니터링 대상 장비에서 에러가 존재하지 않습니다.`,
   ];
 
   // 기본 메시지 초기화
